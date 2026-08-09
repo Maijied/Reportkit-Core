@@ -86,8 +86,8 @@ ReportKit spans **legacy → currently supported** PHP and Laravel (see [docs/CO
 | Package | Role | PHP | Laravel | Repo |
 |---------|------|-----|---------|------|
 | `reportkit/core` | This repository — engine only | **5.6 → current** | — | [Reportkit-Core](https://github.com/Maijied/Reportkit-Core) |
-| `reportkit/laravel-legacy` | Classic adapter | 5.6 – 7.4 | **4.1 – 5.4** | planned |
-| `reportkit/laravel` | Modern adapter | 7.0 – **current** | **5.5 → current** (through **12 / 13**) | planned |
+| `reportkit/laravel-legacy` | Classic adapter | 5.6 – 7.4 | **4.1 – 5.4** | [Reportkit-Laravel-Legacy](https://github.com/Maijied/Reportkit-Laravel-Legacy) |
+| `reportkit/laravel` | Modern adapter | 7.0 – **current** | **5.5 → current** (through **12 / 13**) | [Reportkit-Laravel](https://github.com/Maijied/Reportkit-Laravel) |
 | `@reportkit/ui` | Browser CSS/JS | — | Any host | [Reportkit-UI](https://github.com/Maijied/Reportkit-UI) |
 
 “Current” means majors still on Laravel/PHP security support (today Laravel **12.x** and **13.x**, PHP **8.3–8.5**). Historical LTS lines (**Laravel 5.5**, **6**) are covered by `reportkit/laravel`.
