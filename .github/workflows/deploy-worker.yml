@@ -37,11 +37,12 @@ jobs:
       - name: Verify Cloudflare Account API token
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           TOKEN="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '\r\n' | sed 's/^Bearer //')"
           HTTP=$(curl -sS -o /tmp/cf-verify.json -w '%{http_code}' \
             -H "Authorization: Bearer ${TOKEN}" \
-            "https://api.cloudflare.com/client/v4/user/tokens/verify")
+            "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/d1/database")
           test "$HTTP" = "200" || exit 1
       - name: Deploy
         uses: cloudflare/wrangler-action@v3

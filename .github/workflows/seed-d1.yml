@@ -40,17 +40,13 @@ jobs:
           test -n "$CLOUDFLARE_API_TOKEN" || (echo "::error::Missing CLOUDFLARE_API_TOKEN" && exit 1)
           test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "::error::Missing CLOUDFLARE_ACCOUNT_ID" && exit 1)
           TOKEN="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '\r\n' | sed 's/^Bearer //')"
-          case "$TOKEN" in cfat_*|v1.*) ;; *)
-            echo "::error::CLOUDFLARE_API_TOKEN must be the rolled Account API token (cfat_...), not JSON or account ID"
-            exit 1
-            ;;
-          esac
           HTTP=$(curl -sS -o /tmp/cf-verify.json -w '%{http_code}' \
             -H "Authorization: Bearer ${TOKEN}" \
-            "https://api.cloudflare.com/client/v4/user/tokens/verify")
-          echo "Cloudflare token verify HTTP ${HTTP}"
-          cat /tmp/cf-verify.json
-          test "$HTTP" = "200" || (echo "::error::Invalid CLOUDFLARE_API_TOKEN — roll at Account API tokens and update GitHub secret" && exit 1)
+            "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/d1/database")
+          echo "Cloudflare D1 list HTTP ${HTTP}"
+          cat /tmp/cf-verify.json | head -c 500
+          echo
+          test "$HTTP" = "200" || (echo "::error::Invalid CLOUDFLARE_API_TOKEN or missing D1 permissions" && exit 1)
       - name: Apply schemas + seed
         uses: cloudflare/wrangler-action@v3
         with:
