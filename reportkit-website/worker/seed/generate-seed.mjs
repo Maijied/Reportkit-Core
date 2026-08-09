@@ -28,8 +28,8 @@ function row(id, dayOffset, prefix) {
   return `INSERT INTO trips VALUES ('${prefix}${id}','${booked}','${op}','${route}','${channel}',${seats},${fare},'confirmed');`;
 }
 
-const live = ['BEGIN TRANSACTION;'];
-const archive = ['BEGIN TRANSACTION;'];
+const live = [];
+const archive = [];
 
 for (let i = 0; i < scale; i++) {
   live.push(row(i, i, 'L-'));
@@ -39,8 +39,6 @@ for (let i = 0; i < scale; i++) {
   const prefix = i < overlap ? 'L-' : 'A-';
   archive.push(row(i, i + 120, prefix));
 }
-live.push('COMMIT;');
-archive.push('COMMIT;');
 
 fs.writeFileSync(path.join(root, 'live.seed.sql'), live.join('\n'));
 fs.writeFileSync(path.join(root, 'archive.seed.sql'), archive.join('\n'));
