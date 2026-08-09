@@ -79,16 +79,16 @@ Report::define('demo', function ($report) {
 
 Full surface: [docs/API.md](docs/API.md) · Design notes: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
-## Ecosystem (planned)
+## Ecosystem
 
 ReportKit spans **legacy → currently supported** PHP and Laravel (see [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md)).
 
-| Package | Role | PHP | Laravel |
-|---------|------|-----|---------|
-| `reportkit/core` | This repository — engine only | **5.6 → current** | — |
-| `reportkit/laravel-legacy` | Classic adapter | 5.6 – 7.4 | **4.1 – 5.4** |
-| `reportkit/laravel` | Modern adapter | 7.0 – **current** | **5.5 → current** (through **12 / 13**) |
-| `@reportkit/ui` | Browser CSS/JS | — | Any host |
+| Package | Role | PHP | Laravel | Repo |
+|---------|------|-----|---------|------|
+| `reportkit/core` | This repository — engine only | **5.6 → current** | — | [Reportkit-Core](https://github.com/Maijied/Reportkit-Core) |
+| `reportkit/laravel-legacy` | Classic adapter | 5.6 – 7.4 | **4.1 – 5.4** | planned |
+| `reportkit/laravel` | Modern adapter | 7.0 – **current** | **5.5 → current** (through **12 / 13**) | planned |
+| `@reportkit/ui` | Browser CSS/JS | — | Any host | [Reportkit-UI](https://github.com/Maijied/Reportkit-UI) |
 
 “Current” means majors still on Laravel/PHP security support (today Laravel **12.x** and **13.x**, PHP **8.3–8.5**). Historical LTS lines (**Laravel 5.5**, **6**) are covered by `reportkit/laravel`.
 
