@@ -5,15 +5,16 @@ on:
     branches: [main]
     paths:
       - 'reportkit-website/**'
+      - '!reportkit-website/worker/**'
+      - '!reportkit-website/SETUP-DNS.md'
+      - '!reportkit-website/VERSIONING.md'
       - 'reportkit-core/docs/**'
       - 'reportkit-laravel/docs/**'
       - 'reportkit-laravel-legacy/docs/**'
       - 'reportkit-ui/docs/**'
       - '.github/workflows/deploy-site.yml'
-    paths-ignore:
-      - 'reportkit-website/worker/**'
-      - 'reportkit-website/SETUP-DNS.md'
-      - 'reportkit-website/VERSIONING.md'
+      - 'README.md'
+      - 'brand/**'
   repository_dispatch:
     types: [docs-updated, package-released, release-orchestrated]
   workflow_dispatch:
@@ -56,6 +57,7 @@ jobs:
       - run: npm run build
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          PUBLIC_DEMO_API_URL: https://api.reportkit.lorapok.tech
       - name: Verify CNAME + versions
         run: |
           test -f dist/CNAME

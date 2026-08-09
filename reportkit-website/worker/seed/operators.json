@@ -1,0 +1,22 @@
+[
+  {"id": 1, "code": "OP01", "name": "Northline Transit", "region": "REG-N", "active_since": "2012-01-01"},
+  {"id": 2, "code": "OP02", "name": "Riverway Coaches", "region": "REG-N", "active_since": "2012-03-01"},
+  {"id": 3, "code": "OP03", "name": "Summit Express", "region": "REG-N", "active_since": "2012-01-15"},
+  {"id": 4, "code": "OP04", "name": "Harbor Link", "region": "REG-N", "active_since": "2012-06-01"},
+  {"id": 5, "code": "OP05", "name": "Pioneer Routes", "region": "REG-E", "active_since": "2013-01-01"},
+  {"id": 6, "code": "OP06", "name": "Cedar Motor", "region": "REG-N", "active_since": "2012-02-01"},
+  {"id": 7, "code": "OP07", "name": "Atlas Shuttle", "region": "REG-N", "active_since": "2012-04-01"},
+  {"id": 8, "code": "OP08", "name": "Meridian Travel", "region": "REG-S", "active_since": "2012-05-01"},
+  {"id": 9, "code": "OP09", "name": "Beacon Lines", "region": "REG-W", "active_since": "2012-07-01"},
+  {"id": 10, "code": "OP10", "name": "Orbit Coaches", "region": "REG-N", "active_since": "2012-08-01"},
+  {"id": 11, "code": "OP11", "name": "Silver Route Co", "region": "REG-E", "active_since": "2013-03-01"},
+  {"id": 12, "code": "OP12", "name": "Skyway Transit", "region": "REG-N", "active_since": "2014-01-01"},
+  {"id": 13, "code": "OP13", "name": "Blue Ridge Bus", "region": "REG-S", "active_since": "2014-06-01"},
+  {"id": 14, "code": "OP14", "name": "Metro Forge", "region": "REG-N", "active_since": "2015-01-01"},
+  {"id": 15, "code": "OP15", "name": "Pearl Transit", "region": "REG-W", "active_since": "2015-09-01"},
+  {"id": 16, "code": "OP16", "name": "Sunrise Carriers", "region": "REG-N", "active_since": "2016-01-01"},
+  {"id": 17, "code": "OP17", "name": "Moonlight Express", "region": "REG-S", "active_since": "2016-04-01"},
+  {"id": 18, "code": "OP18", "name": "Rapid Axis", "region": "REG-E", "active_since": "2017-01-01"},
+  {"id": 19, "code": "OP19", "name": "Vista Horizon", "region": "REG-N", "active_since": "2017-06-01"},
+  {"id": 20, "code": "OP20", "name": "Orient Pathways", "region": "REG-W", "active_since": "2018-01-01"}
+]

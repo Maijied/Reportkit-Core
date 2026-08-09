@@ -1,0 +1,2 @@
+INSERT OR REPLACE INTO report_stats VALUES ('archive_rows',2000,'2026-08-09T23:17:38.476Z');
+INSERT OR REPLACE INTO report_stats VALUES ('virtual_logical_total',50000000,'2026-08-09T23:17:38.476Z');

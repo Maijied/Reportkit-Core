@@ -4,13 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       scale:
-        description: 'Seed scale (default|large)'
+        description: 'Seed scale (default|large|research|research-full)'
         required: false
-        default: 'default'
+        default: 'research'
 
 jobs:
   seed:
     runs-on: ubuntu-latest
+    timeout-minutes: 360
     env:
       REPORTKIT_LIVE: ${{ secrets.REPORTKIT_LIVE }}
       REPORTKIT_ARCHIVE: ${{ secrets.REPORTKIT_ARCHIVE }}
@@ -47,17 +48,8 @@ jobs:
           cat /tmp/cf-verify.json | head -c 500
           echo
           test "$HTTP" = "200" || (echo "::error::Invalid CLOUDFLARE_API_TOKEN or missing D1 permissions" && exit 1)
-      - name: Apply schemas + seed
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: reportkit-website/worker
-          command: |
-            d1 execute reportkit_live --remote --command="CREATE TABLE IF NOT EXISTS trips (trip_id TEXT PRIMARY KEY, booked_at TEXT NOT NULL, operator TEXT NOT NULL, route TEXT NOT NULL, channel TEXT NOT NULL, seats INTEGER NOT NULL, fare_cents INTEGER NOT NULL, status TEXT NOT NULL);"
-            d1 execute reportkit_live --remote --command="CREATE INDEX IF NOT EXISTS idx_trips_booked ON trips (booked_at, operator);"
-            d1 execute reportkit_live --remote --command="CREATE TABLE IF NOT EXISTS report_stats (key TEXT PRIMARY KEY, value INTEGER NOT NULL, updated_at TEXT NOT NULL);"
-            d1 execute reportkit_archive --remote --command="CREATE TABLE IF NOT EXISTS trips (trip_id TEXT PRIMARY KEY, booked_at TEXT NOT NULL, operator TEXT NOT NULL, route TEXT NOT NULL, channel TEXT NOT NULL, seats INTEGER NOT NULL, fare_cents INTEGER NOT NULL, status TEXT NOT NULL);"
-            d1 execute reportkit_archive --remote --command="CREATE INDEX IF NOT EXISTS idx_trips_booked ON trips (booked_at, operator);"
-            d1 execute reportkit_live --remote --file=./seed/live.seed.sql
-            d1 execute reportkit_archive --remote --file=./seed/archive.seed.sql
+      - name: Apply schemas + research seed batches
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: bash scripts/seed-apply-remote.sh

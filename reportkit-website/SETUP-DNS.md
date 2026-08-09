@@ -5,9 +5,80 @@
 | Type | Name | Value | Proxy |
 |------|------|-------|-------|
 | CNAME | `reportkit` | `Maijied.github.io` | DNS-only until GitHub TLS issues, then optional |
-| CNAME | `api.reportkit` | Worker custom domain (set by Wrangler) | Proxied if zone is on Cloudflare |
+| Worker route | `api.reportkit` | Cloudflare Worker `reportkit-demo-api` | **Proxied** (orange cloud) when zone is on Cloudflare |
 
 If the zone is **not** on Cloudflare, use the Worker `*.workers.dev` hostname as a temporary API URL and set `PUBLIC_DEMO_API_URL` accordingly.
+
+---
+
+## `api.reportkit` — Worker custom domain (step by step)
+
+**Prerequisite:** `lorapok.tech` must be an active zone on the **same Cloudflare account** as the Worker (`account_id` in `wrangler.toml`).
+
+### Step 1 — Route in Wrangler (already in repo)
+
+`reportkit-website/worker/wrangler.toml`:
+
+```toml
+routes = [{ pattern = "api.reportkit.lorapok.tech/*", zone_name = "lorapok.tech" }]
+```
+
+This tells Cloudflare to send `api.reportkit.lorapok.tech/*` to the `reportkit-demo-api` Worker.
+
+### Step 2 — Deploy the Worker
+
+Push to `main` (paths under `reportkit-website/worker/**`) or run **Actions → Deploy Worker → Run workflow**.
+
+CI injects D1 IDs from secrets `REPORTKIT_LIVE` and `REPORTKIT_ARCHIVE` before deploy.
+
+### Step 3 — DNS record in Cloudflare
+
+1. Open **[Cloudflare Dashboard](https://dash.cloudflare.com)** → zone **`lorapok.tech`** → **DNS → Records**
+2. After a successful deploy, check **Workers & Pages → reportkit-demo-api → Settings → Domains & Routes**
+3. If no record exists yet, add:
+
+| Field | Value |
+|-------|--------|
+| **Type** | `AAAA` + `AAAA` (Worker custom hostname) *or* follow dashboard “Add custom domain” |
+| **Name** | `api.reportkit` |
+| **Target** | Assigned by Cloudflare when you attach the custom domain to the Worker |
+| **Proxy status** | **Proxied** (orange cloud) |
+
+**Recommended (dashboard):**
+
+1. **Workers & Pages** → **reportkit-demo-api** → **Settings** → **Domains & Routes**
+2. **Add** → **Custom domain** → enter `api.reportkit.lorapok.tech`
+3. Cloudflare creates/updates DNS automatically when the zone is on Cloudflare
+
+**Manual CNAME (if dashboard asks):**
+
+| Type | Name | Content | Proxy |
+|------|------|---------|-------|
+| CNAME | `api.reportkit` | `<worker-subdomain>.workers.dev` or target shown in Workers UI | Proxied |
+
+> The exact target string is shown in the Worker **Custom domains** panel after you add `api.reportkit.lorapok.tech`. Do not guess — copy from the dashboard.
+
+### Step 4 — Verify TLS and API
+
+Wait 1–5 minutes for certificate issuance, then:
+
+```bash
+curl -s "https://api.reportkit.lorapok.tech/v1/health"
+curl -s "https://api.reportkit.lorapok.tech/v1/stats"
+```
+
+Expected: JSON with `"ok": true"` and dummy row stats after seeding.
+
+### Step 5 — Point the site at the API
+
+Site build reads **`PUBLIC_DEMO_API_URL`** at build time:
+
+- **Production (after DNS live):** `https://api.reportkit.lorapok.tech` (set in `.github/workflows/deploy-site.yml`)
+- **Temporary:** `https://reportkit-demo-api.mdshuvo40.workers.dev`
+
+Local dev: copy `reportkit-website/.env.example` → `.env` and set `PUBLIC_DEMO_API_URL`.
+
+---
 
 ## GitHub Pages
 
@@ -15,6 +86,8 @@ If the zone is **not** on Cloudflare, use the Worker `*.workers.dev` hostname as
 2. Settings → Pages → Source: **GitHub Actions**
 3. Custom domain: `reportkit.lorapok.tech`
 4. Enforce HTTPS after the certificate is issued
+
+---
 
 ## Cloudflare secrets (website repo)
 
@@ -79,44 +152,41 @@ npx wrangler d1 create reportkit_archive
 
 Paste both printed `database_id` values into GitHub secrets `REPORTKIT_LIVE` and `REPORTKIT_ARCHIVE`.
 
-### 4. Seed schema + demo data
+### 4. Seed schema + dummy demo data
 
 After secrets are set on **Reportkit-Core**:
 
 1. **Actions → Seed D1 (manual) → Run workflow**
-2. Scale: `default` (use `large` only if needed)
+2. Scale: **`research`** (500k + 500k dummy rows, ~30–90 min). Use `default` (2k + 2k) for a quick smoke test.
 
 Or locally:
 
 ```bash
-cd worker
-npm run seed:sql
-npx wrangler d1 execute reportkit_live --remote --file=./schema/live.sql
-npx wrangler d1 execute reportkit_archive --remote --file=./schema/archive.sql
-npx wrangler d1 execute reportkit_live --remote --file=./seed/live.seed.sql
-npx wrangler d1 execute reportkit_archive --remote --file=./seed/archive.seed.sql
+cd reportkit-website/worker
+SEED_SCALE=research npm run seed:sql
+bash scripts/seed-apply-remote.sh
 ```
+
+All seeded operators and routes are **fictional** — see `seed/operators.json`.
 
 ### 5. Deploy the Worker
 
 Push changes under `worker/` to `main`, or **Actions → Deploy Worker → Run workflow**.
 
-- **Custom domain** (zone on Cloudflare): configure `routes` in `wrangler.toml` for `api.reportkit.lorapok.tech`
-- **Otherwise**: use the `*.workers.dev` URL from the deploy log
-
-Set the site API URL:
-
-- `.env`: `PUBLIC_DEMO_API_URL=https://YOUR_WORKER_HOST`
-- Or ensure the default in `src/lib/api.ts` matches your deployed Worker
+- **Custom domain:** `api.reportkit.lorapok.tech` (see section above)
+- **Fallback:** `*.workers.dev` URL from the deploy log
 
 ### 6. Verify
 
 ```bash
-curl -s "https://YOUR_WORKER_HOST/health"
-curl -s "https://YOUR_WORKER_HOST/api/trips?start=2024-01-01&end=2024-01-31"
+curl -s "https://api.reportkit.lorapok.tech/v1/health"
+curl -s "https://api.reportkit.lorapok.tech/v1/stats"
+curl -s "https://api.reportkit.lorapok.tech/v1/data?start_date=2012-01-01&end_date=2017-12-31&start=0&length=5"
 ```
 
-[reportkit.lorapok.tech/demo](https://reportkit.lorapok.tech/demo) → **Live dual-D1** should show real merge timings.
+[reportkit.lorapok.tech/demo](https://reportkit.lorapok.tech/demo) → **Live dual-D1** should show merge timings with provenance badge `live`.
+
+---
 
 ## Packagist / npm secrets (package repos)
 

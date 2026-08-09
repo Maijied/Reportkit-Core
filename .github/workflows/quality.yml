@@ -4,14 +4,14 @@ on:
   pull_request:
     paths:
       - 'reportkit-website/**'
+      - '!reportkit-website/worker/**'
       - '.github/workflows/quality.yml'
   push:
     branches: [main]
     paths:
       - 'reportkit-website/**'
+      - '!reportkit-website/worker/**'
       - '.github/workflows/quality.yml'
-    paths-ignore:
-      - 'reportkit-website/worker/**'
 
 defaults:
   run:

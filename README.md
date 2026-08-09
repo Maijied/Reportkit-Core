@@ -1,41 +1,114 @@
 # ReportKit
 
-**Monorepo** for the ReportKit open-source report stack — PHP engine, Laravel adapters, browser UI, docs site, and Cloudflare demo API.
+**Prepare → Secure Store → Compose → Send** — a PHP report stack that stays fast on legacy Laravel and plain PHP, with honest scale labeling on the public demo.
 
 > PHP **5.6 → current** · Laravel **4.1 → currently supported**  
-> Site: **https://reportkit.lorapok.tech** · Repo: **[Maijied/Reportkit-Core](https://github.com/Maijied/Reportkit-Core)**
+> Site: **[reportkit.lorapok.tech](https://reportkit.lorapok.tech)** · API: **[api.reportkit.lorapok.tech](https://api.reportkit.lorapok.tech)**  
+> Repo: **[Maijied/Reportkit-Core](https://github.com/Maijied/Reportkit-Core)**
 
-See [MONOREPO.md](./MONOREPO.md) for layout, CI, secrets, and release tags.
+---
 
-## Packages
+## Same server. Different architecture.
 
-| Directory | Package | Registry |
-|-----------|---------|----------|
-| [reportkit-core/](reportkit-core/) | `reportkit/core` | Packagist |
-| [reportkit-laravel-legacy/](reportkit-laravel-legacy/) | `reportkit/laravel-legacy` | Packagist |
-| [reportkit-laravel/](reportkit-laravel/) | `reportkit/laravel` | Packagist |
-| [reportkit-ui/](reportkit-ui/) | `@lorapok-labs/reportkit-ui` | npm |
-| [reportkit-website/](reportkit-website/) | Astro site + Worker demo | GitHub Pages |
+Modern stacks often fail under report load — one monolithic query, one heavy pipe, timeouts for everyone. ReportKit takes the opposite path: **chunked prepare, in-memory secure store, zero re-query during export**, then compose and send.
 
-## Architecture
+<p align="center">
+  <img
+    src="brand/cover-same-server-different-architecture.png"
+    alt="Same Server, Different Architecture — modern monolithic query vs ReportKit chunked prepare, secure store, and multi-format export"
+    width="920"
+  />
+</p>
+
+<p align="center"><em>Left: monolithic query → unstable pipe → timeouts. Right: filters → week chunks → secure store → Excel/CSV/PDF/email with 0 re-query.</em></p>
+
+| Modern pattern (fails) | ReportKit pattern (scales) |
+|------------------------|----------------------------|
+| One giant SQL per request | Week-chunked reads (concurrency cap) |
+| Re-query on every page/export | **Secure store** — merge once, slice many times |
+| Opaque “billions of rows” claims | **Provenance badges**: `live` · `synthetic` · `measured` · `cached` |
+| Framework version as the story | **Architecture** as the story — old framework, new pipeline |
+
+All public demo data is **fictional** (dummy operators, hub routes, fares). No real customer or production data is used.
+
+---
+
+## Architecture overview
+
+### 1. Report pipeline (core thesis)
+
+```mermaid
+flowchart LR
+  subgraph prepare [Prepare]
+    F[Filters validated]
+    W[Week chunks × N]
+    DB1[(Database A)]
+    DB2[(Database B)]
+    F --> W
+    W --> DB1
+    W --> DB2
+  end
+
+  subgraph store [Secure store]
+    M[Merged rows in memory]
+    DB1 --> M
+    DB2 --> M
+  end
+
+  subgraph compose [Compose]
+    D[Dedupe by key]
+    S[Sort + slice]
+    M --> D --> S
+  end
+
+  subgraph send [Send]
+    DT[DataTables JSON]
+    X[Excel / CSV / PDF / Email]
+    S --> DT
+    S --> X
+  end
+```
+
+**Rules**
+
+1. **Prepare** — `DateRangeChunker` splits the window into weekly ranges; each chunk hits the DB with indexed filters.
+2. **Secure store** — merged result set lives in memory (PHP) or Worker memory for the request lifecycle.
+3. **Compose** — `PseudoPaginator` dedupes, sorts, searches, slices — **no second round-trip to the database**.
+4. **Send** — one response shape (DataTables JSON, export, email) with a provenance label on every number.
+
+### 2. Monorepo layout
 
 ```mermaid
 graph TB
-  subgraph mono ["Reportkit-Core monorepo"]
-    C["reportkit-core"]
-    LL["reportkit-laravel-legacy"]
-    L["reportkit-laravel"]
-    U["reportkit-ui"]
-    W["reportkit-website"]
+  subgraph mono ["Maijied/Reportkit-Core"]
+    C["reportkit-core<br/>engine"]
+    LL["reportkit-laravel-legacy<br/>Laravel 4.1–5.4"]
+    L["reportkit-laravel<br/>Laravel 5.5+"]
+    U["reportkit-ui<br/>npm"]
+    W["reportkit-website<br/>Astro + Worker + D1"]
   end
+
   LL --> C
   L --> C
-  W -->|docs sync| C
-  W -->|docs sync| L
-  W -->|docs sync| U
+  U --> C
+  W -->|docs + demo| C
+  W -->|docs + demo| L
+  W -->|docs + demo| U
 ```
 
-## Dual-DB (easy path)
+| Directory | Package | Role |
+|-----------|---------|------|
+| [reportkit-core/](reportkit-core/) | `reportkit/core` | Chunker, paginator, row sources, exports — **no Laravel** |
+| [reportkit-laravel-legacy/](reportkit-laravel-legacy/) | `reportkit/laravel-legacy` | Service provider + facades for Laravel 4.1–5.4 |
+| [reportkit-laravel/](reportkit-laravel/) | `reportkit/laravel` | Modern Laravel adapter |
+| [reportkit-ui/](reportkit-ui/) | `@lorapok-labs/reportkit-ui` | DataTables + ReportKit browser helpers |
+| [reportkit-website/](reportkit-website/) | — | Docs site (GitHub Pages) + Cloudflare Worker demo API |
+
+See [MONOREPO.md](./MONOREPO.md) for CI path filters, secrets, and release tags (`core/v*`, `laravel/v*`, `ui/v*`, …).
+
+### 3. Dual-database merge
+
+Production reports often span a **live** database and an **archive**. ReportKit merges them with explicit dedupe and ordering:
 
 ```php
 use ReportKit\Laravel\Facades\ReportKit;
@@ -48,15 +121,134 @@ $source = ReportKit::merged([
 ])->dedupeBy('trip_id')->orderBy('booked_at', 'desc');
 ```
 
-## Scope
+**Public demo (Cloudflare D1)** mirrors this model:
 
-- One GitHub repo, one secrets panel, path-filtered CI
-- Do **not** push to Shohoz Azure remotes
-- Archive the old split repos (`Reportkit-Core`, `Reportkit-Laravel`, etc.) when ready
+| Database | Years | Operator link | Indexes |
+|----------|-------|---------------|---------|
+| `reportkit_live` | 2018 → present | `trips.operator_id` → `operators.id` | `booked_at`, `operator_id`, composites |
+| `reportkit_archive` | 2012 → 2017 | `trips.operator_code` → live `operators.code` | `booked_at`, `operator_code`, composites |
+
+Overlap rows (`trip_id` prefix `X-`) exist in **both** DBs to exercise cross-database dedupe.
+
+### 4. Demo API stack
+
+```mermaid
+flowchart LR
+  Site["reportkit.lorapok.tech<br/>Astro / GitHub Pages"]
+  API["api.reportkit.lorapok.tech<br/>Cloudflare Worker"]
+  L[(D1 reportkit_live)]
+  A[(D1 reportkit_archive)]
+
+  Site -->|PUBLIC_DEMO_API_URL| API
+  API --> L
+  API --> A
+```
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /v1/health` | Service + research metadata |
+| `GET /v1/data` | DataTables JSON (`mode=live` or `mode=synthetic`) |
+| `GET /v1/trace` | Per-stage timings (live / archive / merge) |
+| `GET /v1/stats` | Row counts + provenance |
+| `GET /v1/weeks` | Weekly ranges for chunking UI |
+
+**Scale honesty**
+
+| Mode | Rows | Meaning |
+|------|------|---------|
+| `live` | ~1M seeded (500k + 500k) | Real dual-D1 merge on **dummy** indexed data |
+| `synthetic` | 50,000,000 virtual | Deterministic generator, 2012 → present, O(1) paging |
+| `cached` | Bundled fixtures | Fallback when API or quota unavailable |
+
+Interactive demo: **[reportkit.lorapok.tech/demo](https://reportkit.lorapok.tech/demo)**  
+Research notes: [reportkit-website/docs/RESEARCH.md](./reportkit-website/docs/RESEARCH.md)
+
+---
+
+## Quick start
+
+### Laravel 5.5+ (beta)
+
+```bash
+composer require reportkit/core:^0.1@beta reportkit/laravel:^0.1@beta
+php artisan reportkit:install --publish-assets
+php artisan reportkit:make Sales --route=admin/sales --preset=hybrid
+```
+
+### Laravel 4.1–5.4 (legacy)
+
+```bash
+composer require reportkit/core:^0.1@beta reportkit/laravel-legacy:^0.1@beta
+php artisan reportkit:install --with-config --publish-assets
+php artisan reportkit:make Sales --route=admin/sales
+```
+
+### Browser UI (npm)
+
+```bash
+npm install @lorapok-labs/reportkit-ui@beta
+```
+
+---
+
+## DNS & API domain
+
+| Host | Type | Target | Notes |
+|------|------|--------|-------|
+| `reportkit.lorapok.tech` | CNAME | `Maijied.github.io` | GitHub Pages (DNS-only until TLS ready) |
+| `api.reportkit.lorapok.tech` | Worker route | Cloudflare Worker | Set in `wrangler.toml`; proxied when zone is on Cloudflare |
+
+Full step-by-step (D1, secrets, seed, verify): **[reportkit-website/SETUP-DNS.md](./reportkit-website/SETUP-DNS.md)**
+
+**Enable `api.reportkit` (summary)**
+
+1. Ensure **`lorapok.tech`** is on Cloudflare (same account as Worker).
+2. `reportkit-website/worker/wrangler.toml` already declares:
+   ```toml
+   routes = [{ pattern = "api.reportkit.lorapok.tech/*", zone_name = "lorapok.tech" }]
+   ```
+3. Deploy Worker (**Actions → Deploy Worker** or push `worker/`).
+4. In Cloudflare **DNS** for `lorapok.tech`, add or confirm:
+   - **Name:** `api.reportkit`
+   - **Type:** proxied route (Wrangler usually attaches the Worker; if a CNAME is required, point to the Worker custom hostname shown in **Workers & Pages → reportkit-demo-api → Settings → Domains**)
+   - **Proxy:** orange cloud (proxied)
+5. Verify:
+   ```bash
+   curl -s https://api.reportkit.lorapok.tech/v1/health
+   ```
+
+Until DNS is live, use `https://reportkit-demo-api.mdshuvo40.workers.dev` as a temporary API URL.
+
+---
+
+## CI & operations
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| **Seed D1 (manual)** | Actions dispatch | Batched dummy seed (`research` = 500k + 500k) |
+| **Deploy Worker** | Push `worker/**` | Worker + D1 bindings + custom route |
+| **Deploy site** | Push site (excl. worker) | GitHub Pages + `PUBLIC_DEMO_API_URL` |
+| **Orchestrate beta release** | Dispatch | Core → Laravel → UI → site |
+
+Secrets live on **Reportkit-Core** only — see [MONOREPO.md](./MONOREPO.md).
+
+Local plan & checklist: [PLAN.md](./PLAN.md)
+
+---
+
+## Scope & policy
+
+- **One monorepo**, one secrets panel, path-filtered CI
+- Do **not** push package source to Shohoz Azure remotes
+- Archive deprecated split repos when convenient
+- Never claim 50M rows are physically stored on free-tier D1 — use provenance labels
+
+---
 
 ## Author
 
-**Mohammad Maizied Hasan Majumder** · [mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) · [Lorapok Labs](https://lorapok.labs)
+**Mohammad Maizied Hasan Majumder**  
+[mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) · [Lorapok Labs](https://lorapok.tech)
 
 ## License
 

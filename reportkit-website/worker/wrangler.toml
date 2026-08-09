@@ -3,8 +3,7 @@ main = "src/index.ts"
 compatibility_date = "2025-03-01"
 account_id = "f049faaf2f67549f5c58837479596a4a"
 
-# Custom domain (configure after zone is on Cloudflare):
-# routes = [{ pattern = "api.reportkit.lorapok.tech/*", zone_name = "lorapok.tech" }]
+routes = [{ pattern = "api.reportkit.lorapok.tech/*", zone_name = "lorapok.tech" }]
 
 [[d1_databases]]
 binding = "DB_LIVE"
