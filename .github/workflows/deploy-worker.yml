@@ -30,6 +30,10 @@ jobs:
         run: |
           test -n "$REPORTKIT_LIVE" || (echo "::error::Missing REPORTKIT_LIVE repository secret" && exit 1)
           test -n "$REPORTKIT_ARCHIVE" || (echo "::error::Missing REPORTKIT_ARCHIVE repository secret" && exit 1)
+      - name: Bind D1 IDs into wrangler.toml
+        run: |
+          sed -i "s|\${REPORTKIT_LIVE}|${REPORTKIT_LIVE}|g" wrangler.toml
+          sed -i "s|\${REPORTKIT_ARCHIVE}|${REPORTKIT_ARCHIVE}|g" wrangler.toml
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
