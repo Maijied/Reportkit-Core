@@ -1,0 +1,27 @@
+{
+    "name": "reportkit/core",
+    "description": "Framework-agnostic report engine: date chunking, filters, definitions, DataTables responder, settings.",
+    "type": "library",
+    "version": "0.1.0",
+    "license": "MIT",
+    "keywords": ["report", "export", "datatables", "csv", "pdf", "prepare"],
+    "authors": [
+        {
+            "name": "ReportKit Contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ReportKit\\Core\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ReportKit\\Core\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable"
+}
