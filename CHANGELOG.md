@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.1-beta.1] - 2026-08-09
+
+### Changed
+- Automated beta release
+
+
 ## [0.1.0] - 2026-08-10
 
 ### Added
