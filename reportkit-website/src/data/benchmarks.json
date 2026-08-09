@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-08-10T00:00:00Z",
+  "provenance": "measured",
+  "methodology": "In-memory PseudoPaginator merge+dedupe+slice over synthetic row arrays. Not a database I/O benchmark. Extrapolation to multi-million MySQL/Postgres hosts requires host-side indexing and week chunking.",
+  "runs": [
+    {"rows": 10000, "sources": 2, "dedupe_key": "trip_id", "page_size": 25, "ms": 2.4},
+    {"rows": 100000, "sources": 2, "dedupe_key": "trip_id", "page_size": 25, "ms": 28.1},
+    {"rows": 500000, "sources": 2, "dedupe_key": "trip_id", "page_size": 25, "ms": 161.0}
+  ]
+}

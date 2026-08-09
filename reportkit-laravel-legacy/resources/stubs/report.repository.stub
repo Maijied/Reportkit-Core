@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Repositories\Reports;
+
+/**
+ * Domain SQL for {{title}} — stays in the host app forever.
+ *
+ * Dual-DB example using ReportKit helpers (preferred):
+ *
+ *   use ReportKit\Laravel\Facades\ReportKit;
+ *
+ *   return ReportKit::merged([
+ *       ReportKit::connection('mysql', fn ($q, $f) =>
+ *           $q->from('trips')->whereBetween('booked_at', [$f['start_date'], $f['end_date']])),
+ *       ReportKit::connection('mysql_archive', fn ($q, $f) =>
+ *           $q->from('trips')->whereBetween('booked_at', [$f['start_date'], $f['end_date']])),
+ *   ])->dedupeBy('trip_id')->orderBy('booked_at', 'desc')->getRows($filters);
+ */
+class {{Studly}}ReportRepository
+{
+    /**
+     * @param array $filters
+     * @return array
+     */
+    public function fetchRows(array $filters)
+    {
+        // TODO: replace with host SQL / ReportKit::merged(...) as above
+        return [];
+    }
+
+    /**
+     * @param array $filters
+     * @return int
+     */
+    public function countRows(array $filters)
+    {
+        return count($this->fetchRows($filters));
+    }
+
+    /**
+     * @param array $rows
+     * @return array
+     */
+    public function summarize(array $rows)
+    {
+        return [
+            'total_rows' => count($rows),
+        ];
+    }
+}

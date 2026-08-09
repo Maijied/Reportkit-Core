@@ -1,0 +1,53 @@
+---
+---
+<section class="rk-hero">
+  <div class="container rk-hero-inner">
+    <div class="row align-items-center g-4 g-lg-5">
+      <div class="col-lg-5">
+        <div class="rk-kicker">
+          <span class="rk-brand-dot"></span>
+          Lorapok Labs product
+        </div>
+        <h1 class="rk-hero-title">Multi-DB reports that stay fast.</h1>
+        <p class="rk-hero-lead">
+          ReportKit owns week chunking, filter validation, merge → dedupe → slice,
+          and DataTables JSON. Your host keeps the SQL — across live and archive databases.
+        </p>
+        <div class="rk-hero-actions">
+          <a class="btn rk-btn-primary" href="/docs/0.1/getting-started/quick-start">Quick start</a>
+          <a class="btn rk-btn-ghost" href="/demo">Watch live merge</a>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="rk-badge-provenance" data-provenance="live">PHP 5.6 → 8.5</span>
+          <span class="rk-badge-provenance" data-provenance="live">Laravel 4.1 → 13</span>
+          <span class="rk-badge-provenance" data-provenance="measured">MIT</span>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <canvas
+          id="rkPipeline"
+          class="rk-pipeline-canvas"
+          aria-label="Animated pipeline: live and archive streams merge into JSON for DataTables"
+        ></canvas>
+        <div class="rk-pipeline-static" aria-hidden="false">
+          LIVE ──┐<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ MERGE · DEDUPE ─ JSON ─ DataTables / export<br />
+          ARCHIVE ┘
+        </div>
+        <p class="small mt-2 mb-0" style="color: rgba(238,247,242,0.55)">
+          Motion with purpose — scroll the demo for real <span class="rk-mono">/v1/trace</span> timings.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { mountPipelineCanvas } from './PipelineCanvas';
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('rkPipeline') as HTMLCanvasElement | null;
+  if (canvas && !reduce) {
+    mountPipelineCanvas(canvas);
+  }
+</script>

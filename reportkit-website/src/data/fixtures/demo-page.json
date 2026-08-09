@@ -1,0 +1,26 @@
+{
+  "draw": 1,
+  "recordsTotal": 48,
+  "recordsFiltered": 48,
+  "data": [
+    {"trip_id": "T-10001", "booked_at": "2026-01-02", "operator": "Hanif", "route": "DHK-CTG", "channel": "online", "fare_cents": 85000, "_source": "live"},
+    {"trip_id": "T-10002", "booked_at": "2026-01-02", "operator": "Green Line", "route": "DHK-SYL", "channel": "offline", "fare_cents": 72000, "_source": "live"},
+    {"trip_id": "T-90001", "booked_at": "2025-11-18", "operator": "Shyamoli", "route": "DHK-RAJ", "channel": "online", "fare_cents": 65000, "_source": "archive"},
+    {"trip_id": "T-10003", "booked_at": "2026-01-03", "operator": "Hanif", "route": "DHK-CTG", "channel": "online", "fare_cents": 85000, "_source": "live"},
+    {"trip_id": "T-90002", "booked_at": "2025-10-05", "operator": "Ena", "route": "DHK-KHL", "channel": "offline", "fare_cents": 58000, "_source": "archive"},
+    {"trip_id": "T-10004", "booked_at": "2026-01-04", "operator": "Desh Travels", "route": "DHK-BAR", "channel": "online", "fare_cents": 91000, "_source": "live"},
+    {"trip_id": "T-10005", "booked_at": "2026-01-05", "operator": "Green Line", "route": "CTG-DHK", "channel": "online", "fare_cents": 88000, "_source": "live"},
+    {"trip_id": "T-90003", "booked_at": "2025-09-12", "operator": "Hanif", "route": "SYL-DHK", "channel": "offline", "fare_cents": 70000, "_source": "archive"}
+  ],
+  "trace": {
+    "mode": "fixture",
+    "live": {"rows": 5, "ms": 0.4},
+    "archive": {"rows": 4, "ms": 0.3},
+    "merged": 9,
+    "deduped": 8,
+    "dropped": 1,
+    "sliced": 8,
+    "total_ms": 1.2,
+    "note": "Bundled fixture — deploy worker/ for live dual-D1 timings"
+  }
+}

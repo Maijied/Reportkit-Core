@@ -1,0 +1,31 @@
+name: Compat matrix
+
+on:
+  schedule:
+    - cron: '0 5 * * 1'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: reportkit-website
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refresh static matrix stamp
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const path = 'src/data/compat-matrix.json';
+          const data = JSON.parse(fs.readFileSync(path, 'utf8'));
+          data.generated_at = new Date().toISOString();
+          data.provenance = 'measured';
+          fs.writeFileSync(path, JSON.stringify(data, null, 2) + '\n');
+          console.log('updated', path);
+          EOF
+      - uses: actions/upload-artifact@v4
+        with:
+          name: compat-matrix
+          path: reportkit-website/src/data/compat-matrix.json

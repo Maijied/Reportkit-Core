@@ -1,0 +1,128 @@
+---
+import '../styles/bootstrap.scss';
+import '../styles/marketing.scss';
+import '../styles/docs.scss';
+
+interface Props {
+  title?: string;
+  description?: string;
+  bodyClass?: string;
+}
+
+const {
+  title = 'ReportKit — Multi-DB reports for Laravel',
+  description = 'ReportKit by Lorapok Labs: week-chunked, merge+dedupe reporting for PHP and Laravel 4.1–13.',
+  bodyClass = '',
+} = Astro.props;
+
+const pathname = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={new URL(pathname, Astro.site).toString()} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0b7a4b" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400;600;700;800&family=Sora:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={new URL(pathname, Astro.site).toString()} />
+    <meta property="og:image" content={new URL('/og-image.png', Astro.site).toString()} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={new URL('/og-image.png', Astro.site).toString()} />
+    <meta property="og:image" content={new URL('/og-logo.png', Astro.site).toString()} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={new URL('/og-logo.png', Astro.site).toString()} />
+  </head>
+  <body class={bodyClass}>
+    <nav class="navbar navbar-expand-lg rk-site-nav sticky-top">
+      <div class="container">
+        <a class="rk-brand-mark" href="/">
+          <img class="rk-brand-logo" src="/reportkit-logo.svg" alt="" width="34" height="24" aria-hidden="true" />
+          ReportKit
+        </a>
+        <button
+          class="navbar-toggler border-secondary"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#rkNav"
+          aria-controls="rkNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="rkNav">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+            <li class="nav-item"><a class:list={["nav-link", { active: pathname.startsWith('/docs') }]} href="/docs/0.1/getting-started/introduction">Docs</a></li>
+            <li class="nav-item"><a class:list={["nav-link", { active: pathname.startsWith('/demo') }]} href="/demo">Demo</a></li>
+            <li class="nav-item"><a class:list={["nav-link", { active: pathname.startsWith('/laravel') }]} href="/laravel">Laravel</a></li>
+            <li class="nav-item"><a class:list={["nav-link", { active: pathname.startsWith('/benchmarks') }]} href="/benchmarks">Benchmarks</a></li>
+            <li class="nav-item"><a class:list={["nav-link", { active: pathname.startsWith('/showcase') }]} href="/showcase">Showcase</a></li>
+            <li class="nav-item ms-lg-2">
+              <a class="btn btn-sm rk-btn-primary" href="/docs/0.1/getting-started/quick-start">Get started</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <slot />
+    <footer class="rk-footer">
+      <div class="container">
+        <div class="row g-4">
+          <div class="col-md-5">
+            <div class="rk-brand-mark mb-2">
+              <img class="rk-brand-logo" src="/reportkit-logo.svg" alt="" width="34" height="24" aria-hidden="true" /> ReportKit
+            </div>
+            <p class="mb-2">Open-source multi-DB reporting for PHP &amp; Laravel — by <a href="https://lorapok.labs" rel="noopener">Lorapok Labs</a>.</p>
+            <p class="small mb-0">Accent <span class="rk-mono">#0b7a4b</span> · MIT License</p>
+          </div>
+          <div class="col-6 col-md-2">
+            <div class="text-white fw-bold mb-2">Product</div>
+            <a href="/demo">Live demo</a><br />
+            <a href="/benchmarks">Benchmarks</a><br />
+            <a href="/brand">Brand</a>
+          </div>
+          <div class="col-6 col-md-2">
+            <div class="text-white fw-bold mb-2">Packages</div>
+            <a href="https://github.com/Maijied/Reportkit-Core">core</a><br />
+            <a href="https://github.com/Maijied/Reportkit-Laravel">laravel</a><br />
+            <a href="https://github.com/Maijied/Reportkit-UI">ui</a>
+          </div>
+          <div class="col-md-3">
+            <div class="text-white fw-bold mb-2">Author</div>
+            <p class="mb-0 small">Mohammad Maizied Hasan Majumder<br />Founder &amp; Principal Engineer, Lorapok Labs</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script is:inline>
+      // Minimal Bootstrap collapse without full JS bundle weight for nav toggler
+      document.querySelectorAll('[data-bs-toggle="collapse"]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = document.querySelector(btn.getAttribute('data-bs-target'));
+          if (!target) return;
+          const open = target.classList.toggle('show');
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      });
+    </script>
+  </body>
+</html>

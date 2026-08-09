@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="ReportKit">
+  <title>ReportKit</title>
+  <desc>Simplified ReportKit mark for small sizes (favicon, app icon).</desc>
+  <defs>
+    <linearGradient id="rkBadgeSm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e8f58"/>
+      <stop offset="1" stop-color="#06512f"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="512" height="512" rx="116" fill="url(#rkBadgeSm)"/>
+
+  <!-- baseline -->
+  <path d="M 116,372 L 396,372" fill="none" stroke="#ffffff" stroke-width="30" stroke-linecap="round"/>
+
+  <!-- ascending bars: archive, live, merged -->
+  <path d="M 124,372 L 124,290 Q 124,262 152,262 L 156,262 Q 184,262 184,290 L 184,372 Z" fill="#f0ad4e"/>
+  <path d="M 226,372 L 226,222 Q 226,194 254,194 L 258,194 Q 286,194 286,222 L 286,372 Z" fill="#8ef0c4"/>
+  <path d="M 328,372 L 328,154 Q 328,126 356,126 L 360,126 Q 388,126 388,154 L 388,372 Z" fill="#ffffff"/>
+</svg>

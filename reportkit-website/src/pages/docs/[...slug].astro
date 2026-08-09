@@ -1,0 +1,27 @@
+---
+import { getCollection, render } from 'astro:content';
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  return docs.map((doc) => {
+    const id = String(doc.id).replace(/\.mdx?$/, '');
+    return {
+      params: { slug: id },
+      props: { doc, id },
+    };
+  });
+}
+
+const { doc, id } = Astro.props;
+const { Content, headings } = await render(doc);
+const versionless = id.replace(/^0\.1\//, '');
+---
+<DocsLayout
+  title={doc.data.title}
+  description={doc.data.description}
+  slug={versionless}
+  headings={headings}
+>
+  <Content />
+</DocsLayout>

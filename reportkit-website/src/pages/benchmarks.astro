@@ -1,0 +1,39 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import bench from '../data/benchmarks.json';
+---
+<MarketingLayout title="Benchmarks · ReportKit" description="Measured PseudoPaginator merge performance.">
+  <section class="rk-section">
+    <div class="container">
+      <div class="rk-kicker"><span class="rk-brand-dot"></span> Benchmarks</div>
+      <h1 class="rk-section-title">Measured merge performance</h1>
+      <div class="bd-callout warn mb-4">
+        <strong>Provenance:</strong> <span class="rk-badge-provenance" data-provenance={bench.provenance}>{bench.provenance}</span>
+        — {bench.methodology}
+      </div>
+      <div class="table-responsive rk-card p-0 overflow-hidden">
+        <table class="table mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Rows (merged)</th>
+              <th>Sources</th>
+              <th>Page size</th>
+              <th>Time (ms)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bench.runs.map((r) => (
+              <tr>
+                <td class="rk-mono">{r.rows.toLocaleString()}</td>
+                <td class="rk-mono">{r.sources}</td>
+                <td class="rk-mono">{r.page_size}</td>
+                <td class="rk-mono">{r.ms}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="small text-secondary mt-3">Last run {bench.generated_at}</p>
+    </div>
+  </section>
+</MarketingLayout>

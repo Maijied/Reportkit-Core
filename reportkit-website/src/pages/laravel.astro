@@ -1,0 +1,41 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import matrix from '../data/compat-matrix.json';
+---
+<MarketingLayout title="Multi-Laravel · ReportKit" description="One Core engine across Laravel 4.1 through 13.">
+  <section class="rk-section">
+    <div class="container">
+      <div class="rk-kicker"><span class="rk-brand-dot"></span> Compatibility</div>
+      <h1 class="rk-section-title">One report story. Many Laravel majors.</h1>
+      <p class="text-secondary col-lg-8">
+        Definitions use the same <code>Report::define</code> fluent API. Pick
+        <code>reportkit/laravel-legacy</code> for 4.1–5.4 or <code>reportkit/laravel</code> for 5.5–13.
+        <span class="rk-badge-provenance" data-provenance={matrix.provenance}>{matrix.provenance}</span>
+      </p>
+      <div class="table-responsive rk-card p-0 overflow-hidden">
+        <table class="table mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Laravel</th>
+              <th>PHP</th>
+              <th>Adapter</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {matrix.rows.map((row) => (
+              <tr>
+                <td class="rk-mono">{row.laravel}</td>
+                <td class="rk-mono">{row.php}</td>
+                <td><code>reportkit/{row.adapter}</code></td>
+                <td><span class="badge text-bg-success">{row.status}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="small text-secondary mt-3">Generated {matrix.generated_at}. Updated by CI <code>compat-matrix.yml</code>.</p>
+      <a class="btn rk-btn-primary" href="/docs/0.1/getting-started/compatibility">Read compatibility docs</a>
+    </div>
+  </section>
+</MarketingLayout>

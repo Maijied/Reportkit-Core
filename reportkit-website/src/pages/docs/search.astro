@@ -1,0 +1,54 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+---
+<MarketingLayout title="Search docs · ReportKit" description="Full-text search across ReportKit documentation.">
+  <section class="rk-section">
+    <div class="container" style="max-width:720px">
+      <h1 class="rk-section-title">Search docs</h1>
+      <p class="text-secondary mb-4">
+        Search Getting started, multi-database, adapters, API, and UI guides.
+      </p>
+      <div id="search" class="rk-docs-search"></div>
+      <p class="small text-secondary mt-4 mb-0">
+        Prefer browsing? Start at
+        <a href="/docs/0.1/getting-started/introduction">Introduction</a>
+        or
+        <a href="/docs/0.1/multi-database/overview">Multiple databases</a>.
+      </p>
+    </div>
+  </section>
+</MarketingLayout>
+
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+<script is:inline src="/pagefind/pagefind-ui.js"></script>
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', () => {
+    if (typeof PagefindUI === 'undefined') {
+      const el = document.getElementById('search');
+      if (el) {
+        el.innerHTML =
+          '<p class="text-secondary">Search index not built yet. Run <code>npm run build</code> (includes Pagefind) or browse the docs sidebar.</p>';
+      }
+      return;
+    }
+    new PagefindUI({
+      element: '#search',
+      showSubResults: true,
+      showImages: false,
+      excerptLength: 18,
+    });
+  });
+</script>
+
+<style is:global>
+  .rk-docs-search .pagefind-ui__search-input {
+    font-family: var(--rk-font-body);
+    border-radius: 10px !important;
+    border: 1px solid var(--rk-line) !important;
+    padding: 0.85rem 1rem 0.85rem 2.5rem !important;
+  }
+  .rk-docs-search .pagefind-ui__result-link {
+    color: var(--rk-accent-deep) !important;
+    font-weight: 700;
+  }
+</style>

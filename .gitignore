@@ -1,0 +1,23 @@
+# Dependencies
+**/node_modules/
+**/vendor/
+
+# Build output
+**/dist/
+**/.astro/
+reportkit-website/worker/.wrangler/
+
+# Local env
+**/.env
+**/.env.*
+!.env.example
+
+# IDE / OS
+.DS_Store
+.idea/
+*.swp
+*.log
+
+# Test / cache
+**/.phpunit.cache/
+**/coverage/

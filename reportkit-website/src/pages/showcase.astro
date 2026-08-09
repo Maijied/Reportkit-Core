@@ -1,0 +1,105 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+
+const cases = [
+  {
+    title: 'Dual-DB archive reports',
+    badge: 'live',
+    lead: 'Live + archive connections merged with trip_id dedupe for COD, sales, and export windows.',
+    points: [
+      'ReportKit::connection() per DB',
+      'MergedRowSource + PseudoPaginator::dedupeByKey',
+      'DataTables /v1/data JSON in one hop',
+    ],
+    href: '/docs/0.1/multi-database/laravel',
+    cta: 'Multi-DB Laravel guide',
+  },
+  {
+    title: '6-month async prepare',
+    badge: 'measured',
+    lead: 'Week chunks stream into a prepared buffer so downloads never re-query the full window.',
+    points: [
+      'DateRangeChunker::getWeeklyRanges',
+      '/weeks + /rows endpoints',
+      'ReportKit.table.toPreparedRows() for export',
+    ],
+    href: '/docs/0.1/core/week-chunking',
+    cta: 'Week chunking docs',
+  },
+  {
+    title: 'KPI + DataTables hybrid',
+    badge: 'live',
+    lead: 'Summary payload rides alongside serverSide pages for operator dashboards.',
+    points: [
+      'RowSource::getSummary()',
+      'DataTableResponder summary field',
+      'ReportKit.kpi.apply() in the UI',
+    ],
+    href: '/demo',
+    cta: 'Open live demo',
+  },
+  {
+    title: 'Legacy Laravel hosts',
+    badge: 'live',
+    lead: 'Same Core engine on Laravel 4.1–5.4 with path-friendly stubs and manual provider registration.',
+    points: [
+      'reportkit/laravel-legacy adapter',
+      'reportkit:make scaffolds under app/controllers',
+      'Config + asset publish via Artisan',
+    ],
+    href: '/docs/0.1/adapters/laravel-legacy',
+    cta: 'Legacy install',
+  },
+];
+---
+<MarketingLayout title="Showcase · ReportKit" description="Real-world ReportKit shapes — dual-DB, async prepare, KPI dashboards.">
+  <section class="rk-section">
+    <div class="container">
+      <div class="row mb-4">
+        <div class="col-lg-8">
+          <h1 class="rk-section-title">Showcase</h1>
+          <p class="text-secondary mb-0">
+            Patterns teams use in production hosts — SQL stays in the app, ReportKit owns the pipeline.
+          </p>
+        </div>
+      </div>
+      <div class="row g-4">
+        {cases.map((item) => (
+          <div class="col-md-6" data-rk-reveal>
+            <article class="rk-card h-100">
+              <span class="rk-badge-provenance" data-provenance={item.badge}>{item.badge}</span>
+              <h2 class="h4 mt-2">{item.title}</h2>
+              <p class="text-secondary">{item.lead}</p>
+              <ul class="small text-secondary">
+                {item.points.map((p) => <li>{p}</li>)}
+              </ul>
+              <a href={item.href}>{item.cta} →</a>
+            </article>
+          </div>
+        ))}
+      </div>
+      <div class="mt-5 p-4 rk-card" data-rk-reveal>
+        <h2 class="h5">See merge timings yourself</h2>
+        <p class="text-secondary mb-3">
+          The public demo hits a Cloudflare Worker that queries two D1 databases, merges, dedupes, and returns DataTables JSON — same contract as PHP <code>RowSource</code>.
+        </p>
+        <a class="btn rk-btn-primary" href="/demo">Launch demo</a>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>
+
+<script>
+  import { animate, inView } from 'motion';
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    document.querySelectorAll('[data-rk-reveal]').forEach((el) => {
+      (el as HTMLElement).style.opacity = '0';
+      (el as HTMLElement).style.transform = 'translateY(12px)';
+      inView(el, () => {
+        animate(el, { opacity: 1, transform: 'translateY(0px)' }, { duration: 0.45, easing: 'ease-out' });
+      }, { amount: 0.25 });
+    });
+  }
+</script>

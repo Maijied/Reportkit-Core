@@ -1,0 +1,39 @@
+name: Deploy Worker
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'reportkit-website/worker/**'
+      - '.github/workflows/deploy-worker.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      REPORTKIT_LIVE: ${{ secrets.REPORTKIT_LIVE }}
+      REPORTKIT_ARCHIVE: ${{ secrets.REPORTKIT_ARCHIVE }}
+    defaults:
+      run:
+        working-directory: reportkit-website/worker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: reportkit-website/worker/package-lock.json
+      - run: npm install
+      - run: npm test
+      - name: Verify D1 secrets
+        run: |
+          test -n "$REPORTKIT_LIVE" || (echo "::error::Missing REPORTKIT_LIVE repository secret" && exit 1)
+          test -n "$REPORTKIT_ARCHIVE" || (echo "::error::Missing REPORTKIT_ARCHIVE repository secret" && exit 1)
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: reportkit-website/worker
+          command: deploy

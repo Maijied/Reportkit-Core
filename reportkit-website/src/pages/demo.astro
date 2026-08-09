@@ -1,0 +1,148 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import fixture from '../data/fixtures/demo-page.json';
+---
+<MarketingLayout
+  title="Live demo · ReportKit"
+  description="Live multi-DB merge playground with DataTables JSON and stage timings."
+>
+  <section class="rk-section">
+    <div class="container">
+      <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div>
+          <div class="rk-kicker"><span class="rk-brand-dot"></span> Interactive demo</div>
+          <h1 class="rk-section-title mb-1">Multi-DB grab → merge → JSON</h1>
+          <p class="text-secondary mb-0">Calls the Cloudflare Worker when available; falls back to bundled fixtures.</p>
+        </div>
+        <span id="rkModeBadge" class="rk-badge-provenance" data-provenance="cached">loading…</span>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Mode</label>
+          <select id="rkMode" class="form-select">
+            <option value="live">Live dual-D1</option>
+            <option value="synthetic">Synthetic (huge virtual)</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Start</label>
+          <input id="rkStart" type="date" class="form-control" value="2026-01-01" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">End</label>
+          <input id="rkEnd" type="date" class="form-control" value="2026-01-31" />
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <button id="rkRun" class="btn rk-btn-primary w-100" type="button">Run merge</button>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-lg-4">
+          <div class="rk-card">
+            <h3>Trace inspector</h3>
+            <pre id="rkTrace" class="small mb-0" style="max-height: 280px; overflow:auto; background:#0f1a16; color:#d7ebe1; padding:1rem; border-radius:10px;">{JSON.stringify(fixture.trace, null, 2)}</pre>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="rk-card">
+            <div class="table-responsive">
+              <table class="table table-sm table-striped align-middle mb-0" id="rkTable">
+                <thead>
+                  <tr>
+                    <th>trip_id</th>
+                    <th>booked_at</th>
+                    <th>operator</th>
+                    <th>route</th>
+                    <th>channel</th>
+                    <th class="text-end">fare</th>
+                    <th>source</th>
+                  </tr>
+                </thead>
+                <tbody id="rkTableBody">
+                  {fixture.data.map((row) => (
+                    <tr>
+                      <td class="rk-mono">{row.trip_id}</td>
+                      <td class="rk-mono">{row.booked_at}</td>
+                      <td>{row.operator}</td>
+                      <td>{row.route}</td>
+                      <td>{row.channel}</td>
+                      <td class="text-end rk-mono">{(row.fare_cents / 100).toFixed(2)}</td>
+                      <td><span class="badge" style={`background:${row._source === 'live' ? '#0b7a4b' : '#f0ad4e'}`}>{row._source}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p class="small text-secondary mt-2 mb-0">
+              Showing page rows · <span id="rkMeta" class="rk-mono">recordsTotal={fixture.recordsTotal}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>
+
+<script>
+  const API = import.meta.env.PUBLIC_DEMO_API_URL || 'https://api.reportkit.lorapok.tech';
+  const badge = document.getElementById('rkModeBadge');
+  const traceEl = document.getElementById('rkTrace');
+  const body = document.getElementById('rkTableBody');
+  const meta = document.getElementById('rkMeta');
+
+  function setBadge(mode, label) {
+    if (!badge) return;
+    badge.dataset.provenance = mode;
+    badge.textContent = label;
+  }
+
+  function renderRows(rows) {
+    if (!body) return;
+    body.innerHTML = rows.map((row) => `
+      <tr>
+        <td class="rk-mono">${row.trip_id}</td>
+        <td class="rk-mono">${row.booked_at}</td>
+        <td>${row.operator}</td>
+        <td>${row.route}</td>
+        <td>${row.channel}</td>
+        <td class="text-end rk-mono">${(row.fare_cents / 100).toFixed(2)}</td>
+        <td><span class="badge" style="background:${row._source === 'live' ? '#0b7a4b' : '#f0ad4e'}">${row._source || '?'}</span></td>
+      </tr>
+    `).join('');
+  }
+
+  async function run() {
+    const mode = (document.getElementById('rkMode') as HTMLSelectElement).value;
+    const start = (document.getElementById('rkStart') as HTMLInputElement).value;
+    const end = (document.getElementById('rkEnd') as HTMLInputElement).value;
+    const qs = new URLSearchParams({ mode, start_date: start, end_date: end, start: '0', length: '25', draw: '1' });
+    setBadge('measured', 'fetching…');
+    try {
+      const [dataRes, traceRes] = await Promise.all([
+        fetch(`${API}/v1/data?${qs}`),
+        fetch(`${API}/v1/trace?${qs}`),
+      ]);
+      if (dataRes.status === 429 || !dataRes.ok) throw new Error('quota_or_error');
+      const data = await dataRes.json();
+      const trace = traceRes.ok ? await traceRes.json() : { note: 'trace unavailable' };
+      const provenance = dataRes.headers.get('X-RK-Mode') || mode;
+      setBadge(provenance, provenance);
+      renderRows(data.data || []);
+      if (meta) meta.textContent = `recordsTotal=${data.recordsTotal} · filtered=${data.recordsFiltered}`;
+      if (traceEl) traceEl.textContent = JSON.stringify(trace, null, 2);
+    } catch {
+      setBadge('cached', 'cached sample');
+      if (traceEl) {
+        traceEl.textContent = JSON.stringify({
+          note: 'Serving bundled fixture — Worker offline or free-tier quota reached.',
+          tip: 'Set PUBLIC_DEMO_API_URL or deploy worker/',
+        }, null, 2);
+      }
+    }
+  }
+
+  document.getElementById('rkRun')?.addEventListener('click', run);
+  run();
+</script>

@@ -1,0 +1,29 @@
+name: Laravel CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'reportkit-laravel/**'
+      - '.github/workflows/laravel-ci.yml'
+  pull_request:
+    paths:
+      - 'reportkit-laravel/**'
+      - '.github/workflows/laravel-ci.yml'
+
+defaults:
+  run:
+    working-directory: reportkit-laravel
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - run: composer validate --strict
+      - run: composer install --prefer-dist --no-progress
+      - run: vendor/bin/phpunit

@@ -1,0 +1,59 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Toc from '../components/docs/Toc.astro';
+import { docsNav, findDocsNeighbors } from '../data/nav.docs';
+
+interface Props {
+  title: string;
+  description?: string;
+  slug: string;
+  headings?: { depth: number; slug: string; text: string }[];
+}
+
+const { title, description, slug, headings = [] } = Astro.props;
+const { prev, next } = findDocsNeighbors(slug);
+const showToc = headings.some((h) => h.depth === 2 || h.depth === 3);
+---
+<BaseLayout title={`${title} · ReportKit Docs`} description={description} bodyClass="rk-docs">
+  <div class="bd-layout">
+    <aside class="bd-sidebar" aria-label="Docs navigation">
+      <a class="bd-search-link" href="/docs/search">Search docs</a>
+      {docsNav.map((group) => (
+        <div>
+          <div class="bd-group-title">{group.title}</div>
+          {group.items.map((item) => (
+            <a class:list={[{ active: item.slug === slug }]} href={`/docs/0.1/${item.slug}`}>
+              {item.title}
+            </a>
+          ))}
+        </div>
+      ))}
+    </aside>
+    <main class="bd-content">
+      <article>
+        <h1>{title}</h1>
+        {description && <p class="lead text-secondary">{description}</p>}
+        <slot />
+      </article>
+      <nav class="bd-prev-next" aria-label="Docs pagination">
+        {prev ? (
+          <a href={`/docs/0.1/${prev.slug}`}>
+            <span class="label">Previous</span>
+            {prev.title}
+          </a>
+        ) : <span></span>}
+        {next ? (
+          <a href={`/docs/0.1/${next.slug}`} class="text-end">
+            <span class="label">Next</span>
+            {next.title}
+          </a>
+        ) : <span></span>}
+      </nav>
+    </main>
+    {showToc && (
+      <aside class="bd-toc-rail" aria-label="Page sections">
+        <Toc headings={headings} />
+      </aside>
+    )}
+  </div>
+</BaseLayout>

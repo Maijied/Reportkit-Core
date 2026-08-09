@@ -1,0 +1,262 @@
+@use "tokens";
+
+.rk-site-nav {
+  background: rgba(8, 19, 15, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(11, 122, 75, 0.35);
+}
+
+.rk-site-nav .nav-link {
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.rk-site-nav .nav-link:hover,
+.rk-site-nav .nav-link.active {
+  color: #fff;
+}
+
+.rk-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--rk-font-head);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.rk-brand-logo {
+  width: 34px;
+  height: auto;
+  display: block;
+}
+
+.rk-brand-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--rk-accent);
+  box-shadow: 0 0 0 4px rgba(11, 122, 75, 0.25);
+}
+
+.rk-hero {
+  position: relative;
+  min-height: min(92vh, 880px);
+  background: linear-gradient(165deg, var(--rk-hero-from), var(--rk-hero-to) 70%);
+  color: #eef7f2;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.rk-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 40%, rgba(11, 122, 75, 0.28), transparent 70%),
+    radial-gradient(ellipse 40% 35% at 20% 80%, rgba(240, 173, 78, 0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.rk-hero-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 5.5rem 0 4rem;
+}
+
+.rk-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9fd9bc;
+  margin-bottom: 1rem;
+}
+
+.rk-hero-title {
+  font-family: var(--rk-font-head);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  font-size: clamp(2.4rem, 6vw, 4.8rem);
+  line-height: 1.05;
+  max-width: 14ch;
+  margin: 0 0 1.25rem;
+}
+
+.rk-hero-lead {
+  font-size: 1.125rem;
+  color: rgba(238, 247, 242, 0.78);
+  max-width: 38rem;
+  margin-bottom: 1.75rem;
+}
+
+.rk-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.rk-btn-primary {
+  background: var(--rk-accent);
+  border-color: var(--rk-accent);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px;
+}
+
+.rk-btn-primary:hover {
+  background: var(--rk-accent-deep);
+  border-color: var(--rk-accent-deep);
+  color: #fff;
+}
+
+.rk-btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px;
+}
+
+.rk-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.rk-pipeline-canvas {
+  width: 100%;
+  height: min(360px, 42vw);
+  border: 1px solid rgba(11, 122, 75, 0.35);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.22);
+  display: block;
+}
+
+.rk-pipeline-static {
+  display: none;
+  border: 1px solid rgba(11, 122, 75, 0.35);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.22);
+  padding: 1.25rem;
+  color: #cfe9db;
+  font-family: var(--rk-font-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rk-pipeline-canvas {
+    display: none;
+  }
+  .rk-pipeline-static {
+    display: block;
+  }
+}
+
+.rk-section {
+  padding: 4.5rem 0;
+}
+
+.rk-section-title {
+  font-family: var(--rk-font-head);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+}
+
+.rk-card {
+  background: var(--rk-surface);
+  border: 1px solid var(--rk-line);
+  border-radius: var(--rk-radius);
+  padding: 1.25rem 1.35rem;
+  box-shadow: var(--rk-shadow);
+  height: 100%;
+}
+
+.rk-card h3 {
+  font-family: var(--rk-font-head);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.rk-badge-provenance {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--rk-accent-soft);
+  color: var(--rk-accent-deep);
+}
+
+.rk-badge-provenance[data-provenance="synthetic"] {
+  background: #fff4e0;
+  color: #9a6b12;
+}
+
+.rk-badge-provenance[data-provenance="measured"] {
+  background: #e8eef3;
+  color: #3d5566;
+}
+
+.rk-compat-band {
+  background: var(--rk-ink-deep);
+  color: #e8f5ee;
+  padding: 2rem 0;
+}
+
+.rk-compat-pill {
+  display: inline-block;
+  margin: 0.25rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(11, 122, 75, 0.45);
+  background: rgba(11, 122, 75, 0.15);
+  font-family: var(--rk-font-mono);
+  font-size: 0.8rem;
+}
+
+.rk-footer {
+  background: var(--rk-ink-deep);
+  color: rgba(238, 247, 242, 0.75);
+  padding: 3rem 0 2rem;
+  font-size: 0.92rem;
+}
+
+.rk-footer a {
+  color: #9fd9bc;
+  text-decoration: none;
+}
+
+.rk-footer a:hover {
+  color: #fff;
+}
+
+.rk-mono {
+  font-family: var(--rk-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.rk-stat {
+  font-family: var(--rk-font-mono);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: var(--rk-accent);
+  font-variant-numeric: tabular-nums;
+}

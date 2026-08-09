@@ -1,0 +1,22 @@
+name = "reportkit-demo-api"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+
+# Custom domain (configure after zone is on Cloudflare):
+# routes = [{ pattern = "api.reportkit.lorapok.tech/*", zone_name = "lorapok.tech" }]
+
+[[d1_databases]]
+binding = "DB_LIVE"
+database_name = "reportkit_live"
+database_id = "${REPORTKIT_LIVE}"
+
+[[d1_databases]]
+binding = "DB_ARCHIVE"
+database_name = "reportkit_archive"
+database_id = "${REPORTKIT_ARCHIVE}"
+
+[triggers]
+crons = ["0 3 * * *"]
+
+[vars]
+ALLOWED_ORIGIN = "https://reportkit.lorapok.tech"

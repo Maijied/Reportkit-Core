@@ -1,0 +1,41 @@
+name: Seed D1 (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      scale:
+        description: 'Seed scale (default|large)'
+        required: false
+        default: 'default'
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    env:
+      REPORTKIT_LIVE: ${{ secrets.REPORTKIT_LIVE }}
+      REPORTKIT_ARCHIVE: ${{ secrets.REPORTKIT_ARCHIVE }}
+    defaults:
+      run:
+        working-directory: reportkit-website/worker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: SEED_SCALE=${{ github.event.inputs.scale }} npm run seed:sql
+      - name: Verify D1 secrets
+        run: |
+          test -n "$REPORTKIT_LIVE" || (echo "::error::Missing REPORTKIT_LIVE repository secret" && exit 1)
+          test -n "$REPORTKIT_ARCHIVE" || (echo "::error::Missing REPORTKIT_ARCHIVE repository secret" && exit 1)
+      - name: Apply schemas + seed
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: reportkit-website/worker
+          command: |
+            d1 execute reportkit_live --remote --file=./schema/live.sql
+            d1 execute reportkit_archive --remote --file=./schema/archive.sql
+            d1 execute reportkit_live --remote --file=./seed/live.seed.sql
+            d1 execute reportkit_archive --remote --file=./seed/archive.seed.sql

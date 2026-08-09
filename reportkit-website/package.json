@@ -1,0 +1,36 @@
+{
+  "name": "reportkit-website",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ReportKit product website + Bootstrap-style docs — Lorapok Labs",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/sync-docs.mjs && node scripts/fetch-versions.mjs && astro build && node scripts/copy-cname.mjs && npx --yes pagefind --site dist",
+    "preview": "astro preview",
+    "sync-docs": "node scripts/sync-docs.mjs",
+    "fetch-versions": "node scripts/fetch-versions.mjs",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.2.0",
+    "@astrojs/sitemap": "^3.3.0",
+    "astro": "^5.5.0",
+    "bootstrap": "^5.3.3",
+    "motion": "^12.4.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "pagefind": "^1.5.2",
+    "sass": "^1.85.0",
+    "typescript": "^5.8.2"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "author": {
+    "name": "Mohammad Maizied Hasan Majumder",
+    "email": "mdshuvo40@gmail.com"
+  },
+  "license": "MIT"
+}

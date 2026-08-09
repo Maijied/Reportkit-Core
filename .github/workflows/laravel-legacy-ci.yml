@@ -1,0 +1,29 @@
+name: Laravel legacy CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'reportkit-laravel-legacy/**'
+      - '.github/workflows/laravel-legacy-ci.yml'
+  pull_request:
+    paths:
+      - 'reportkit-laravel-legacy/**'
+      - '.github/workflows/laravel-legacy-ci.yml'
+
+defaults:
+  run:
+    working-directory: reportkit-laravel-legacy
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          coverage: none
+      - run: composer validate --strict
+      - run: composer install --prefer-dist --no-progress
+      - run: vendor/bin/phpunit

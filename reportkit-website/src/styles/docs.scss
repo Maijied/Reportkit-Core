@@ -1,0 +1,216 @@
+@use "tokens";
+
+.bd-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) 200px;
+  gap: 0;
+  min-height: calc(100vh - 56px);
+}
+
+@media (max-width: 1199.98px) {
+  .bd-layout {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+
+  .bd-toc-rail {
+    display: none;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .bd-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bd-sidebar {
+  border-right: 1px solid var(--rk-line);
+  background: #fff;
+  padding: 1.25rem 1rem 2rem;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow: auto;
+}
+
+@media (max-width: 991.98px) {
+  .bd-sidebar {
+    position: relative;
+    top: 0;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--rk-line);
+  }
+}
+
+.bd-sidebar .bd-group-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rk-muted);
+  margin: 1.1rem 0 0.4rem;
+}
+
+.bd-sidebar a {
+  display: block;
+  padding: 0.28rem 0.6rem;
+  border-radius: 6px;
+  color: var(--rk-ink);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.bd-sidebar a:hover,
+.bd-sidebar a.active {
+  background: var(--rk-accent-soft);
+  color: var(--rk-accent-deep);
+}
+
+.bd-search-link {
+  display: block !important;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--rk-line);
+  background: var(--rk-bg) !important;
+  color: var(--rk-muted) !important;
+  font-weight: 600 !important;
+}
+
+.bd-search-link:hover {
+  border-color: var(--rk-accent);
+  color: var(--rk-accent-deep) !important;
+  background: var(--rk-accent-soft) !important;
+}
+
+.bd-toc-rail {
+  border-left: 1px solid var(--rk-line);
+  padding: 1.5rem 1rem 2rem;
+}
+
+.bd-toc .bd-group-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rk-muted);
+  margin-bottom: 0.5rem;
+}
+
+.bd-toc-h3 {
+  padding-left: 0.75rem !important;
+  font-size: 0.8rem !important;
+}
+
+.bd-content {
+  padding: 2rem 1.5rem 4rem;
+  max-width: 920px;
+}
+
+.bd-content h1 {
+  font-family: var(--rk-font-head);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+}
+
+.bd-content h2 {
+  font-family: var(--rk-font-head);
+  font-size: 1.45rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rk-line);
+}
+
+.bd-content h3 {
+  font-family: var(--rk-font-head);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+}
+
+.bd-content pre {
+  background: #0f1a16;
+  color: #d7ebe1;
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  overflow: auto;
+  font-size: 0.86rem;
+}
+
+.bd-content code {
+  font-family: var(--rk-font-mono);
+  font-size: 0.88em;
+}
+
+.bd-content :not(pre) > code {
+  background: var(--rk-accent-soft);
+  color: var(--rk-accent-deep);
+  padding: 0.12rem 0.35rem;
+  border-radius: 4px;
+}
+
+.bd-callout {
+  border-left: 4px solid var(--rk-accent);
+  background: var(--rk-accent-soft);
+  border-radius: 0 10px 10px 0;
+  padding: 0.9rem 1rem;
+  margin: 1.25rem 0;
+}
+
+.bd-callout.warn {
+  border-left-color: var(--rk-archive);
+  background: #fff8ea;
+}
+
+.bd-toc {
+  position: sticky;
+  top: 72px;
+  font-size: 0.85rem;
+}
+
+.bd-toc a {
+  display: block;
+  color: var(--rk-muted);
+  text-decoration: none;
+  padding: 0.15rem 0;
+}
+
+.bd-toc a:hover {
+  color: var(--rk-accent);
+}
+
+.bd-prev-next {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rk-line);
+}
+
+.bd-prev-next a {
+  text-decoration: none;
+  color: var(--rk-ink);
+  border: 1px solid var(--rk-line);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  flex: 1;
+  background: #fff;
+}
+
+.bd-prev-next a:hover {
+  border-color: var(--rk-accent);
+  color: var(--rk-accent-deep);
+}
+
+.bd-prev-next .label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--rk-muted);
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}

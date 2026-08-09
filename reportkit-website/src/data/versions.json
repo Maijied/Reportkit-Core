@@ -1,0 +1,88 @@
+{
+  "generated_at": "2026-08-09T20:42:37.768Z",
+  "channel_default": "beta",
+  "packages": {
+    "core": {
+      "id": "core",
+      "composer": "reportkit/core",
+      "repo": "Maijied/Reportkit-Core",
+      "release": {
+        "tag": "v0.1.1-beta.1",
+        "version": "0.1.1-beta.1",
+        "channel": "beta",
+        "prerelease": true,
+        "url": "https://github.com/Maijied/Reportkit-Core/releases/tag/v0.1.1-beta.1",
+        "published_at": "2026-08-09T20:20:42Z",
+        "stable": null,
+        "beta": {
+          "tag": "v0.1.1-beta.1",
+          "version": "0.1.1-beta.1",
+          "url": "https://github.com/Maijied/Reportkit-Core/releases/tag/v0.1.1-beta.1"
+        }
+      }
+    },
+    "laravel": {
+      "id": "laravel",
+      "composer": "reportkit/laravel",
+      "repo": "Maijied/Reportkit-Laravel",
+      "release": {
+        "tag": "v0.1.1-beta.1",
+        "version": "0.1.1-beta.1",
+        "channel": "beta",
+        "prerelease": true,
+        "url": "https://github.com/Maijied/Reportkit-Laravel/releases/tag/v0.1.1-beta.1",
+        "published_at": "2026-08-09T20:21:17Z",
+        "stable": null,
+        "beta": {
+          "tag": "v0.1.1-beta.1",
+          "version": "0.1.1-beta.1",
+          "url": "https://github.com/Maijied/Reportkit-Laravel/releases/tag/v0.1.1-beta.1"
+        }
+      }
+    },
+    "laravel-legacy": {
+      "id": "laravel-legacy",
+      "composer": "reportkit/laravel-legacy",
+      "repo": "Maijied/Reportkit-Laravel-Legacy",
+      "release": {
+        "tag": "v0.1.1-beta.1",
+        "version": "0.1.1-beta.1",
+        "channel": "beta",
+        "prerelease": true,
+        "url": "https://github.com/Maijied/Reportkit-Laravel-Legacy/releases/tag/v0.1.1-beta.1",
+        "published_at": "2026-08-09T20:21:14Z",
+        "stable": null,
+        "beta": {
+          "tag": "v0.1.1-beta.1",
+          "version": "0.1.1-beta.1",
+          "url": "https://github.com/Maijied/Reportkit-Laravel-Legacy/releases/tag/v0.1.1-beta.1"
+        }
+      }
+    },
+    "ui": {
+      "id": "ui",
+      "npm": "@lorapok-labs/reportkit-ui",
+      "repo": "Maijied/Reportkit-UI",
+      "release": {
+        "tag": "v0.1.1-beta.1",
+        "version": "0.1.1-beta.1",
+        "channel": "beta",
+        "prerelease": true,
+        "url": "https://github.com/Maijied/Reportkit-UI/releases/tag/v0.1.1-beta.1",
+        "published_at": null,
+        "stable": null,
+        "beta": null
+      }
+    }
+  },
+  "install": {
+    "beta": {
+      "composer": "composer require reportkit/core:^0.1@beta reportkit/laravel:^0.1@beta",
+      "npm": "npm i @lorapok-labs/reportkit-ui@beta"
+    },
+    "stable": {
+      "composer": "composer require reportkit/core reportkit/laravel",
+      "npm": "npm i @lorapok-labs/reportkit-ui"
+    }
+  }
+}

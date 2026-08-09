@@ -1,0 +1,39 @@
+name: Core CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'reportkit-core/**'
+      - '.github/workflows/core-ci.yml'
+  pull_request:
+    paths:
+      - 'reportkit-core/**'
+      - '.github/workflows/core-ci.yml'
+
+defaults:
+  run:
+    working-directory: reportkit-core
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '7.4'
+            os: ubuntu-22.04
+          - php: '8.1'
+            os: ubuntu-latest
+          - php: '8.3'
+            os: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - run: composer validate --strict
+      - run: composer install --prefer-dist --no-progress
+      - run: vendor/bin/phpunit

@@ -1,0 +1,54 @@
+{
+    "name": "reportkit/core",
+    "description": "Framework-agnostic PHP report engine (PHP 5.6 through current): week chunking, filters, fluent definitions, DataTables responder, and settings.",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/Maijied/Reportkit-Website/tree/main/reportkit-core",
+    "support": {
+        "issues": "https://github.com/Maijied/Reportkit-Website/issues",
+        "source": "https://github.com/Maijied/Reportkit-Website/tree/main/reportkit-core"
+    },
+    "keywords": [
+        "report",
+        "export",
+        "datatables",
+        "csv",
+        "pdf",
+        "prepare",
+        "php",
+        "reportkit"
+    ],
+    "authors": [
+        {
+            "name": "Mohammad Maizied Hasan Majumder",
+            "email": "mdshuvo40@gmail.com",
+            "homepage": "https://github.com/Maijied",
+            "role": "Founder & Principal Engineer"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7 || ^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "ReportKit\\Core\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ReportKit\\Core\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "minimum-stability": "stable",
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.1.x-dev"
+        }
+    }
+}

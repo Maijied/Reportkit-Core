@@ -1,0 +1,76 @@
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'reportkit-website/**'
+      - 'reportkit-core/docs/**'
+      - 'reportkit-laravel/docs/**'
+      - 'reportkit-laravel-legacy/docs/**'
+      - 'reportkit-ui/docs/**'
+      - '.github/workflows/deploy-site.yml'
+    paths-ignore:
+      - 'reportkit-website/worker/**'
+      - 'reportkit-website/SETUP-DNS.md'
+      - 'reportkit-website/VERSIONING.md'
+  repository_dispatch:
+    types: [docs-updated, package-released, release-orchestrated]
+  workflow_dispatch:
+    inputs:
+      reason:
+        required: false
+        default: manual
+      ref_note:
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: reportkit-website
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: reportkit-website/.nvmrc
+          cache: npm
+          cache-dependency-path: reportkit-website/package-lock.json
+      - run: npm ci
+      - name: Fetch live package versions
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/fetch-versions.mjs
+      - run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Verify CNAME + versions
+        run: |
+          test -f dist/CNAME
+          test "$(tr -d '\n' < dist/CNAME)" = "reportkit.lorapok.tech"
+          test -f src/data/versions.json
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: reportkit-website/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: https://reportkit.lorapok.tech
+    steps:
+      - uses: actions/deploy-pages@v4

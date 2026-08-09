@@ -1,0 +1,18 @@
+---
+interface Props {
+  headings?: { depth: number; slug: string; text: string }[];
+}
+
+const { headings = [] } = Astro.props;
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+{toc.length > 0 && (
+  <nav class="bd-toc" aria-label="On this page">
+    <div class="bd-group-title">On this page</div>
+    {toc.map((h) => (
+      <a href={`#${h.slug}`} class:list={[{ 'bd-toc-h3': h.depth === 3 }]}>
+        {h.text}
+      </a>
+    ))}
+  </nav>
+)}

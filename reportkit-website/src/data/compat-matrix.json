@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-08-10T00:00:00Z",
+  "provenance": "measured",
+  "rows": [
+    {"laravel": "4.2", "php": "5.6", "adapter": "laravel-legacy", "status": "supported"},
+    {"laravel": "5.4", "php": "7.4", "adapter": "laravel-legacy", "status": "supported"},
+    {"laravel": "5.5", "php": "7.4", "adapter": "laravel", "status": "supported"},
+    {"laravel": "8", "php": "8.1", "adapter": "laravel", "status": "supported"},
+    {"laravel": "10", "php": "8.2", "adapter": "laravel", "status": "supported"},
+    {"laravel": "11", "php": "8.3", "adapter": "laravel", "status": "supported"},
+    {"laravel": "12", "php": "8.3", "adapter": "laravel", "status": "supported"},
+    {"laravel": "13", "php": "8.4", "adapter": "laravel", "status": "supported"}
+  ]
+}

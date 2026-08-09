@@ -1,0 +1,162 @@
+name: Core release
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Release channel
+        required: true
+        type: choice
+        options: [beta, rc, stable]
+        default: beta
+      bump:
+        description: Version bump
+        required: true
+        type: choice
+        options: [prerelease, patch, minor, major]
+        default: prerelease
+      dry_run:
+        description: Print next version only (no tag/push)
+        type: boolean
+        default: false
+  push:
+    tags: ['core/v*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-reportkit-core
+  cancel-in-progress: false
+
+env:
+  PACKAGE_DIR: reportkit-core
+  TAG_PREFIX: core/
+  PACKAGIST_REPO: https://github.com/Maijied/Reportkit-Website
+  PACKAGE_NAME: reportkit/core
+
+jobs:
+  plan-and-tag:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_GITHUB_TOKEN || github.token }}
+
+      - name: Resolve next version
+        id: meta
+        run: |
+          set -euo pipefail
+          chmod +x bin/next-version.sh
+          LATEST="$(git tag -l '${{ env.TAG_PREFIX }}v*' --sort=-v:refname | head -n1 || true)"
+          TAG="$(./bin/next-version.sh "${{ inputs.channel }}" "${{ inputs.bump }}" "${LATEST:-}" "${{ env.TAG_PREFIX }}")"
+          VERSION="${TAG#${{ env.TAG_PREFIX }}v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "latest=${LATEST:-none}" >> "$GITHUB_OUTPUT"
+          echo "Latest ${LATEST:-none} → $TAG"
+
+      - name: Dry run
+        if: inputs.dry_run == true
+        run: echo "::notice::Would create ${{ steps.meta.outputs.tag }} (from ${{ steps.meta.outputs.latest }})"
+
+      - name: Create annotated tag
+        if: inputs.dry_run == false
+        env:
+          TAG: ${{ steps.meta.outputs.tag }}
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists" >&2
+            exit 1
+          fi
+          CHANGELOG="${{ env.PACKAGE_DIR }}/CHANGELOG.md"
+          if [ -f "$CHANGELOG" ] && ! grep -q "\[$VERSION\]" "$CHANGELOG"; then
+            DATE="$(date -u +%F)"
+            {
+              echo "# Changelog"
+              echo
+              echo "## [$VERSION] - $DATE"
+              echo
+              echo "### Changed"
+              echo "- Automated ${{ inputs.channel }} release"
+              echo
+              tail -n +2 "$CHANGELOG"
+            } > "$CHANGELOG.tmp"
+            mv "$CHANGELOG.tmp" "$CHANGELOG"
+            git add "$CHANGELOG"
+            git commit -m "chore(release): $TAG" || true
+            git push origin "HEAD:${{ github.ref_name }}" || true
+          fi
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+          echo "::notice::Pushed $TAG — publish job will run on tag push"
+
+  publish:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Meta from tag
+        id: meta
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#${{ env.TAG_PREFIX }}v}"
+          PRERELEASE=false
+          CHANNEL=stable
+          case "$VERSION" in
+            *-beta.*) PRERELEASE=true; CHANNEL=beta ;;
+            *-rc.*) PRERELEASE=true; CHANNEL=rc ;;
+            *-alpha.*) PRERELEASE=true; CHANNEL=alpha ;;
+          esac
+          {
+            echo "tag=$TAG"
+            echo "version=$VERSION"
+            echo "channel=$CHANNEL"
+            echo "prerelease=$PRERELEASE"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: ReportKit Core ${{ steps.meta.outputs.tag }}
+          generate_release_notes: true
+          prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
+
+      - name: Notify Packagist
+        env:
+          PACKAGIST_USER: ${{ secrets.PACKAGIST_USER }}
+          PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
+        run: |
+          if [ -z "${PACKAGIST_USER:-}" ] || [ -z "${PACKAGIST_TOKEN:-}" ]; then
+            echo "::warning::PACKAGIST_USER/TOKEN missing — skipping"
+            exit 0
+          fi
+          curl -sS -X POST \
+            -H 'Content-Type: application/json' \
+            -H "Authorization: Bearer ${PACKAGIST_USER}:${PACKAGIST_TOKEN}" \
+            'https://packagist.org/api/update-package' \
+            -d "{\"repository\":\"${{ env.PACKAGIST_REPO }}\"}"
+          echo
+          echo "Packagist notified for ${{ steps.meta.outputs.tag }}"
+
+      - name: Rebuild website
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PAYLOAD=$(jq -nc \
+            --arg p "$PACKAGE_NAME" \
+            --arg v "${{ steps.meta.outputs.version }}" \
+            --arg c "${{ steps.meta.outputs.channel }}" \
+            --arg t "${{ steps.meta.outputs.tag }}" \
+            '{package:$p,version:$v,channel:$c,tag:$t}')
+          gh api "repos/${{ github.repository }}/dispatches" --input - \
+            <<<"{\"event_type\":\"package-released\",\"client_payload\":$PAYLOAD}" || true

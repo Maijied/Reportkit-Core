@@ -1,0 +1,155 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import HeroPipeline from '../components/marketing/HeroPipeline.astro';
+import VersionBand from '../components/marketing/VersionBand.astro';
+---
+<MarketingLayout
+  title="ReportKit — Multi-DB reports for Laravel · Lorapok Labs"
+  description="Week-chunked, merge+dedupe reporting for PHP and Laravel 4.1–13. Host owns SQL; ReportKit owns the pipeline."
+>
+  <HeroPipeline />
+
+  <VersionBand />
+
+  <section class="rk-section">
+    <div class="container">
+      <div class="row mb-4">
+        <div class="col-lg-8">
+          <h2 class="rk-section-title">Why teams reach for ReportKit</h2>
+          <p class="text-secondary mb-0">
+            Built for hosts that already have live + archive databases and need DataTables/export without rewriting SQL into a framework.
+          </p>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-4" data-rk-reveal>
+          <div class="rk-card">
+            <h3>Host-owned SQL</h3>
+            <p class="text-secondary mb-0">Implement <code>RowSource</code>. Domain queries stay in your app forever — Core never imports Eloquent.</p>
+          </div>
+        </div>
+        <div class="col-md-4" data-rk-reveal>
+          <div class="rk-card">
+            <h3>Merge → dedupe → JSON</h3>
+            <p class="text-secondary mb-0"><code>PseudoPaginator</code> + <code>DataTableResponder</code> turn dual-DB grabs into serverSide DataTables payloads.</p>
+          </div>
+        </div>
+        <div class="col-md-4" data-rk-reveal>
+          <div class="rk-card">
+            <h3>Prepare-once weeks</h3>
+            <p class="text-secondary mb-0"><code>DateRangeChunker</code> splits large ranges into week jobs so exports don't re-query the full window.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rk-compat-band">
+    <div class="container text-center">
+      <div class="rk-kicker justify-content-center mb-3"><span class="rk-brand-dot"></span> One report, many Laravels</div>
+      <div>
+        <span class="rk-compat-pill">L4.1</span>
+        <span class="rk-compat-pill">L4.2</span>
+        <span class="rk-compat-pill">L5.4</span>
+        <span class="rk-compat-pill">L5.5</span>
+        <span class="rk-compat-pill">L6</span>
+        <span class="rk-compat-pill">L8</span>
+        <span class="rk-compat-pill">L10</span>
+        <span class="rk-compat-pill">L11</span>
+        <span class="rk-compat-pill">L12</span>
+        <span class="rk-compat-pill">L13</span>
+      </div>
+      <p class="mt-3 mb-0" style="color: rgba(238,247,242,0.65)">
+        <code>reportkit/laravel-legacy</code> for 4.1–5.4 · <code>reportkit/laravel</code> for 5.5–13 · same Core engine.
+      </p>
+      <a class="btn rk-btn-ghost mt-3" href="/laravel">See the multi-Laravel story</a>
+    </div>
+  </section>
+
+  <section class="rk-section">
+    <div class="container">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-6">
+          <h2 class="rk-section-title">Honest scale</h2>
+          <p class="text-secondary">
+            Free hosting cannot store billions of rows. The public demo shows a real dual-D1 merge
+            <span class="rk-badge-provenance" data-provenance="live">live</span>,
+            a labeled synthetic generator for huge virtual paging
+            <span class="rk-badge-provenance" data-provenance="synthetic">synthetic</span>,
+            and CI benchmarks
+            <span class="rk-badge-provenance" data-provenance="measured">measured</span>.
+          </p>
+          <a href="/docs/0.1/about/scale">Read the scale policy →</a>
+        </div>
+        <div class="col-lg-6">
+          <div class="rk-card">
+            <div class="row text-center">
+              <div class="col-4">
+                <div class="rk-stat" data-rk-counter="1500000">1.5M</div>
+                <div class="small text-secondary">seeded dual-DB rows</div>
+              </div>
+              <div class="col-4">
+                <div class="rk-stat">2.4B</div>
+                <div class="small text-secondary">virtual address space</div>
+              </div>
+              <div class="col-4">
+                <div class="rk-stat">$0</div>
+                <div class="small text-secondary">hosting for demo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rk-section bg-white border-top border-bottom">
+    <div class="container">
+      <h2 class="rk-section-title">Quick start</h2>
+      <ul class="nav nav-pills mb-3" id="qsTabs" role="tablist">
+        <li class="nav-item"><button class="nav-link active" data-qs="modern">Laravel 5.5+</button></li>
+        <li class="nav-item"><button class="nav-link" data-qs="legacy">Laravel 4.1–5.4</button></li>
+        <li class="nav-item"><button class="nav-link" data-qs="php">Plain PHP</button></li>
+      </ul>
+      <pre id="qs-modern" class="qs-pane"><code># Beta channel (current)
+composer require reportkit/core:^0.1@beta reportkit/laravel:^0.1@beta
+php artisan reportkit:install --publish-assets
+php artisan reportkit:make Sales --route=admin/sales --preset=hybrid</code></pre>
+      <pre id="qs-legacy" class="qs-pane d-none"><code>composer require reportkit/core:^0.1@beta reportkit/laravel-legacy:^0.1@beta
+php artisan reportkit:install --with-config --publish-assets
+php artisan reportkit:make Sales --route=admin/sales</code></pre>
+      <pre id="qs-php" class="qs-pane d-none"><code>composer require reportkit/core:^0.1@beta
+// Implement ReportKit\Core\Contracts\RowSource
+// Use DateRangeChunker + PseudoPaginator + DataTableResponder</code></pre>
+    </div>
+  </section>
+</MarketingLayout>
+
+<script>
+  import { animate, inView } from 'motion';
+
+  document.querySelectorAll('#qsTabs .nav-link').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#qsTabs .nav-link').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const id = btn.getAttribute('data-qs');
+      document.querySelectorAll('.qs-pane').forEach((p) => p.classList.add('d-none'));
+      document.getElementById(`qs-${id}`)?.classList.remove('d-none');
+    });
+  });
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    document.querySelectorAll('[data-rk-reveal]').forEach((el) => {
+      (el as HTMLElement).style.opacity = '0';
+      (el as HTMLElement).style.transform = 'translateY(14px)';
+      inView(
+        el,
+        () => {
+          animate(el, { opacity: 1, transform: 'translateY(0px)' }, { duration: 0.5, easing: 'ease-out' });
+        },
+        { amount: 0.2 }
+      );
+    });
+  }
+</script>

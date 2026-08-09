@@ -1,0 +1,96 @@
+name: Orchestrate beta release
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        type: choice
+        options: [beta, rc, stable]
+        default: beta
+      bump:
+        type: choice
+        options: [prerelease, patch, minor, major]
+        default: prerelease
+      include_ui:
+        type: boolean
+        default: true
+      dry_run:
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: orchestrate-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Core
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run core-release.yml \
+            -f channel="${{ inputs.channel }}" \
+            -f bump="${{ inputs.bump }}" \
+            -f dry_run=${{ inputs.dry_run }}
+
+      - name: Wait for Core
+        if: inputs.dry_run == false
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sleep 15
+          for i in $(seq 1 40); do
+            STATUS=$(gh run list --workflow=core-release.yml --limit 1 --json status,conclusion -q '.[0] | "\(.status):\(.conclusion)"')
+            echo "Core: $STATUS"
+            case "$STATUS" in
+              completed:success) break ;;
+              completed:*) echo "Core release failed: $STATUS"; exit 1 ;;
+              *) sleep 15 ;;
+            esac
+            if [ "$i" -eq 40 ]; then echo "Timed out waiting for Core"; exit 1; fi
+          done
+
+      - name: Trigger Legacy + Laravel
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for wf in laravel-legacy-release.yml laravel-release.yml; do
+            gh workflow run "$wf" \
+              -f channel="${{ inputs.channel }}" \
+              -f bump="${{ inputs.bump }}" \
+              -f dry_run=${{ inputs.dry_run }}
+          done
+
+      - name: Trigger UI
+        if: inputs.include_ui == true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          UI_CHANNEL="${{ inputs.channel }}"
+          if [ "$UI_CHANNEL" = "stable" ]; then UI_CHANNEL=latest; fi
+          gh workflow run ui-publish.yml \
+            -f channel="$UI_CHANNEL" \
+            -f bump="${{ inputs.bump }}" \
+            -f dry_run=${{ inputs.dry_run }}
+
+      - name: Rebuild website
+        if: inputs.dry_run == false
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sleep 20
+          gh api "repos/${{ github.repository }}/dispatches" --input - <<EOF
+          {
+            "event_type": "release-orchestrated",
+            "client_payload": {
+              "channel": "${{ inputs.channel }}",
+              "bump": "${{ inputs.bump }}"
+            }
+          }
+          EOF

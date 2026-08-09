@@ -1,0 +1,36 @@
+name: Quality
+
+on:
+  pull_request:
+    paths:
+      - 'reportkit-website/**'
+      - '.github/workflows/quality.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'reportkit-website/**'
+      - '.github/workflows/quality.yml'
+    paths-ignore:
+      - 'reportkit-website/worker/**'
+
+defaults:
+  run:
+    working-directory: reportkit-website
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: reportkit-website/.nvmrc
+          cache: npm
+          cache-dependency-path: reportkit-website/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - name: Verify CNAME + key routes
+        run: |
+          test "$(tr -d '\n' < dist/CNAME)" = "reportkit.lorapok.tech"
+          test -f dist/index.html
+          test -f dist/demo/index.html
