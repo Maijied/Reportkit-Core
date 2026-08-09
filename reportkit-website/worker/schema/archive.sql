@@ -1,4 +1,7 @@
 -- Archive D1: historical trips (2012 → 2017), operator_code references live.operators.code
+-- Reset legacy flat schema (operator TEXT) before applying research schema.
+DROP TABLE IF EXISTS trips;
+
 CREATE TABLE IF NOT EXISTS trips (
   trip_id TEXT PRIMARY KEY,
   booked_at TEXT NOT NULL,

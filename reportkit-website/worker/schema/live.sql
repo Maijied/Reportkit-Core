@@ -1,4 +1,8 @@
 -- Live D1: operator catalog + recent trips (2018 → present)
+-- Reset legacy flat schema (operator TEXT) before applying research schema.
+DROP TABLE IF EXISTS trips;
+DROP TABLE IF EXISTS operators;
+
 CREATE TABLE IF NOT EXISTS operators (
   id INTEGER PRIMARY KEY,
   code TEXT NOT NULL UNIQUE,

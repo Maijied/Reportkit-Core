@@ -203,15 +203,9 @@ Full step-by-step (D1, secrets, seed, verify): **[reportkit-website/SETUP-DNS.md
 **Enable `api.reportkit` (summary)**
 
 1. Ensure **`lorapok.tech`** is on Cloudflare (same account as Worker).
-2. `reportkit-website/worker/wrangler.toml` already declares:
-   ```toml
-   routes = [{ pattern = "api.reportkit.lorapok.tech/*", zone_name = "lorapok.tech" }]
-   ```
-3. Deploy Worker (**Actions → Deploy Worker** or push `worker/`).
-4. In Cloudflare **DNS** for `lorapok.tech`, add or confirm:
-   - **Name:** `api.reportkit`
-   - **Type:** proxied route (Wrangler usually attaches the Worker; if a CNAME is required, point to the Worker custom hostname shown in **Workers & Pages → reportkit-demo-api → Settings → Domains**)
-   - **Proxy:** orange cloud (proxied)
+2. **Cloudflare dashboard** → **Workers & Pages → reportkit-demo-api → Domains** → add `api.reportkit.lorapok.tech` (proxied).
+3. Deploy Worker via CI (**Actions → Deploy Worker**) — do **not** edit the bundled JS in Cloudflare.
+4. In Cloudflare **DNS** for `lorapok.tech`, confirm **Name:** `api.reportkit`, **Proxy:** proxied (usually auto-created by step 2).
 5. Verify:
    ```bash
    curl -s https://api.reportkit.lorapok.tech/v1/health

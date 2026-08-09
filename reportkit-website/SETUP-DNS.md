@@ -15,15 +15,19 @@ If the zone is **not** on Cloudflare, use the Worker `*.workers.dev` hostname as
 
 **Prerequisite:** `lorapok.tech` must be an active zone on the **same Cloudflare account** as the Worker (`account_id` in `wrangler.toml`).
 
-### Step 1 — Route in Wrangler (already in repo)
+### Step 1 — Route in Wrangler (dashboard preferred)
 
-`reportkit-website/worker/wrangler.toml`:
+**Do not edit the deployed Worker bundle in Cloudflare.** All API code is controlled by CI:
 
-```toml
-routes = [{ pattern = "api.reportkit.lorapok.tech/*", zone_name = "lorapok.tech" }]
-```
+| What | Where to change |
+|------|-----------------|
+| Worker logic (`index.ts`, `generate.ts`, …) | Git repo → push `main` → **Deploy Worker** workflow |
+| Custom domain `api.reportkit.lorapok.tech` | **Cloudflare dashboard** (below) |
+| Dummy seed data | **Seed D1 (manual)** workflow or `scripts/seed-apply-remote.sh` |
 
-This tells Cloudflare to send `api.reportkit.lorapok.tech/*` to the `reportkit-demo-api` Worker.
+`wrangler.toml` keeps `workers_dev = true` so `*.workers.dev` stays available as a fallback. Custom domain is attached in the dashboard, not via `routes` in wrangler (that requires `lorapok.tech` as a zone on this account).
+
+**Optional (after zone is on Cloudflare):** uncomment a route in `wrangler.toml` only if you want CI to manage the route instead of the dashboard.
 
 ### Step 2 — Deploy the Worker
 
