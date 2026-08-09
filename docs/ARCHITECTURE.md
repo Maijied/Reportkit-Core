@@ -1,5 +1,7 @@
 # Architecture
 
+ReportKit Core is a **standalone** library. Adapters and host apps are separate projects.
+
 ```
 reportkit/core (this repo)
   Date\DateRangeChunker
@@ -13,14 +15,19 @@ reportkit/core (this repo)
 
 ## Design rules
 
-- **No Laravel** in this package — adapters live elsewhere.
-- **Definitions** (`Report::define`) are code, version-controlled, testable.
-- **Settings** (brand, accent, ceilings) use `SettingsStore` — runtime overrides without editing PHP.
-- **Domain SQL** always stays in the host app repositories / services.
-- Prepare/export uses **week chunks** (host concurrency typically ≤ 3). Downloads should compose from prepared store data and must not re-query the full range.
+- **No framework coupling** in this package — Laravel (and others) live in adapter packages.
+- **Definitions** (`Report::define`) are code: version-controlled and testable.
+- **Settings** (brand name, accent, disclaimer, ceilings) use `SettingsStore`.
+- **Domain SQL** always stays in the host application.
+- Prepare/export uses **week chunks**. Downloads should compose from prepared store data and must not re-query the full range.
 
 ## Feature flags (host)
 
 Declared on each definition; disabled flags should omit routes and UI:
 
 `datatables` · `sync` · `async_prepare` · `kpi` · `email` · `excel` · `csv` · `pdf` · `print` · `howto`
+
+## Author
+
+Mohammad Maizied Hasan Majumder \<mdshuvo40@gmail.com\>  
+Founder & Principal Engineer, Lorapok Labs · Senior Software Engineer, Shohoz Ltd

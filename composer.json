@@ -1,13 +1,30 @@
 {
     "name": "reportkit/core",
-    "description": "Framework-agnostic report engine: date chunking, filters, definitions, DataTables responder, settings.",
+    "description": "Framework-agnostic PHP report engine: week chunking, filters, fluent definitions, DataTables responder, and settings.",
     "type": "library",
     "version": "0.1.0",
     "license": "MIT",
-    "keywords": ["report", "export", "datatables", "csv", "pdf", "prepare"],
+    "homepage": "https://github.com/Maijied/Reportkit-Core",
+    "support": {
+        "issues": "https://github.com/Maijied/Reportkit-Core/issues",
+        "source": "https://github.com/Maijied/Reportkit-Core"
+    },
+    "keywords": [
+        "report",
+        "export",
+        "datatables",
+        "csv",
+        "pdf",
+        "prepare",
+        "php",
+        "reportkit"
+    ],
     "authors": [
         {
-            "name": "ReportKit Contributors"
+            "name": "Mohammad Maizied Hasan Majumder",
+            "email": "mdshuvo40@gmail.com",
+            "homepage": "https://github.com/Maijied",
+            "role": "Founder & Principal Engineer"
         }
     ],
     "require": {

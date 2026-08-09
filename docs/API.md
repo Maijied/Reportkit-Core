@@ -1,5 +1,6 @@
 # reportkit/core API (0.1)
 
+Standalone library by **Mohammad Maizied Hasan Majumder** \<mdshuvo40@gmail.com\>.  
 PHP `>= 5.6`. No Laravel dependency.
 
 ## DateRangeChunker
