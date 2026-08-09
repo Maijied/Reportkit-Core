@@ -2,7 +2,7 @@
 
 All ReportKit packages and the product website live in **one repository**:
 
-**https://github.com/Maijied/Reportkit-Website**
+**https://github.com/Maijied/Reportkit-Core**
 
 ## Layout
 
@@ -31,7 +31,7 @@ Release tags use a **prefix per package** (monorepo-safe):
 
 ## Secrets (single repo)
 
-Set on **Maijied/Reportkit-Website → Settings → Secrets → Actions**:
+Set on **Maijied/Reportkit-Core → Settings → Secrets → Actions**:
 
 | Secret | Used by |
 |--------|---------|
@@ -47,9 +47,9 @@ Set on **Maijied/Reportkit-Website → Settings → Secrets → Actions**:
 
 These standalone repos are **superseded** by this monorepo — archive them on GitHub when convenient:
 
-- Maijied/Reportkit-Core
 - Maijied/Reportkit-Laravel
 - Maijied/Reportkit-Laravel-Legacy
 - Maijied/Reportkit-UI
+- Maijied/Reportkit-Website
 
-Update Packagist package URLs to `https://github.com/Maijied/Reportkit-Website` (subdir auto-detected).
+Update Packagist package URLs to `https://github.com/Maijied/Reportkit-Core` (subdir auto-detected).

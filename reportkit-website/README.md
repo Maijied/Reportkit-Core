@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Website/main/assets/reportkit-logo.png" alt="ReportKit" width="168">
+  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/assets/reportkit-logo.png" alt="ReportKit" width="168">
 </p>
 
 <h1 align="center">ReportKit — Website &amp; Docs</h1>
@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://reportkit.lorapok.tech"><img alt="Site" src="https://img.shields.io/badge/live-reportkit.lorapok.tech-0b7a4b"></a>
-  <a href="https://github.com/Maijied/Reportkit-Website/actions/workflows/deploy-pages.yml"><img alt="Deploy" src="https://github.com/Maijied/Reportkit-Website/actions/workflows/deploy-pages.yml/badge.svg"></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/actions/workflows/deploy-site.yml"><img alt="Deploy" src="https://github.com/Maijied/Reportkit-Core/actions/workflows/deploy-site.yml/badge.svg"></a>
   <img alt="Astro" src="https://img.shields.io/badge/built%20with-Astro%205-ff5d01">
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-0b7a4b"></a>
 </p>
@@ -67,7 +67,7 @@ npm run build   # sync-docs + fetch-versions + astro build + ensure dist/CNAME
 
 ## Deploy
 
-GitHub Actions → Pages (`deploy-pages.yml`). Rebuilds on push and on package `release` events so version badges stay live. See [SETUP-DNS.md](./SETUP-DNS.md) for DNS + Cloudflare secrets and [VERSIONING.md](./VERSIONING.md) for the release channels.
+GitHub Actions → Pages (`deploy-site.yml`). Rebuilds on push and on package `release` events so version badges stay live. See [SETUP-DNS.md](./SETUP-DNS.md) for DNS + Cloudflare secrets and [VERSIONING.md](./VERSIONING.md) for the release channels.
 
 ## Ecosystem
 

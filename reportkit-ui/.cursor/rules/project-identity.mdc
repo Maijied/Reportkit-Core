@@ -5,7 +5,7 @@ alwaysApply: true
 
 # @lorapok-labs/reportkit-ui — project identity
 
-Standalone OSS package. Canonical remote: `https://github.com/Maijied/Reportkit-UI.git`.
+Monorepo package at `reportkit-ui/`. Canonical remote: `https://github.com/Maijied/Reportkit-Core.git`.
 
 ## Author
 

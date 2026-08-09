@@ -11,7 +11,7 @@ If the zone is **not** on Cloudflare, use the Worker `*.workers.dev` hostname as
 
 ## GitHub Pages
 
-1. Repo: https://github.com/Maijied/Reportkit-Website
+1. Repo: https://github.com/Maijied/Reportkit-Core
 2. Settings → Pages → Source: **GitHub Actions**
 3. Custom domain: `reportkit.lorapok.tech`
 4. Enforce HTTPS after the certificate is issued
@@ -26,7 +26,7 @@ If the zone is **not** on Cloudflare, use the Worker `*.workers.dev` hostname as
 | `REPORTKIT_ARCHIVE` | D1 database ID for `reportkit_archive` |
 | `RELEASE_GITHUB_TOKEN` | Orchestrate package releases + cross-repo `repository_dispatch` (PAT: `repo` + `workflow`) |
 
-Add secrets on **Maijied/Reportkit-Website** only: **Settings → Secrets and variables → Actions**.
+Add secrets on **Maijied/Reportkit-Core** only: **Settings → Secrets and variables → Actions**.
 
 ### 1. Get your Cloudflare Account ID
 

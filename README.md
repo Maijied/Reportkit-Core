@@ -3,7 +3,7 @@
 **Monorepo** for the ReportKit open-source report stack — PHP engine, Laravel adapters, browser UI, docs site, and Cloudflare demo API.
 
 > PHP **5.6 → current** · Laravel **4.1 → currently supported**  
-> Site: **https://reportkit.lorapok.tech** · Repo: **[Maijied/Reportkit-Website](https://github.com/Maijied/Reportkit-Website)**
+> Site: **https://reportkit.lorapok.tech** · Repo: **[Maijied/Reportkit-Core](https://github.com/Maijied/Reportkit-Core)**
 
 See [MONOREPO.md](./MONOREPO.md) for layout, CI, secrets, and release tags.
 
@@ -21,7 +21,7 @@ See [MONOREPO.md](./MONOREPO.md) for layout, CI, secrets, and release tags.
 
 ```mermaid
 graph TB
-  subgraph mono ["Reportkit-Website monorepo"]
+  subgraph mono ["Reportkit-Core monorepo"]
     C["reportkit-core"]
     LL["reportkit-laravel-legacy"]
     L["reportkit-laravel"]

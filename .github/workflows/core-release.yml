@@ -32,7 +32,7 @@ concurrency:
 env:
   PACKAGE_DIR: reportkit-core
   TAG_PREFIX: core/
-  PACKAGIST_REPO: https://github.com/Maijied/Reportkit-Website
+  PACKAGIST_REPO: https://github.com/Maijied/Reportkit-Core
   PACKAGE_NAME: reportkit/core
 
 jobs:

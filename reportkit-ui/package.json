@@ -8,14 +8,14 @@
     "email": "mdshuvo40@gmail.com",
     "url": "https://github.com/Maijied"
   },
-  "homepage": "https://github.com/Maijied/Reportkit-Website/tree/main/reportkit-ui",
+  "homepage": "https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-ui",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Maijied/Reportkit-Website.git",
+    "url": "git+https://github.com/Maijied/Reportkit-Core.git",
     "directory": "reportkit-ui"
   },
   "bugs": {
-    "url": "https://github.com/Maijied/Reportkit-Website/issues"
+    "url": "https://github.com/Maijied/Reportkit-Core/issues"
   },
   "main": "js/reportkit.js",
   "style": "css/reportkit.css",

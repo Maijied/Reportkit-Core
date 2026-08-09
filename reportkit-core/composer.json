@@ -3,10 +3,10 @@
     "description": "Framework-agnostic PHP report engine (PHP 5.6 through current): week chunking, filters, fluent definitions, DataTables responder, and settings.",
     "type": "library",
     "license": "MIT",
-    "homepage": "https://github.com/Maijied/Reportkit-Website/tree/main/reportkit-core",
+    "homepage": "https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-core",
     "support": {
-        "issues": "https://github.com/Maijied/Reportkit-Website/issues",
-        "source": "https://github.com/Maijied/Reportkit-Website/tree/main/reportkit-core"
+        "issues": "https://github.com/Maijied/Reportkit-Core/issues",
+        "source": "https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-core"
     },
     "keywords": [
         "report",

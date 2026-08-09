@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outPath = join(__dirname, '../src/data/versions.json');
 
-const MONO_REPO = 'Maijied/Reportkit-Website';
+const MONO_REPO = 'Maijied/Reportkit-Core';
 
 const PACKAGES = [
   { id: 'core', composer: 'reportkit/core', tagPrefix: 'core/', path: 'reportkit-core' },
