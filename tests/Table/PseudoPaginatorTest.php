@@ -59,5 +59,32 @@ class PseudoPaginatorTest extends TestCase
         $unique = $this->paginator->dedupeByKey($rows, 'id');
         $this->assertCount(3, $unique);
         $this->assertEquals('a', $unique[0]['n']);
+        $this->assertEquals('b', $unique[1]['n']);
+        $this->assertEquals('orphan', $unique[2]['n']);
+    }
+
+    public function testSortByDescStable()
+    {
+        $rows = array(
+            array('id' => 1, 'v' => 10),
+            array('id' => 2, 'v' => 30),
+            array('id' => 3, 'v' => 20),
+        );
+        $sorted = $this->paginator->sortBy($rows, 'v', 'desc');
+        $this->assertEquals(30, $sorted[0]['v']);
+        $this->assertEquals(20, $sorted[1]['v']);
+        $this->assertEquals(10, $sorted[2]['v']);
+    }
+
+    public function testSearchBy()
+    {
+        $rows = array(
+            array('operator' => 'Hanif', 'route' => 'DHK-CTG'),
+            array('operator' => 'Green Line', 'route' => 'DHK-SYL'),
+        );
+        $found = $this->paginator->searchBy($rows, 'hanif', array('operator', 'route'));
+        $this->assertCount(1, $found);
+        $this->assertEquals('Hanif', $found[0]['operator']);
     }
 }
+
