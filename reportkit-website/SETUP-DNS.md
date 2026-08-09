@@ -35,15 +35,19 @@ Add secrets on **Maijied/Reportkit-Core** only: **Settings → Secrets and varia
 3. Copy **Account ID** from the right sidebar (32-character hex UUID)
 4. Paste as GitHub secret `CLOUDFLARE_ACCOUNT_ID`
 
-### 2. Create a Cloudflare API token
+### 2. Create a Cloudflare Account API token
 
-1. [Create API token](https://dash.cloudflare.com/profile/api-tokens) → **Edit Cloudflare Workers** (or custom)
+Use **Account API tokens** (recommended for CI — not tied to a user session):
+
+1. [Account API tokens](https://dash.cloudflare.com/f049faaf2f67549f5c58837479596a4a/api-tokens) → **Create Token** → custom name **`reportkit`**
 2. Permissions (minimum):
    - **Account → Workers Scripts → Edit**
    - **Account → D1 → Edit**
-   - **Account → Account Settings → Read**
-3. Account resources: **Include → your account**
-4. Create → copy once → paste as `CLOUDFLARE_API_TOKEN`
+   - **Account → Account Settings → Read** (and **Write** if offered)
+3. Account resources: **Entire account** (`f049faaf2f67549f5c58837479596a4a`)
+4. **Create** or **Roll** → copy once → GitHub secret **`CLOUDFLARE_API_TOKEN`**
+
+After editing permissions, **Roll** the token and update GitHub — editing alone does not refresh the secret value.
 
 ### 3. Create the two D1 databases
 
@@ -77,7 +81,7 @@ Paste both printed `database_id` values into GitHub secrets `REPORTKIT_LIVE` and
 
 ### 4. Seed schema + demo data
 
-After secrets are set on **Reportkit-Website**:
+After secrets are set on **Reportkit-Core**:
 
 1. **Actions → Seed D1 (manual) → Run workflow**
 2. Scale: `default` (use `large` only if needed)
