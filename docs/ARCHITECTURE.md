@@ -16,6 +16,7 @@ reportkit/core (this repo)
 ## Design rules
 
 - **No framework coupling** in this package — Laravel (and others) live in adapter packages.
+- **Legacy → current**: Core stays PHP **≥ 5.6**; adapters cover Laravel **4.1 through currently supported majors** (see [COMPATIBILITY.md](COMPATIBILITY.md)).
 - **Definitions** (`Report::define`) are code: version-controlled and testable.
 - **Settings** (brand name, accent, disclaimer, ceilings) use `SettingsStore`.
 - **Domain SQL** always stays in the host application.

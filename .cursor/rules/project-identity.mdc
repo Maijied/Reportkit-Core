@@ -18,6 +18,7 @@ Use this author for `composer.json`, LICENSE, README, AUTHORS.md, and git commit
 ## Scope
 
 - Package name: `reportkit/core`
-- Framework-agnostic PHP ≥ 5.6
+- Framework-agnostic PHP **5.6 → current** (language level stays 5.6-compatible)
+- Ecosystem goal: Laravel **4.1 → currently supported** (12.x / 13.x) via `laravel-legacy` + `laravel` adapters — see `docs/COMPATIBILITY.md`
 - Domain SQL stays out of this package
 - Git remotes / push targets: **only** `https://github.com/Maijied/Reportkit-Core.git` (or `git@github.com:Maijied/Reportkit-Core.git`) unless the user names another ReportKit repo

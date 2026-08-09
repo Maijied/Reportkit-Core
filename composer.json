@@ -1,6 +1,6 @@
 {
     "name": "reportkit/core",
-    "description": "Framework-agnostic PHP report engine: week chunking, filters, fluent definitions, DataTables responder, and settings.",
+    "description": "Framework-agnostic PHP report engine (PHP 5.6 through current): week chunking, filters, fluent definitions, DataTables responder, and settings.",
     "type": "library",
     "version": "0.1.0",
     "license": "MIT",

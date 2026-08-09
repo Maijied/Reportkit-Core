@@ -2,7 +2,7 @@
 
 **A new, standalone PHP library** for building prepare-once / DataTables / export-style reports — framework-agnostic, Packagist-ready.
 
-> Package: `reportkit/core` · PHP ≥ 5.6 · No Laravel dependency
+> Package: `reportkit/core` · PHP **5.6 → current** · No Laravel dependency
 
 ---
 
@@ -81,12 +81,16 @@ Full surface: [docs/API.md](docs/API.md) · Design notes: [docs/ARCHITECTURE.md]
 
 ## Ecosystem (planned)
 
-| Package | Role |
-|---------|------|
-| `reportkit/core` | This repository |
-| `reportkit/laravel-legacy` | Laravel 4.1–4.2 adapter |
-| `reportkit/laravel` | Laravel 5.5–12 adapter |
-| `@reportkit/ui` | Browser CSS/JS |
+ReportKit spans **legacy → currently supported** PHP and Laravel (see [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md)).
+
+| Package | Role | PHP | Laravel |
+|---------|------|-----|---------|
+| `reportkit/core` | This repository — engine only | **5.6 → current** | — |
+| `reportkit/laravel-legacy` | Classic adapter | 5.6 – 7.4 | **4.1 – 5.4** |
+| `reportkit/laravel` | Modern adapter | 7.0 – **current** | **5.5 → current** (through **12 / 13**) |
+| `@reportkit/ui` | Browser CSS/JS | — | Any host |
+
+“Current” means majors still on Laravel/PHP security support (today Laravel **12.x** and **13.x**, PHP **8.3–8.5**). Historical LTS lines (**Laravel 5.5**, **6**) are covered by `reportkit/laravel`.
 
 ## License
 
