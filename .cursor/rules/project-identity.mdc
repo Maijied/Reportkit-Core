@@ -1,0 +1,23 @@
+---
+description: ReportKit Core project identity, author, and git scope
+alwaysApply: true
+---
+
+# ReportKit Core — project identity
+
+This repository (`Maijied/Reportkit-Core`) is a **completely new, standalone** open-source project. It is not a fork of Shohoz bus and must not be committed back into host app remotes unless the user explicitly asks.
+
+## Author (always use)
+
+- **Name:** Mohammad Maizied Hasan Majumder
+- **Email:** mdshuvo40@gmail.com
+- **Roles:** Founder & Principal Engineer at Lorapok Labs (lorapok.labs) · Senior Software Engineer @ Shohoz Ltd (shohoz.com)
+
+Use this author for `composer.json`, LICENSE, README, AUTHORS.md, and git commits (`--author` / `-c user.name` / `-c user.email`). Do not use generic “ReportKit Contributors” or Cursor attribution trailers.
+
+## Scope
+
+- Package name: `reportkit/core`
+- Framework-agnostic PHP ≥ 5.6
+- Domain SQL stays out of this package
+- Git remotes / push targets: **only** `https://github.com/Maijied/Reportkit-Core.git` (or `git@github.com:Maijied/Reportkit-Core.git`) unless the user names another ReportKit repo
