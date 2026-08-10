@@ -80,7 +80,7 @@ All public demo data is **fictional** (dummy operators, hub routes, fares). No r
 | Docs | [reportkit.lorapok.tech/docs](https://reportkit.lorapok.tech/docs) |
 | Interactive demo | [reportkit.lorapok.tech/demo](https://reportkit.lorapok.tech/demo) |
 | Demo API | [reportkit-api.lorapok.tech/v1/health](https://reportkit-api.lorapok.tech/v1/health) |
-| Discussions | [GitHub Discussions](https://github.com/Maijied/Reportkit-Core/discussions) |
+| Discussions | [GitHub Discussions](https://github.com/Maijied/Reportkit-Core/discussions) — see [categories](#community) below |
 
 ---
 
@@ -319,7 +319,19 @@ Local plan and checklist: [PLAN.md](./PLAN.md)
 
 ## Community
 
-Questions, ideas, and integration help: **[GitHub Discussions](https://github.com/Maijied/Reportkit-Core/discussions)**.
+Use **[GitHub Discussions](https://github.com/Maijied/Reportkit-Core/discussions)** for questions, ideas, and integration help. Reserve Issues for confirmed bugs and actionable tasks.
+
+| Category | Purpose |
+|----------|---------|
+| [All discussions](https://github.com/Maijied/Reportkit-Core/discussions) | Browse every thread |
+| [Announcements](https://github.com/Maijied/Reportkit-Core/discussions/categories/announcements) | Releases, roadmap, and maintainer updates |
+| [General](https://github.com/Maijied/Reportkit-Core/discussions/categories/general) | Open conversation about ReportKit |
+| [Ideas](https://github.com/Maijied/Reportkit-Core/discussions/categories/ideas) | Feature proposals and design feedback |
+| [Polls](https://github.com/Maijied/Reportkit-Core/discussions/categories/polls) | Community votes on direction |
+| [Q&A](https://github.com/Maijied/Reportkit-Core/discussions/categories/q-a) | Installation, adapters, demo API, and usage help |
+| [Show and tell](https://github.com/Maijied/Reportkit-Core/discussions/categories/show-and-tell) | Integrations, reports, and demos you have built |
+
+Please read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) before posting.
 
 ---
 

@@ -9,8 +9,16 @@ Thank you for your interest in ReportKit. This project is developed by
    **not free to sell** or offer as a paid product without a commercial license
    from Lorapok Labs.
 2. Read the [Code of Conduct](./CODE_OF_CONDUCT.md).
-3. Prefer [GitHub Discussions](https://github.com/Maijied/Reportkit-Core/discussions)
-   for questions, ideas, and integration help before opening an issue.
+3. Pick a category in [GitHub Discussions](https://github.com/Maijied/Reportkit-Core/discussions):
+
+   | Category | Use for |
+   |----------|---------|
+   | [General](https://github.com/Maijied/Reportkit-Core/discussions/categories/general) | Open questions and conversation |
+   | [Q&A](https://github.com/Maijied/Reportkit-Core/discussions/categories/q-a) | Installation and integration help |
+   | [Ideas](https://github.com/Maijied/Reportkit-Core/discussions/categories/ideas) | Feature proposals |
+   | [Show and tell](https://github.com/Maijied/Reportkit-Core/discussions/categories/show-and-tell) | Share what you built |
+
+   Prefer [Discussions](https://github.com/Maijied/Reportkit-Core/discussions) over Issues for questions.
 
 ## Monorepo layout
 
