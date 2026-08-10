@@ -6,6 +6,8 @@
 **/dist/
 **/.astro/
 reportkit-website/worker/.wrangler/
+reportkit-website/worker/seed/batches/
+reportkit-website/*.docx
 
 # Local env
 **/.env
