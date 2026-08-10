@@ -10,67 +10,67 @@ NEW_HOST="reportkit-api.lorapok.tech"
 SERVICE="reportkit-demo-api"
 ZONE_NAME="lorapok.tech"
 
-cf() {
-  if [[ $# -eq 1 ]]; then
-    curl -sS \
+CF_HTTP=""
+CF_BODY=""
+
+cf_request() {
+  local method="$1"
+  local url="$2"
+  local body="${3:-}"
+  local tmp
+  tmp="$(mktemp)"
+  if [[ -n "$body" ]]; then
+    CF_HTTP="$(curl -sS -w '%{http_code}' -o "$tmp" \
+      -X "$method" \
       -H "Authorization: Bearer ${TOKEN}" \
       -H "Content-Type: application/json" \
-      "$1"
-    return
-  fi
-  local method="$1"
-  shift
-  curl -sS \
-    -X "$method" \
-    -H "Authorization: Bearer ${TOKEN}" \
-    -H "Content-Type: application/json" \
-    "$@"
-}
-
-cf_json() {
-  local method="${1:-GET}"
-  shift
-  local url="$1"
-  shift
-  local body="${1:-}"
-  if [[ -n "$body" ]]; then
-    cf "$method" "$url" -d "$body"
+      -d "$body" \
+      "$url")"
   else
-    cf "$method" "$url"
+    CF_HTTP="$(curl -sS -w '%{http_code}' -o "$tmp" \
+      -X "$method" \
+      -H "Authorization: Bearer ${TOKEN}" \
+      -H "Content-Type: application/json" \
+      "$url")"
   fi
+  CF_BODY="$(cat "$tmp")"
+  rm -f "$tmp"
 }
 
-require_success() {
+api_ok() {
+  [[ "$CF_HTTP" =~ ^2 ]] && { [[ -z "$CF_BODY" ]] || echo "$CF_BODY" | jq -e '.success == true' >/dev/null 2>&1; }
+}
+
+require_api() {
   local label="$1"
-  local json="$2"
-  local ok
-  ok="$(echo "$json" | jq -r '.success')"
-  if [[ "$ok" != "true" ]]; then
-    echo "::error::${label} failed: $(echo "$json" | jq -c '.errors // .messages // .')"
-    exit 1
+  if api_ok; then
+    return 0
   fi
+  echo "::error::${label} failed (HTTP ${CF_HTTP}): ${CF_BODY:-<empty>}"
+  exit 1
+}
+
+warn_api() {
+  local label="$1"
+  if api_ok; then
+    return 0
+  fi
+  echo "::warning::${label} failed (HTTP ${CF_HTTP}): ${CF_BODY:-<empty>}"
 }
 
 echo "== Resolve zone ${ZONE_NAME}"
-ZONE_JSON="$(cf "https://api.cloudflare.com/client/v4/zones?name=${ZONE_NAME}")"
-require_success "Zone lookup" "$ZONE_JSON"
-ZONE_ID="$(echo "$ZONE_JSON" | jq -r '.result[0].id')"
+cf_request GET "https://api.cloudflare.com/client/v4/zones?name=${ZONE_NAME}"
+require_api "Zone lookup"
+ZONE_ID="$(echo "$CF_BODY" | jq -r '.result[0].id')"
 test -n "$ZONE_ID" && test "$ZONE_ID" != "null"
 echo "Zone ID: ${ZONE_ID}"
 
 echo "== List Worker custom domains"
-DOMAINS_JSON="$(cf "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/domains")"
-require_success "List worker domains" "$DOMAINS_JSON"
-echo "$DOMAINS_JSON" | jq -r '.result[] | "\(.id)\t\(.hostname)\t\(.service)"'
+cf_request GET "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/domains"
+require_api "List worker domains"
+echo "$CF_BODY" | jq -r '.result[] | "\(.id)\t\(.hostname)\t\(.service)"'
 
-OLD_IDS="$(echo "$DOMAINS_JSON" | jq -r --arg h "$OLD_HOST" '.result[] | select(.hostname == $h) | .id')"
-for id in $OLD_IDS; do
-  echo "== Detach ${OLD_HOST} (${id})"
-  DEL_JSON="$(cf_json DELETE "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/domains/${id}")"
-  require_success "Detach ${OLD_HOST}" "$DEL_JSON"
-done
-
-if echo "$DOMAINS_JSON" | jq -e --arg h "$NEW_HOST" '.result[] | select(.hostname == $h)' >/dev/null; then
+if echo "$CF_BODY" | jq -e --arg h "$NEW_HOST" '.result[] | select(.hostname == $h)' >/dev/null; then
   echo "== ${NEW_HOST} already attached"
 else
   echo "== Attach ${NEW_HOST} to ${SERVICE}"
@@ -79,36 +79,42 @@ else
     --arg service "$SERVICE" \
     --arg zone_id "$ZONE_ID" \
     '{hostname: $hostname, service: $service, environment: "production", zone_id: $zone_id}')"
-  ATTACH_JSON="$(cf_json PUT "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/domains" "$ATTACH_BODY")"
-  require_success "Attach ${NEW_HOST}" "$ATTACH_JSON"
+  cf_request PUT "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/domains" "$ATTACH_BODY"
+  require_api "Attach ${NEW_HOST}"
 fi
 
+OLD_IDS="$(echo "$CF_BODY" | jq -r --arg h "$OLD_HOST" '.result[] | select(.hostname == $h) | .id')"
+for id in $OLD_IDS; do
+  echo "== Detach ${OLD_HOST} (${id})"
+  cf_request DELETE "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/domains/${id}"
+  warn_api "Detach ${OLD_HOST}"
+done
+
 echo "== Remove failed Advanced certificate for ${OLD_HOST} (if present)"
-CERT_JSON="$(cf "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/ssl/certificate_packs?status=all")"
-if echo "$CERT_JSON" | jq -e '.success == true' >/dev/null; then
-  OLD_CERT_IDS="$(echo "$CERT_JSON" | jq -r --arg h "$OLD_HOST" '
+cf_request GET "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/ssl/certificate_packs?status=all"
+if api_ok; then
+  OLD_CERT_IDS="$(echo "$CF_BODY" | jq -r --arg h "$OLD_HOST" '
     .result[]?
     | select((.hosts[]? // empty) == $h or (.certificates[]?.hosts[]? // empty) == $h)
     | .id')"
   for cert_id in $OLD_CERT_IDS; do
     echo "Deleting certificate pack ${cert_id}"
-    DEL_CERT="$(cf_json DELETE "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/ssl/certificate_packs/${cert_id}")" || true
-    echo "$DEL_CERT" | jq -c '{success, errors}' || echo "$DEL_CERT"
+    cf_request DELETE "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/ssl/certificate_packs/${cert_id}"
+    warn_api "Delete certificate ${cert_id}"
   done
 else
-  echo "::warning::Could not list certificate packs (token may lack SSL read). Skip manual delete in dashboard if needed."
+  warn_api "List certificate packs"
 fi
 
 echo "== Enable recommended SSL/TLS zone settings"
 set_zone_setting() {
   local id="$1"
   local value="$2"
-  local json
-  json="$(cf_json PATCH "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/settings/${id}" "$(jq -nc --arg v "$value" '{value: $v}')")"
-  if echo "$json" | jq -e '.success == true' >/dev/null; then
+  cf_request PATCH "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/settings/${id}" "$(jq -nc --arg v "$value" '{value: $v}')"
+  if api_ok; then
     echo "  ${id} = ${value}"
   else
-    echo "::warning::Could not set ${id}: $(echo "$json" | jq -c '.errors // .')"
+    warn_api "Set ${id}"
   fi
 }
 
