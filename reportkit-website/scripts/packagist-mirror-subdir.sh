@@ -55,15 +55,14 @@ else
 fi
 
 if [[ -n "$TAG_PREFIX" ]]; then
-  cd "$ROOT"
-  mapfile -t TAGS < <(git tag -l "${TAG_PREFIX}v*" | sort -V)
+  mapfile -t TAGS < <(git -C "$ROOT" tag -l "${TAG_PREFIX}v*" | sort -V)
   for tag in "${TAGS[@]}"; do
     version="${tag#${TAG_PREFIX}v}"
     plain_tag="v${version}"
     echo "== Mirror tag ${tag} → ${TARGET}@${plain_tag}"
     rm -rf "$WORK/stage"
     mkdir -p "$WORK/stage"
-    git archive "$tag" "${SUBDIR}" | tar -x -C "$WORK/stage"
+    git -C "$ROOT" archive "$tag" "${SUBDIR}" | tar -x -C "$WORK/stage"
     rsync -a --delete \
       --exclude '.git' \
       "${WORK}/stage/${SUBDIR}/" "${WORK}/out/"
