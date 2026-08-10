@@ -2,7 +2,7 @@
     "name": "reportkit/core",
     "description": "Framework-agnostic PHP report engine (PHP 5.6 through current): week chunking, filters, fluent definitions, DataTables responder, and settings.",
     "type": "library",
-    "license": "MIT",
+    "license": "LicenseRef-Lorapok-NCL-1.0",
     "homepage": "https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-core",
     "support": {
         "issues": "https://github.com/Maijied/Reportkit-Core/issues",

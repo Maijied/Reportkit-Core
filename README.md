@@ -28,7 +28,8 @@
 
 > PHP **5.6 → current** · Laravel **4.1 → currently supported**  
 > Site: **[reportkit.lorapok.tech](https://reportkit.lorapok.tech)** · API: **[reportkit-api.lorapok.tech](https://reportkit-api.lorapok.tech)**  
-> Repo: **[Maijied/Reportkit-Core](https://github.com/Maijied/Reportkit-Core)**
+> Repo: **[Maijied/Reportkit-Core](https://github.com/Maijied/Reportkit-Core)**  
+> License: **[Lorapok-NCL-1.0](./LICENSE)** — free to use and modify; **not free to sell**
 
 ---
 
@@ -280,9 +281,16 @@ Local plan and checklist: [PLAN.md](./PLAN.md)
 
 ---
 
-## Community
+## Governance
 
-Questions, ideas, and integration help: **[GitHub Discussions](https://github.com/Maijied/Reportkit-Core/discussions)**.
+| Document | Purpose |
+|----------|---------|
+| [LICENSE](./LICENSE) | Lorapok-NCL-1.0 — free to use and modify; commercial use and sale require permission |
+| [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) | Community standards |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | How to contribute |
+| [SECURITY.md](./SECURITY.md) | Vulnerability reporting |
+
+**License summary:** ReportKit is open to use and modify. You may **not** sell the Software, offer it as a paid product or service, or use it commercially without a written license from Lorapok Labs. Contact [mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) for commercial terms.
 
 ---
 
@@ -295,11 +303,22 @@ Questions, ideas, and integration help: **[GitHub Discussions](https://github.co
 
 ---
 
+## Community
+
+Questions, ideas, and integration help: **[GitHub Discussions](https://github.com/Maijied/Reportkit-Core/discussions)**.
+
+---
+
 ## Author
 
 **Mohammad Maizied Hasan Majumder**  
-[mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) · [Lorapok Labs](https://lorapok.tech)
+Creator · [mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) · [Lorapok Labs](https://lorapok.tech)
+
+Developed by **Lorapok Labs**. ReportKit is an independent open-source project by the author; it is not a fork of any proprietary host application.
 
 ## License
 
-MIT © Mohammad Maizied Hasan Majumder / Lorapok Labs
+[Lorapok Non-Commercial License 1.0 (Lorapok-NCL-1.0)](./LICENSE)  
+Copyright © 2026 Mohammad Maizied Hasan Majumder / Lorapok Labs
+
+Free to use and modify. **Not free to sell** or use commercially without a separate agreement from Lorapok Labs.
