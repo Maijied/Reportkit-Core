@@ -1,13 +1,65 @@
 # Phase 0 — DNS & secrets (manual)
 
-## DNS records (at your `lorapok.tech` registrar / Cloudflare zone)
+> **Future automation:** See [DOMAIN-CONTROL-PANEL-INSTRUCTIONS.md](./docs/DOMAIN-CONTROL-PANEL-INSTRUCTIONS.md) for the planned Google Sign-In control panel that will automate subdomain + Cloudflare Worker setup from a web UI.
 
-| Type | Name | Value | Proxy |
-|------|------|-------|-------|
-| CNAME | `reportkit` | `Maijied.github.io` | DNS-only until GitHub TLS issues, then optional |
-| Worker route | `api.reportkit` | Cloudflare Worker `reportkit-demo-api` | **Proxied** (orange cloud) when zone is on Cloudflare |
+**Registrar:** [get.tech](https://get.tech) (`.tech` domains) — client area DNS panel matches the tabs in your screenshot (Overview · DNS · Domain Forwarding · Email).
 
-If the zone is **not** on Cloudflare, use the Worker `*.workers.dev` hostname as a temporary API URL and set `PUBLIC_DEMO_API_URL` accordingly.
+## DNS records (get.tech today vs Cloudflare after migration)
+
+| Type | Name | Value | Where to set |
+|------|------|-------|--------------|
+| CNAME | `reportkit` | `Maijied.github.io` | **get.tech** → DNS → DNS Records *(already done ✓)* |
+| Worker | `api.reportkit` | Cloudflare Worker `reportkit-demo-api` | **Cloudflare only** — after nameserver migration (see below) |
+
+**Do not add `api.reportkit` at get.tech** while nameservers still point to get.tech. Worker custom domains require Cloudflare to control DNS for `lorapok.tech`.
+
+If the zone is **not** on Cloudflare yet, use the Worker `*.workers.dev` URL as a temporary API:
+`https://reportkit-demo-api.mdshuvo40.workers.dev`
+
+---
+
+## Full process — get.tech → Cloudflare → Worker API
+
+### A. Site on GitHub Pages (done at get.tech)
+
+1. **get.tech** → [client area](https://get.tech) → **lorapok.tech** → **DNS** → **DNS Records**
+2. CNAME **`reportkit`** → **`Maijied.github.io`** (TTL Auto) — you already have this.
+3. GitHub: **[Reportkit-Core → Settings → Pages](https://github.com/Maijied/Reportkit-Core/settings/pages)** → custom domain **`reportkit.lorapok.tech`** → enable HTTPS when ready.
+
+### B. Move `lorapok.tech` DNS to Cloudflare (required for `api.reportkit`)
+
+1. **Add site:** [Cloudflare — Add site](https://dash.cloudflare.com/add-site) → enter **`lorapok.tech`** → Free plan.
+2. Cloudflare scans DNS — confirm **`reportkit`** CNAME → **`Maijied.github.io`** is imported.
+3. **get.tech** → **lorapok.tech** → **DNS** → **DNSSEC** → **disable** DNSSEC if enabled (required before nameserver change).
+4. Copy Cloudflare’s two nameservers from the zone **Overview** (e.g. `ada.ns.cloudflare.com`, `bob.ns.cloudflare.com`).
+5. **get.tech** → **lorapok.tech** → **DNS** → **Nameservers** → replace get.tech nameservers with Cloudflare’s two NS (exact copy).
+6. Wait until Cloudflare zone status = **Active** (minutes to 24h). Check: [whatsmydns.net](https://www.whatsmydns.net/#NS/lorapok.tech).
+
+After this, **stop editing DNS Records at get.tech** — manage records in [Cloudflare DNS](https://dash.cloudflare.com) only.
+
+### C. Worker custom domain `api.reportkit.lorapok.tech`
+
+1. Deploy latest Worker: [Actions → Deploy Worker](https://github.com/Maijied/Reportkit-Core/actions/workflows/deploy-worker.yml) (or push `worker/`).
+2. **Workers & Pages** → **[reportkit-demo-api → Settings → Domains](https://dash.cloudflare.com/f049faaf2f67549f5c58837479596a4a/workers/services/view/reportkit-demo-api/production/settings)** → **Add custom domain** → **`api.reportkit.lorapok.tech`** → **Continue**.
+3. Cloudflare creates a **proxied** DNS record automatically (orange cloud). No manual row at get.tech.
+4. Verify:
+   ```bash
+   curl -s https://api.reportkit.lorapok.tech/v1/health
+   ```
+
+Docs: [Workers custom domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/) · [Cloudflare full setup](https://developers.cloudflare.com/dns/zone-setups/full-setup/setup/)
+
+### D. Seed dummy data + deploy site
+
+| Step | Link |
+|------|------|
+| Seed D1 (`research` = 1M dummy rows) | [Actions → Seed D1](https://github.com/Maijied/Reportkit-Core/actions/workflows/seed-d1.yml) |
+| Deploy site | [Actions → Deploy site](https://github.com/Maijied/Reportkit-Core/actions/workflows/deploy-site.yml) |
+| Live demo | [reportkit.lorapok.tech/demo](https://reportkit.lorapok.tech/demo) |
+
+---
+
+## DNS records reference (after Cloudflare migration)
 
 ---
 
