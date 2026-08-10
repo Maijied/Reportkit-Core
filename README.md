@@ -3,7 +3,7 @@
 **Prepare → Secure Store → Compose → Send** — a PHP report stack that stays fast on legacy Laravel and plain PHP, with honest scale labeling on the public demo.
 
 > PHP **5.6 → current** · Laravel **4.1 → currently supported**  
-> Site: **[reportkit.lorapok.tech](https://reportkit.lorapok.tech)** · API: **[api.reportkit.lorapok.tech](https://api.reportkit.lorapok.tech)**  
+> Site: **[reportkit.lorapok.tech](https://reportkit.lorapok.tech)** · API: **[reportkit-api.lorapok.tech](https://reportkit-api.lorapok.tech)** *(after SSL fix; fallback: workers.dev)*  
 > Repo: **[Maijied/Reportkit-Core](https://github.com/Maijied/Reportkit-Core)**
 
 ---
@@ -135,7 +135,7 @@ Overlap rows (`trip_id` prefix `X-`) exist in **both** DBs to exercise cross-dat
 ```mermaid
 flowchart LR
   Site["reportkit.lorapok.tech<br/>Astro / GitHub Pages"]
-  API["api.reportkit.lorapok.tech<br/>Cloudflare Worker"]
+  API["reportkit-api.lorapok.tech<br/>Cloudflare Worker"]
   L[(D1 reportkit_live)]
   A[(D1 reportkit_archive)]
 
@@ -196,19 +196,19 @@ npm install @lorapok-labs/reportkit-ui@beta
 | Host | Type | Target | Notes |
 |------|------|--------|-------|
 | `reportkit.lorapok.tech` | CNAME | `Maijied.github.io` | GitHub Pages (DNS-only until TLS ready) |
-| `api.reportkit.lorapok.tech` | Worker route | Cloudflare Worker | Set in `wrangler.toml`; proxied when zone is on Cloudflare |
+| `reportkit-api.lorapok.tech` | Worker route | Cloudflare Worker | Single-level subdomain; proxied when zone is on Cloudflare |
 
 Full step-by-step (D1, secrets, seed, verify): **[reportkit-website/SETUP-DNS.md](./reportkit-website/SETUP-DNS.md)**
 
-**Enable `api.reportkit` (summary)**
+**Enable `reportkit-api` (summary)**
 
 1. Ensure **`lorapok.tech`** is on Cloudflare (same account as Worker).
-2. **Cloudflare dashboard** → **Workers & Pages → reportkit-demo-api → Domains** → add `api.reportkit.lorapok.tech` (proxied).
+2. **Cloudflare dashboard** → **Workers & Pages → reportkit-demo-api → Domains** → add **`reportkit-api.lorapok.tech`** (proxied). Remove any **`api.reportkit.lorapok.tech`** entry first (nested hostname breaks Free SSL).
 3. Deploy Worker via CI (**Actions → Deploy Worker**) — do **not** edit the bundled JS in Cloudflare.
-4. In Cloudflare **DNS** for `lorapok.tech`, confirm **Name:** `api.reportkit`, **Proxy:** proxied (usually auto-created by step 2).
+4. In Cloudflare **DNS** for `lorapok.tech`, confirm **Name:** `reportkit-api`, **Proxy:** proxied (usually auto-created by step 2).
 5. Verify:
    ```bash
-   curl -s https://api.reportkit.lorapok.tech/v1/health
+   curl -s https://reportkit-api.lorapok.tech/v1/health
    ```
 
 Until DNS is live, use `https://reportkit-demo-api.mdshuvo40.workers.dev` as a temporary API URL.

@@ -14,8 +14,8 @@
 - https://reportkit.lorapok.tech/docs/0.1/multi-database/overview
 
 ## Demo API
-- https://api.reportkit.lorapok.tech/v1/health
-- https://api.reportkit.lorapok.tech/v1/trace
+- https://reportkit-api.lorapok.tech/v1/health
+- https://reportkit-api.lorapok.tech/v1/trace
 
 ## Brand
 - Accent: #0b7a4b

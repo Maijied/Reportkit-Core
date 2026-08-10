@@ -6,7 +6,7 @@ account_id = "f049faaf2f67549f5c58837479596a4a"
 # Keep workers.dev alive for CI smoke tests and fallback URL.
 workers_dev = true
 
-# Custom domain: attach api.reportkit.lorapok.tech in Cloudflare dashboard
+# Custom domain: attach reportkit-api.lorapok.tech in Cloudflare dashboard
 # (Workers & Pages → reportkit-demo-api → Domains & Routes → Add custom domain).
 # Do NOT add `routes` here until lorapok.tech is a zone on this Cloudflare account —
 # otherwise wrangler deploy fails and disables workers.dev.

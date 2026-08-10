@@ -1,6 +1,6 @@
 export const DEMO_API_URL =
   (typeof import.meta !== 'undefined' && import.meta.env?.PUBLIC_DEMO_API_URL) ||
-  'https://api.reportkit.lorapok.tech';
+  'https://reportkit-api.lorapok.tech';
 
 export type Provenance = 'live' | 'synthetic' | 'measured' | 'cached';
 
