@@ -4,12 +4,55 @@
   <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/reportkit-website/assets/reportkit-logo.png" width="168" alt="ReportKit" />
 </p>
 
+<p align="center"><strong>Packages</strong></p>
 <p align="center">
-  <a href="https://packagist.org/packages/reportkit/core"><img src="https://img.shields.io/packagist/v/reportkit/core?style=flat-square&color=10b981&labelColor=020617" alt="Packagist core" /></a>
-  <a href="https://packagist.org/packages/reportkit/laravel"><img src="https://img.shields.io/packagist/v/reportkit/laravel?style=flat-square&color=0b7a4b&labelColor=020617" alt="Packagist laravel" /></a>
-  <a href="https://www.npmjs.com/package/@lorapok-labs/reportkit-ui"><img src="https://img.shields.io/npm/v/@lorapok-labs/reportkit-ui?style=flat-square&color=f97316&labelColor=020617" alt="npm reportkit-ui" /></a>
+  <a href="https://packagist.org/packages/reportkit/core"><img src="https://img.shields.io/packagist/v/reportkit/core?style=flat-square&color=10b981&labelColor=020617" alt="Packagist core version" /></a>
+  <a href="https://packagist.org/packages/reportkit/laravel"><img src="https://img.shields.io/packagist/v/reportkit/laravel?style=flat-square&color=0b7a4b&labelColor=020617" alt="Packagist laravel version" /></a>
+  <a href="https://packagist.org/packages/reportkit/laravel-legacy"><img src="https://img.shields.io/packagist/v/reportkit/laravel-legacy?style=flat-square&color=059669&labelColor=020617" alt="Packagist laravel-legacy version" /></a>
+  <a href="https://www.npmjs.com/package/@lorapok-labs/reportkit-ui"><img src="https://img.shields.io/npm/v/@lorapok-labs/reportkit-ui?style=flat-square&color=f97316&labelColor=020617" alt="npm reportkit-ui version" /></a>
+</p>
+<p align="center">
+  <a href="https://packagist.org/packages/reportkit/core"><img src="https://img.shields.io/packagist/dt/reportkit/core?style=flat-square&label=core%20downloads&color=10b981&labelColor=020617" alt="Packagist core downloads" /></a>
+  <a href="https://packagist.org/packages/reportkit/laravel"><img src="https://img.shields.io/packagist/dt/reportkit/laravel?style=flat-square&label=laravel%20downloads&color=0b7a4b&labelColor=020617" alt="Packagist laravel downloads" /></a>
+  <a href="https://www.npmjs.com/package/@lorapok-labs/reportkit-ui"><img src="https://img.shields.io/npm/dm/@lorapok-labs/reportkit-ui?style=flat-square&label=npm%20downloads&color=f97316&labelColor=020617" alt="npm reportkit-ui downloads" /></a>
+</p>
+
+<p align="center"><strong>Deployments</strong></p>
+<p align="center">
+  <a href="https://github.com/Maijied/Reportkit-Core/deployments/github-pages"><img src="https://img.shields.io/github/deployments/Maijied/Reportkit-Core/github-pages?label=GitHub%20Pages&style=flat-square&logo=github&labelColor=020617" alt="GitHub Pages deployment" /></a>
+  <a href="https://reportkit.lorapok.tech"><img src="https://img.shields.io/website?url=https://reportkit.lorapok.tech&label=site&style=flat-square&labelColor=020617" alt="Site uptime" /></a>
+  <a href="https://reportkit-api.lorapok.tech/v1/health"><img src="https://img.shields.io/website?url=https://reportkit-api.lorapok.tech/v1/health&label=demo%20API&style=flat-square&labelColor=020617" alt="Demo API uptime" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/actions/workflows/deploy-site.yml"><img src="https://github.com/Maijied/Reportkit-Core/actions/workflows/deploy-site.yml/badge.svg" alt="Deploy site workflow" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/actions/workflows/deploy-worker.yml"><img src="https://github.com/Maijied/Reportkit-Core/actions/workflows/deploy-worker.yml/badge.svg" alt="Deploy worker workflow" /></a>
+</p>
+
+<p align="center"><strong>Release &amp; CI</strong></p>
+<p align="center">
+  <a href="https://github.com/Maijied/Reportkit-Core/releases"><img src="https://img.shields.io/github/v/release/Maijied/Reportkit-Core?include_prereleases&style=flat-square&label=release&labelColor=020617" alt="Latest release" /></a>
   <a href="https://github.com/Maijied/Reportkit-Core/actions/workflows/core-ci.yml"><img src="https://github.com/Maijied/Reportkit-Core/actions/workflows/core-ci.yml/badge.svg" alt="Core CI" /></a>
   <a href="https://github.com/Maijied/Reportkit-Core/actions/workflows/orchestrate-release.yml"><img src="https://github.com/Maijied/Reportkit-Core/actions/workflows/orchestrate-release.yml/badge.svg" alt="Release pipeline" /></a>
+</p>
+
+<p align="center"><strong>Languages</strong></p>
+<p align="center">
+  <a href="https://github.com/Maijied/Reportkit-Core/search?l=php"><img src="https://img.shields.io/github/languages/top/Maijied/Reportkit-Core?style=flat-square&color=777BB4&logo=php&logoColor=white&labelColor=020617" alt="Top language" /></a>
+  <img src="https://img.shields.io/github/languages/count/Maijied/Reportkit-Core?style=flat-square&label=languages&labelColor=020617" alt="Language count" />
+  <a href="https://github.com/Maijied/Reportkit-Core/search?l=php"><img src="https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/.github/badges/stats.json&query=$.languages.php&suffix=%25&label=PHP&logo=php&logoColor=white&color=777BB4&style=flat-square&labelColor=020617" alt="PHP percentage" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/search?l=astro"><img src="https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/.github/badges/stats.json&query=$.languages.astro&suffix=%25&label=Astro&logo=astro&logoColor=white&color=BC52EE&style=flat-square&labelColor=020617" alt="Astro percentage" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/search?l=typescript"><img src="https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/.github/badges/stats.json&query=$.languages.typescript&suffix=%25&label=TypeScript&logo=typescript&logoColor=white&color=3178C6&style=flat-square&labelColor=020617" alt="TypeScript percentage" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/search?l=javascript"><img src="https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/.github/badges/stats.json&query=$.languages.javascript&suffix=%25&label=JavaScript&logo=javascript&logoColor=black&color=F7DF1E&style=flat-square&labelColor=020617" alt="JavaScript percentage" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/search?l=css"><img src="https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/.github/badges/stats.json&query=$.languages.css&suffix=%25&label=CSS&logo=css3&logoColor=white&color=663399&style=flat-square&labelColor=020617" alt="CSS percentage" /></a>
+</p>
+
+<p align="center"><strong>Topics</strong></p>
+<p align="center">
+  <a href="https://github.com/Maijied/Reportkit-Core"><img src="https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/.github/badges/stats.json&query=$.topic_count&suffix=%20topics&label=GitHub&style=flat-square&labelColor=020617&color=0b7a4b" alt="Topic count" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/topics/php"><img src="https://img.shields.io/badge/php-777BB4?style=flat-square&labelColor=020617" alt="topic php" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/topics/laravel"><img src="https://img.shields.io/badge/laravel-FF2D20?style=flat-square&labelColor=020617" alt="topic laravel" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/topics/reporting"><img src="https://img.shields.io/badge/reporting-0b7a4b?style=flat-square&labelColor=020617" alt="topic reporting" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/topics/datatables"><img src="https://img.shields.io/badge/datatables-0ea5e9?style=flat-square&labelColor=020617" alt="topic datatables" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/topics/monorepo"><img src="https://img.shields.io/badge/monorepo-6366f1?style=flat-square&labelColor=020617" alt="topic monorepo" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/topics/lorapok"><img src="https://img.shields.io/badge/lorapok-020617?style=flat-square&labelColor=020617" alt="topic lorapok" /></a>
 </p>
 
 <p align="center">

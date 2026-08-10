@@ -1,0 +1,25 @@
+{
+  "updated_at": "2026-08-10T02:44:33.475Z",
+  "repo": "Maijied/Reportkit-Core",
+  "topic_count": 8,
+  "topics": [
+    "analytics",
+    "datatables",
+    "laravel",
+    "lorapok",
+    "monorepo",
+    "open-source",
+    "php",
+    "reporting"
+  ],
+  "languages": {
+    "php": 46.2,
+    "astro": 16.1,
+    "typescript": 11.2,
+    "shell": 9,
+    "javascript": 8.3,
+    "scss": 4.1,
+    "css": 2.8,
+    "blade": 2.3
+  }
+}
