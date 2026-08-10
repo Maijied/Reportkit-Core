@@ -57,7 +57,7 @@ jobs:
       - run: npm run build
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          PUBLIC_DEMO_API_URL: https://api.reportkit.lorapok.tech
+          PUBLIC_DEMO_API_URL: https://reportkit-demo-api.mdshuvo40.workers.dev
       - name: Verify CNAME + versions
         run: |
           test -f dist/CNAME

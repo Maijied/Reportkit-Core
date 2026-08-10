@@ -6,15 +6,16 @@
 |-------|--------|
 | Monorepo consolidation | **Done** — `Maijied/Reportkit-Core` |
 | README + architecture image | **Done** — `brand/cover-same-server-different-architecture.png` |
-| Website + Worker + D1 | Workflows fixed; secrets on **Reportkit-Core** |
-| Research-aligned dummy seed | **Committed** — dual schema, 2012→now, operator cross-ref |
-| D1 re-seed (research) | **Done** — Seed D1 workflow succeeded (run 31342266856) |
-| `api.reportkit` custom domain | **Added in Cloudflare** — SSL cert still provisioning |
+| Website + Worker + D1 | **Done** — CI green; Worker on workers.dev |
+| Research-aligned dummy seed (code) | **Done** — dual schema, generator, Worker API |
+| D1 re-seed (`research` 1M rows) | **Not done** — remote DB has **2k + 2k** (default scale only) |
+| `api.reportkit` custom domain | **DNS added** — SSL handshake still failing |
 | Cloudflare zone `lorapok.tech` | **Active** — NS at get.tech → Cloudflare |
-| Domain control panel spec | **Done** — `docs/DOMAIN-CONTROL-PANEL-INSTRUCTIONS.md` |
-| Packagist / npm | Update package URLs to monorepo on Packagist |
+| GitHub Pages site | **Deployed** — `/demo` OK; `/` CDN 404 (use `/index.html` or wait) |
+| Domain control panel spec | **Done** — doc only (`DOMAIN-CONTROL-PANEL-INSTRUCTIONS.md`) |
+| Packagist URLs → monorepo | **Partial** — `core` updated; `laravel`, `laravel-legacy` still old repos |
 
-## Task checklist
+## Task checklist (Phase 6)
 
 - [x] **T1** Fix `deploy-site.yml` path filters + `PUBLIC_DEMO_API_URL`
 - [x] **T2** Fix `quality.yml` path filters
@@ -24,10 +25,31 @@
 - [x] **T6** Run worker tests
 - [x] **T7** Commit Phase 6
 - [x] **T8** Push to `origin/main`
-- [x] **T9** Run **Seed D1** workflow (`research`) — succeeded
-- [x] **T10** Run **Deploy Worker** workflow — succeeded on push
-- [x] **T11** Run **Deploy site** workflow — succeeded (run 31345244612)
-- [x] **T12** Smoke test API + `/demo` — workers.dev OK; `/demo` live; custom domain SSL still provisioning; `/` may cache 404 briefly after domain move
+- [ ] **T9** Run **Seed D1** at `research` scale — workflow succeeded but applied **default** (2k+2k); re-run needed
+- [x] **T10** Deploy Worker — live at `reportkit-demo-api.mdshuvo40.workers.dev`
+- [x] **T11** Deploy site — [run 31345244612](https://github.com/Maijied/Reportkit-Core/actions/runs/31345244612)
+- [ ] **T12** Smoke test — workers.dev + synthetic 50M OK; live demo uses fixtures until site redeploys with workers.dev API URL
+
+## Verification snapshot (2026-08-10)
+
+| Check | Result |
+|-------|--------|
+| `GET /v1/health` (workers.dev) | `ok: true` |
+| `GET /v1/stats` | `live_rows: 2000`, `archive_rows: 2000` (not 500k) |
+| `GET /v1/data?mode=synthetic` | `recordsTotal: 50000000` |
+| `https://reportkit.lorapok.tech/demo/` | HTTP 200 |
+| `https://reportkit.lorapok.tech/` | HTTP 404 (GitHub CDN cache) |
+| `https://api.reportkit.lorapok.tech/v1/health` | SSL handshake failure |
+| Worker tests | 5/5 pass |
+| Deploy site / Quality CI | Green on `97b3f55` |
+
+## Remaining actions
+
+1. **Re-run Seed D1** → scale `research` (~30–90 min) for 1M measured rows.
+2. **Redeploy site** with `PUBLIC_DEMO_API_URL` → workers.dev (until custom domain SSL works).
+3. **Wait / fix SSL** on `api.reportkit.lorapok.tech` (Cloudflare Worker custom domain cert).
+4. **Packagist** — update `reportkit/laravel` and `reportkit/laravel-legacy` repo URLs to monorepo.
+5. **Optional** — archive `Maijied/Reportkit-Website`; rotate exposed tokens.
 
 ## Monorepo
 
@@ -40,25 +62,6 @@ Everything lives in **[Maijied/Reportkit-Core](https://github.com/Maijied/Report
 | `reportkit-laravel-legacy/` | `reportkit/laravel-legacy` |
 | `reportkit-ui/` | `@lorapok-labs/reportkit-ui` |
 | `reportkit-website/` | Site + Worker |
-
-Release tags: `core/v*`, `laravel/v*`, `laravel-legacy/v*`, `ui/v*`.
-
-## Phase 6 — Research scale demo
-
-Based on [RESEARCH.md](./reportkit-website/docs/RESEARCH.md). **All demo data is fictional.**
-
-1. **Schema** — live `operators` + FK trips; archive `operator_code` cross-ref; indexes on date + operator.
-2. **Seed** — `generate-research-seed.mjs` with scales `default` / `large` / `research` / `research-full`.
-3. **Worker** — JOIN live operators; COUNT + overlap dedupe; synthetic **50M** virtual rows (2012 → now).
-4. **CI** — Seed D1 workflow applies batched SQL (`research` = 1M dummy rows).
-5. **Site** — provenance badges; `PUBLIC_DEMO_API_URL=https://api.reportkit.lorapok.tech`.
-
-### Remaining manual / infra
-
-1. Wait for SSL on `api.reportkit.lorapok.tech` (5–30 min after custom domain add).
-2. Re-run **Deploy site** after build fix lands on `main`.
-3. GitHub Pages → confirm custom domain `reportkit.lorapok.tech` + HTTPS.
-4. Archive old split repos; rotate any tokens exposed in chat.
 
 ## Do not
 
