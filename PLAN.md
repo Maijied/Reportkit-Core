@@ -11,8 +11,8 @@
 | D1 re-seed (`research` 1M rows) | **Done** — remote: **500k + 500k** (`live_rows` / `archive_rows`) |
 | Cloudflare zone `lorapok.tech` | **Active** — NS at get.tech → Cloudflare |
 | GitHub Pages site | **Done** — `reportkit.lorapok.tech` HTTP 200 (`/` + `/demo`) |
-| Site → API URL (build) | **Done** — `PUBLIC_DEMO_API_URL` → `workers.dev` (SSL workaround) |
-| Worker custom domain SSL | **Blocked** — `api.reportkit.lorapok.tech` fails (nested hostname); migrate to **`reportkit-api.lorapok.tech`** |
+| Site → API URL (build) | **Pending redeploy** — `deploy-site.yml` → `reportkit-api.lorapok.tech` |
+| Worker custom domain SSL | **Done** — `reportkit-api.lorapok.tech` TLS OK |
 | Domain control panel spec | **Done** — doc only ([DOMAIN-CONTROL-PANEL-INSTRUCTIONS.md](./reportkit-website/docs/DOMAIN-CONTROL-PANEL-INSTRUCTIONS.md)) |
 | Packagist URLs → monorepo | **Partial** — `core` updated; `laravel`, `laravel-legacy` still old repos |
 
@@ -87,9 +87,9 @@ Full checklist: [DOMAIN-CONTROL-PANEL-INSTRUCTIONS.md §0](./reportkit-website/d
 
 ### 7.3 Phase 7 checklist
 
-- [ ] **7.1** Migrate API hostname `api.reportkit` → `reportkit-api` (dashboard)
-- [ ] **7.2** Enable SSL/TLS settings above
-- [ ] **7.3** Update `PUBLIC_DEMO_API_URL` in deploy-site after TLS verify
+- [x] **7.1** Migrate API hostname `api.reportkit` → `reportkit-api` (via GitHub Actions)
+- [x] **7.2** Enable SSL/TLS settings (workflow; warnings OK if token lacks zone edit)
+- [ ] **7.3** Update `PUBLIC_DEMO_API_URL` in deploy-site and redeploy site
 - [ ] **7.4** Re-run site deploy + demo smoke test (live mode, provenance badge)
 - [ ] **7.5** Optional: enable **Certificate Transparency Monitoring** (email alerts)
 
@@ -104,8 +104,8 @@ Full checklist: [DOMAIN-CONTROL-PANEL-INSTRUCTIONS.md §0](./reportkit-website/d
 | `GET /v1/data?mode=synthetic` | `recordsTotal: 50000000` |
 | `https://reportkit.lorapok.tech/` | HTTP **200** |
 | `https://reportkit.lorapok.tech/demo/` | HTTP **200** |
-| `https://api.reportkit.lorapok.tech/v1/health` | **SSL handshake failure** (remove) |
-| `https://reportkit-api.lorapok.tech/v1/health` | **Not configured** (add in 7.1) |
+| `https://reportkit-api.lorapok.tech/v1/health` | HTTP **200** |
+| `https://api.reportkit.lorapok.tech/v1/health` | **Removed** (NXDOMAIN) |
 | Worker tests | 5/5 pass |
 | Deploy site / Quality / Worker CI | Green |
 
