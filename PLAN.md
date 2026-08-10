@@ -10,7 +10,7 @@
 |------|--------|
 | Monorepo (`Maijied/Reportkit-Core`) | **Done** |
 | Public site + demo | **Live** — [reportkit.lorapok.tech](https://reportkit.lorapok.tech) |
-| Demo API (custom domain) | **Live** — [reportkit-api.lorapok.tech](https://reportkit-api.lorapok.tech) |
+| Demo API (custom domain) | **Live** — [reportkit-api.lorapok.tech/v1/health](https://reportkit-api.lorapok.tech/v1/health) |
 | D1 research seed | **Done** — 500k + 500k dummy rows |
 | Cloudflare zone | **Done** — SSL fix, `reportkit-api` hostname |
 | CI (site, worker, quality, seed) | **Green** |

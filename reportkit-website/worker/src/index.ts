@@ -100,6 +100,26 @@ export default {
     }
 
     try {
+      if (url.pathname === '/' || url.pathname === '') {
+        return jsonResponse(
+          {
+            service: 'reportkit-demo-api',
+            docs: 'https://reportkit.lorapok.tech/docs',
+            demo: 'https://reportkit.lorapok.tech/demo',
+            health: `${url.origin}/v1/health`,
+            endpoints: {
+              health: '/v1/health',
+              data: '/v1/data',
+              stats: '/v1/stats',
+              trace: '/v1/trace',
+              weeks: '/v1/weeks',
+            },
+            note: 'All demo data is fictional. Use /v1/health for service metadata.',
+          },
+          { mode: 'live', origin, allowed }
+        );
+      }
+
       if (url.pathname === '/v1/health') {
         return jsonResponse(
           {

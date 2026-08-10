@@ -41,7 +41,7 @@
 > **Part of the [Lorapok Ecosystem](https://github.com/Maijied/lorapok)** — Building the future of AI-driven developer tools.
 
 > PHP **5.6 → current** · Laravel **4.1 → currently supported**  
-> Site: **[reportkit.lorapok.tech](https://reportkit.lorapok.tech)** · API: **[reportkit-api.lorapok.tech](https://reportkit-api.lorapok.tech)**  
+> Site: **[reportkit.lorapok.tech](https://reportkit.lorapok.tech)** · API: **[reportkit-api.lorapok.tech/v1/health](https://reportkit-api.lorapok.tech/v1/health)**  
 > Repo: **[Maijied/Reportkit-Core](https://github.com/Maijied/Reportkit-Core)**  
 > License: **[Lorapok-NCL-1.0](./LICENSE)** — free to use and modify; **not free to sell**
 
@@ -79,7 +79,7 @@ All public demo data is **fictional** (dummy operators, hub routes, fares). No r
 | Website | [reportkit.lorapok.tech](https://reportkit.lorapok.tech) |
 | Docs | [reportkit.lorapok.tech/docs](https://reportkit.lorapok.tech/docs) |
 | Interactive demo | [reportkit.lorapok.tech/demo](https://reportkit.lorapok.tech/demo) |
-| Demo API | [reportkit-api.lorapok.tech](https://reportkit-api.lorapok.tech) |
+| Demo API | [reportkit-api.lorapok.tech/v1/health](https://reportkit-api.lorapok.tech/v1/health) |
 | Discussions | [GitHub Discussions](https://github.com/Maijied/Reportkit-Core/discussions) |
 
 ---
