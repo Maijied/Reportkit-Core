@@ -15,14 +15,27 @@ AUTH=""
 if [[ -n "${GH_TOKEN:-}" ]]; then
   AUTH="https://x-access-token:${GH_TOKEN}@"
 fi
+ORIGIN="${AUTH}github.com/${TARGET}.git"
+
+push_main() {
+  local dir="$1"
+  cd "$dir"
+  if git push origin HEAD:main --force-with-lease 2>/dev/null; then
+    return 0
+  fi
+  echo "::warning::force-with-lease failed; force-pushing mirror main (monorepo is source of truth)"
+  git push origin HEAD:main --force
+}
 
 echo "== Mirror ${SUBDIR}/ → ${TARGET}"
 
-git clone --depth 1 "${AUTH}github.com/${TARGET}.git" "$WORK/out" 2>/dev/null || {
+if git clone "$ORIGIN" "$WORK/out" 2>/dev/null; then
+  git -C "$WORK/out" checkout main 2>/dev/null || git -C "$WORK/out" checkout -b main
+else
   mkdir -p "$WORK/out"
   git -C "$WORK/out" init -b main
-  git -C "$WORK/out" remote add origin "${AUTH}github.com/${TARGET}.git"
-}
+  git -C "$WORK/out" remote add origin "$ORIGIN"
+fi
 
 rsync -a --delete \
   --exclude '.git' \
@@ -38,7 +51,7 @@ if git diff --cached --quiet; then
   echo "No content changes on main"
 else
   git commit -m "Mirror from Maijied/Reportkit-Core/${SUBDIR} ($(date -u +%Y-%m-%dT%H:%MZ))"
-  git push origin HEAD:main
+  push_main "$WORK/out"
 fi
 
 if [[ -n "$TAG_PREFIX" ]]; then
@@ -56,7 +69,7 @@ if [[ -n "$TAG_PREFIX" ]]; then
     git add -A
     git commit -m "Release ${plain_tag} (from Reportkit-Core ${tag})" --allow-empty
     git tag -fa "$plain_tag" -m "Synced from Reportkit-Core ${tag}"
-    git push origin main
+    push_main "$WORK/out"
     git push origin "$plain_tag" --force
   done
 fi
