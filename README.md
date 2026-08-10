@@ -3,7 +3,7 @@
 **Prepare → Secure Store → Compose → Send** — a PHP report stack that stays fast on legacy Laravel and plain PHP, with honest scale labeling on the public demo.
 
 > PHP **5.6 → current** · Laravel **4.1 → currently supported**  
-> Site: **[reportkit.lorapok.tech](https://reportkit.lorapok.tech)** · API: **[reportkit-api.lorapok.tech](https://reportkit-api.lorapok.tech)** *(after SSL fix; fallback: workers.dev)*  
+> Site: **[reportkit.lorapok.tech](https://reportkit.lorapok.tech)** · API: **[reportkit-api.lorapok.tech](https://reportkit-api.lorapok.tech)**  
 > Repo: **[Maijied/Reportkit-Core](https://github.com/Maijied/Reportkit-Core)**
 
 ---

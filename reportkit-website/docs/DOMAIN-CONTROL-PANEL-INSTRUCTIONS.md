@@ -14,18 +14,17 @@ Build this product in a **new GitHub repository** (suggested name: `Lorapok-Doma
 
 Use this section **today** in Reportkit-Core + Cloudflare dashboard. The Lorapok Domain Hub (§1+) automates this later in a **separate repo**.
 
-### 0.1 Live audit — `lorapok.tech` (2026-08-10)
+### 0.1 Live audit — `lorapok.tech` (2026-08-10, post-fix)
 
 | Item | Status |
 |------|--------|
 | Zone status | **Active** |
-| Registrar NS | `mariah.ns.cloudflare.com`, `rory.ns.cloudflare.com` (get.tech) |
-| Site `reportkit.lorapok.tech` | GitHub Pages CNAME → **DNS only** · HTTP 200 |
-| Worker `reportkit-demo-api` | Live on `*.workers.dev` · D1 **500k + 500k** rows |
-| Worker domain `api.reportkit.lorapok.tech` | Attached · **SSL broken** |
-| Worker domain `reportkit-api.lorapok.tech` | **Not yet added** (target hostname) |
+| Site `reportkit.lorapok.tech` | GitHub Pages · HTTP 200 |
+| API `reportkit-api.lorapok.tech` | Worker custom domain · TLS OK · HTTP 200 |
+| D1 demo data | **500k + 500k** rows (`live` mode) |
+| Nested `api.reportkit.lorapok.tech` | **Removed** |
 | Universal SSL | `*.lorapok.tech` — **Active** |
-| Advanced cert (Worker) | `api.reportkit.lorapok.tech` — **Pending Validation (Error)** |
+| Site build API URL | `https://reportkit-api.lorapok.tech` |
 
 ### 0.2 Fix API SSL (Free plan — required)
 

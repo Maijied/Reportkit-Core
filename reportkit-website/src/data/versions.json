@@ -1,76 +1,85 @@
 {
-  "generated_at": "2026-08-09T20:42:37.768Z",
+  "generated_at": "2026-08-10T00:43:26.604Z",
   "channel_default": "beta",
+  "monorepo": "Maijied/Reportkit-Core",
   "packages": {
     "core": {
       "id": "core",
       "composer": "reportkit/core",
       "repo": "Maijied/Reportkit-Core",
+      "path": "reportkit-core",
       "release": {
-        "tag": "v0.1.1-beta.1",
-        "version": "0.1.1-beta.1",
-        "channel": "beta",
-        "prerelease": true,
-        "url": "https://github.com/Maijied/Reportkit-Core/releases/tag/v0.1.1-beta.1",
-        "published_at": "2026-08-09T20:20:42Z",
-        "stable": null,
-        "beta": {
-          "tag": "v0.1.1-beta.1",
-          "version": "0.1.1-beta.1",
-          "url": "https://github.com/Maijied/Reportkit-Core/releases/tag/v0.1.1-beta.1"
-        }
+        "tag": "core/v0.1.0",
+        "version": "0.1.0",
+        "channel": "stable",
+        "prerelease": false,
+        "url": "https://github.com/Maijied/Reportkit-Core",
+        "published_at": null,
+        "stable": {
+          "tag": "core/v0.1.0",
+          "version": "0.1.0",
+          "url": "https://github.com/Maijied/Reportkit-Core"
+        },
+        "beta": null
       }
     },
     "laravel": {
       "id": "laravel",
       "composer": "reportkit/laravel",
-      "repo": "Maijied/Reportkit-Laravel",
+      "repo": "Maijied/Reportkit-Core",
+      "path": "reportkit-laravel",
       "release": {
-        "tag": "v0.1.1-beta.1",
-        "version": "0.1.1-beta.1",
-        "channel": "beta",
-        "prerelease": true,
-        "url": "https://github.com/Maijied/Reportkit-Laravel/releases/tag/v0.1.1-beta.1",
-        "published_at": "2026-08-09T20:21:17Z",
-        "stable": null,
-        "beta": {
-          "tag": "v0.1.1-beta.1",
-          "version": "0.1.1-beta.1",
-          "url": "https://github.com/Maijied/Reportkit-Laravel/releases/tag/v0.1.1-beta.1"
-        }
+        "tag": "laravel/v0.1.0",
+        "version": "0.1.0",
+        "channel": "stable",
+        "prerelease": false,
+        "url": "https://github.com/Maijied/Reportkit-Core",
+        "published_at": null,
+        "stable": {
+          "tag": "laravel/v0.1.0",
+          "version": "0.1.0",
+          "url": "https://github.com/Maijied/Reportkit-Core"
+        },
+        "beta": null
       }
     },
     "laravel-legacy": {
       "id": "laravel-legacy",
       "composer": "reportkit/laravel-legacy",
-      "repo": "Maijied/Reportkit-Laravel-Legacy",
+      "repo": "Maijied/Reportkit-Core",
+      "path": "reportkit-laravel-legacy",
       "release": {
-        "tag": "v0.1.1-beta.1",
-        "version": "0.1.1-beta.1",
-        "channel": "beta",
-        "prerelease": true,
-        "url": "https://github.com/Maijied/Reportkit-Laravel-Legacy/releases/tag/v0.1.1-beta.1",
-        "published_at": "2026-08-09T20:21:14Z",
-        "stable": null,
-        "beta": {
-          "tag": "v0.1.1-beta.1",
-          "version": "0.1.1-beta.1",
-          "url": "https://github.com/Maijied/Reportkit-Laravel-Legacy/releases/tag/v0.1.1-beta.1"
-        }
+        "tag": "laravel-legacy/v0.1.0",
+        "version": "0.1.0",
+        "channel": "stable",
+        "prerelease": false,
+        "url": "https://github.com/Maijied/Reportkit-Core",
+        "published_at": null,
+        "stable": {
+          "tag": "laravel-legacy/v0.1.0",
+          "version": "0.1.0",
+          "url": "https://github.com/Maijied/Reportkit-Core"
+        },
+        "beta": null
       }
     },
     "ui": {
       "id": "ui",
       "npm": "@lorapok-labs/reportkit-ui",
-      "repo": "Maijied/Reportkit-UI",
+      "repo": "Maijied/Reportkit-Core",
+      "path": "reportkit-ui",
       "release": {
-        "tag": "v0.1.1-beta.1",
-        "version": "0.1.1-beta.1",
-        "channel": "beta",
-        "prerelease": true,
-        "url": "https://github.com/Maijied/Reportkit-UI/releases/tag/v0.1.1-beta.1",
+        "tag": "ui/v0.1.0",
+        "version": "0.1.0",
+        "channel": "stable",
+        "prerelease": false,
+        "url": "https://github.com/Maijied/Reportkit-Core",
         "published_at": null,
-        "stable": null,
+        "stable": {
+          "tag": "ui/v0.1.0",
+          "version": "0.1.0",
+          "url": "https://github.com/Maijied/Reportkit-Core"
+        },
         "beta": null
       }
     }

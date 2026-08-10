@@ -1,0 +1,42 @@
+name: Packagist sync
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      PACKAGIST_USER: ${{ secrets.PACKAGIST_USER }}
+      PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
+      MONOREPO: https://github.com/Maijied/Reportkit-Core
+    steps:
+      - name: Check current Packagist repository URLs
+        run: |
+          for pkg in core laravel laravel-legacy; do
+            url=$(curl -sS "https://packagist.org/packages/reportkit/${pkg}.json" | jq -r '.package.repository // "unknown"')
+            echo "reportkit/${pkg} → ${url}"
+          done
+
+      - name: Notify Packagist (monorepo hook)
+        run: |
+          if [ -z "${PACKAGIST_USER:-}" ] || [ -z "${PACKAGIST_TOKEN:-}" ]; then
+            echo "::warning::PACKAGIST_USER/TOKEN missing — set secrets on Reportkit-Core"
+            exit 0
+          fi
+          for pkg in core laravel laravel-legacy; do
+            echo "== Trigger update for reportkit/${pkg}"
+            resp=$(curl -sS -X POST \
+              -H 'Content-Type: application/json' \
+              -H "Authorization: Bearer ${PACKAGIST_USER}:${PACKAGIST_TOKEN}" \
+              'https://packagist.org/api/update-package' \
+              -d "{\"repository\":{\"url\":\"${MONOREPO}\"}}")
+            echo "$resp" | jq -c '{status, message: (.message // .error // "ok")}' 2>/dev/null || echo "$resp"
+          done
+          echo
+          echo "If laravel packages still show old repo URLs, update each package on packagist.org:"
+          echo "  https://packagist.org/packages/reportkit/laravel → Repository URL → ${MONOREPO}"
+          echo "  https://packagist.org/packages/reportkit/laravel-legacy → Repository URL → ${MONOREPO}"

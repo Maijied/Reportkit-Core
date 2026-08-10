@@ -45,11 +45,11 @@ Set on **Maijied/Reportkit-Core → Settings → Secrets → Actions**:
 
 ## Deprecated split repos
 
-These standalone repos are **superseded** by this monorepo — archive them on GitHub when convenient:
+These standalone repos are **superseded** by this monorepo — archived on GitHub:
 
-- Maijied/Reportkit-Laravel
-- Maijied/Reportkit-Laravel-Legacy
-- Maijied/Reportkit-UI
-- Maijied/Reportkit-Website
+- [Maijied/Reportkit-Laravel](https://github.com/Maijied/Reportkit-Laravel) → `reportkit-laravel/`
+- [Maijied/Reportkit-Laravel-Legacy](https://github.com/Maijied/Reportkit-Laravel-Legacy) → `reportkit-laravel-legacy/`
+- [Maijied/Reportkit-UI](https://github.com/Maijied/Reportkit-UI) → `reportkit-ui/`
+- [Maijied/Reportkit-Website](https://github.com/Maijied/Reportkit-Website) → `reportkit-website/`
 
-Update Packagist package URLs to `https://github.com/Maijied/Reportkit-Core` (subdir auto-detected).
+Update Packagist package URLs to `https://github.com/Maijied/Reportkit-Core` (subdir auto-detected). Run **Actions → Packagist sync** after changing URLs on [packagist.org](https://packagist.org).

@@ -73,10 +73,10 @@ GitHub Actions → Pages (`deploy-site.yml`). Rebuilds on push and on package `r
 
 | Package | Role |
 |---------|------|
-| [`reportkit/core`](https://github.com/Maijied/Reportkit-Core) | PHP engine (5.6 → 8.5) |
-| [`reportkit/laravel`](https://github.com/Maijied/Reportkit-Laravel) | Laravel 5.5 → 12 / 13 |
-| [`reportkit/laravel-legacy`](https://github.com/Maijied/Reportkit-Laravel-Legacy) | Laravel 4.1 – 5.4 |
-| [`@lorapok-labs/reportkit-ui`](https://github.com/Maijied/Reportkit-UI) | Browser CSS/JS |
+| [`reportkit/core`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-core) | PHP engine (5.6 → 8.5) |
+| [`reportkit/laravel`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel) | Laravel 5.5 → 12 / 13 |
+| [`reportkit/laravel-legacy`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel-legacy) | Laravel 4.1 – 5.4 |
+| [`@lorapok-labs/reportkit-ui`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-ui) | Browser CSS/JS |
 
 ## Author
 

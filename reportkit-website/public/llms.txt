@@ -4,10 +4,10 @@
 > Product of Lorapok Labs — https://reportkit.lorapok.tech
 
 ## Packages
-- reportkit/core — https://github.com/Maijied/Reportkit-Core
-- reportkit/laravel — https://github.com/Maijied/Reportkit-Laravel
-- reportkit/laravel-legacy — https://github.com/Maijied/Reportkit-Laravel-Legacy
-- @lorapok-labs/reportkit-ui — https://github.com/Maijied/Reportkit-UI
+- reportkit/core — https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-core
+- reportkit/laravel — https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel
+- reportkit/laravel-legacy — https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel-legacy
+- @lorapok-labs/reportkit-ui — https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-ui
 
 ## Docs
 - https://reportkit.lorapok.tech/docs/0.1/getting-started/introduction
