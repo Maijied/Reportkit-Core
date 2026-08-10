@@ -26,8 +26,8 @@
 - [x] **T8** Push to `origin/main`
 - [x] **T9** Run **Seed D1** workflow (`research`) — succeeded
 - [x] **T10** Run **Deploy Worker** workflow — succeeded on push
-- [ ] **T11** Run **Deploy site** workflow — blocked by `VersionBand.astro` import path (fix committed)
-- [ ] **T12** Smoke test API + `/demo` — workers.dev OK; custom domain SSL pending; site 404 until T11
+- [x] **T11** Run **Deploy site** workflow — succeeded (run 31345244612)
+- [x] **T12** Smoke test API + `/demo` — workers.dev OK; `/demo` live; custom domain SSL still provisioning; `/` may cache 404 briefly after domain move
 
 ## Monorepo
 
