@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# Verify reportkit/* Packagist packages point at the monorepo.
+# Verify Packagist repository URLs for ReportKit PHP packages.
 set -euo pipefail
 
 MONOREPO='https://github.com/Maijied/Reportkit-Core'
+LARAVEL_MIRROR='https://github.com/Maijied/Reportkit-Laravel'
+LEGACY_MIRROR='https://github.com/Maijied/Reportkit-Laravel-Legacy'
 STRICT=false
-PACKAGES=(core laravel laravel-legacy)
 
 usage() {
   echo "Usage: $0 [--strict]"
-  echo "  --strict  exit 1 if any package is not on ${MONOREPO}"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -19,34 +19,40 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+check() {
+  local name="$1"
+  local expected="$2"
+  local url
+  url="$(curl -fsS "https://packagist.org/packages/${name}.json" | jq -r '.package.repository // empty')"
+  local status="OK"
+  if [[ -z "$url" ]]; then
+    status="MISSING"
+  elif [[ "$url" != "$expected" ]]; then
+    status="WRONG"
+  fi
+  printf '%-28s %-52s %s\n' "$name" "${url:-<none>}" "$status"
+  if [[ "$status" != "OK" ]]; then
+    return 1
+  fi
+  return 0
+}
+
 fail=0
-printf '%-24s %-52s %s\n' 'PACKAGE' 'REPOSITORY' 'STATUS'
+printf '%-28s %-52s %s\n' 'PACKAGE' 'REPOSITORY' 'STATUS'
 printf '%s\n' '--------------------------------------------------------------------------------'
 
-for slug in "${PACKAGES[@]}"; do
-  name="reportkit/${slug}"
-  url="$(curl -fsS "https://packagist.org/packages/${name}.json" | jq -r '.package.repository // empty')"
-  if [[ -z "$url" ]]; then
-    status='MISSING'
-    fail=1
-    [[ -n "${GITHUB_ACTIONS:-}" ]] && echo "::error title=${name}::No repository URL on Packagist"
-  elif [[ "$url" == "$MONOREPO" ]]; then
-    status='OK'
-  else
-    status='WRONG'
-    fail=1
-    [[ -n "${GITHUB_ACTIONS:-}" ]] && echo "::error title=${name}::Repository is ${url} — set to ${MONOREPO} (see PACKAGIST-MONOREPO.md Process A/B)"
-  fi
-  printf '%-24s %-52s %s\n' "$name" "${url:-<none>}" "$status"
-done
+check 'reportkit/core' "$MONOREPO" || fail=1
+check 'reportkit/laravel' "$LARAVEL_MIRROR" || fail=1
+check 'reportkit/laravel-legacy' "$LEGACY_MIRROR" || fail=1
 
 echo
 if [[ "$fail" -eq 0 ]]; then
-  echo "All packages point at ${MONOREPO}"
+  echo "All Packagist URLs match the expected layout (core=monorepo, Laravel adapters=mirror repos)."
   exit 0
 fi
 
-echo "Fix repository URLs on packagist.org — see reportkit-website/docs/PACKAGIST-MONOREPO.md"
+echo "See reportkit-website/docs/PACKAGIST-MONOREPO.md"
+echo "Run: gh workflow run packagist-mirror-sync.yml --repo Maijied/Reportkit-Core"
 if [[ "$STRICT" == true ]]; then
   exit 1
 fi

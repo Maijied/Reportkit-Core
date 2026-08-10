@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       strict:
-        description: Fail if laravel packages are not on the monorepo URL yet
+        description: Fail if any package URL does not match expected layout
         type: boolean
         default: true
       notify:
@@ -21,30 +21,31 @@ jobs:
     env:
       PACKAGIST_USER: ${{ secrets.PACKAGIST_USER }}
       PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
-      MONOREPO: https://github.com/Maijied/Reportkit-Core
     steps:
       - uses: actions/checkout@v4
 
       - name: Verify Packagist repository URLs
         run: bash reportkit-website/scripts/packagist-verify-monorepo.sh --strict
 
-      - name: Notify Packagist (monorepo hook)
+      - name: Notify Packagist (all repos)
         if: inputs.notify == true
         run: |
           if [ -z "${PACKAGIST_USER:-}" ] || [ -z "${PACKAGIST_TOKEN:-}" ]; then
-            echo "::warning::PACKAGIST_USER/TOKEN missing — set secrets on Reportkit-Core"
+            echo "::warning::PACKAGIST_USER/TOKEN missing"
             exit 0
           fi
-          for pkg in core laravel laravel-legacy; do
-            echo "== Trigger update for reportkit/${pkg}"
-            resp=$(curl -sS -X POST \
+          for repo in \
+            https://github.com/Maijied/Reportkit-Core \
+            https://github.com/Maijied/Reportkit-Laravel \
+            https://github.com/Maijied/Reportkit-Laravel-Legacy; do
+            echo "== update-package ${repo}"
+            curl -sS -X POST \
               -H 'Content-Type: application/json' \
               -H "Authorization: Bearer ${PACKAGIST_USER}:${PACKAGIST_TOKEN}" \
               'https://packagist.org/api/update-package' \
-              -d "{\"repository\":{\"url\":\"${MONOREPO}\"}}")
-            echo "$resp" | jq -c '{status, message: (.message // .error // "ok")}' 2>/dev/null || echo "$resp"
+              -d "{\"repository\":{\"url\":\"${repo}\"}}" \
+              | jq -c '{status, message: (.message // .error // "ok")}' 2>/dev/null || true
           done
 
-      - name: Re-verify after notify
-        if: inputs.notify == true
+      - name: Final verify
         run: bash reportkit-website/scripts/packagist-verify-monorepo.sh --strict
