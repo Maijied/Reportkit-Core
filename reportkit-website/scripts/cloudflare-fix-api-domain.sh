@@ -68,9 +68,10 @@ echo "Zone ID: ${ZONE_ID}"
 echo "== List Worker custom domains"
 cf_request GET "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/domains"
 require_api "List worker domains"
-echo "$CF_BODY" | jq -r '.result[] | "\(.id)\t\(.hostname)\t\(.service)"'
+DOMAINS_JSON="$CF_BODY"
+echo "$DOMAINS_JSON" | jq -r '.result[] | "\(.id)\t\(.hostname)\t\(.service)"'
 
-if echo "$CF_BODY" | jq -e --arg h "$NEW_HOST" '.result[] | select(.hostname == $h)' >/dev/null; then
+if echo "$DOMAINS_JSON" | jq -e --arg h "$NEW_HOST" '.result[] | select(.hostname == $h)' >/dev/null; then
   echo "== ${NEW_HOST} already attached"
 else
   echo "== Attach ${NEW_HOST} to ${SERVICE}"
@@ -83,7 +84,7 @@ else
   require_api "Attach ${NEW_HOST}"
 fi
 
-OLD_IDS="$(echo "$CF_BODY" | jq -r --arg h "$OLD_HOST" '.result[] | select(.hostname == $h) | .id')"
+OLD_IDS="$(echo "$DOMAINS_JSON" | jq -r --arg h "$OLD_HOST" '.result[] | select(.hostname == $h) | .id')"
 for id in $OLD_IDS; do
   echo "== Detach ${OLD_HOST} (${id})"
   cf_request DELETE "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/domains/${id}"
