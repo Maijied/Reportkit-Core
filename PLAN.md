@@ -11,7 +11,7 @@
 | D1 re-seed (`research` 1M rows) | **Done** — remote: **500k + 500k** (`live_rows` / `archive_rows`) |
 | Cloudflare zone `lorapok.tech` | **Active** — NS at get.tech → Cloudflare |
 | GitHub Pages site | **Done** — `reportkit.lorapok.tech` HTTP 200 (`/` + `/demo`) |
-| Site → API URL (build) | **Pending redeploy** — `deploy-site.yml` → `reportkit-api.lorapok.tech` |
+| Site → API URL (build) | **Done** — `PUBLIC_DEMO_API_URL` → `reportkit-api.lorapok.tech` |
 | Worker custom domain SSL | **Done** — `reportkit-api.lorapok.tech` TLS OK |
 | Domain control panel spec | **Done** — doc only ([DOMAIN-CONTROL-PANEL-INSTRUCTIONS.md](./reportkit-website/docs/DOMAIN-CONTROL-PANEL-INSTRUCTIONS.md)) |
 | Packagist URLs → monorepo | **Partial** — `core` updated; `laravel`, `laravel-legacy` still old repos |
