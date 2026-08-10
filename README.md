@@ -1,6 +1,30 @@
 # ReportKit
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/reportkit-website/assets/reportkit-logo.png" width="168" alt="ReportKit" />
+</p>
+
+<p align="center">
+  <a href="https://packagist.org/packages/reportkit/core"><img src="https://img.shields.io/packagist/v/reportkit/core?style=flat-square&color=10b981&labelColor=020617" alt="Packagist core" /></a>
+  <a href="https://packagist.org/packages/reportkit/laravel"><img src="https://img.shields.io/packagist/v/reportkit/laravel?style=flat-square&color=0b7a4b&labelColor=020617" alt="Packagist laravel" /></a>
+  <a href="https://www.npmjs.com/package/@lorapok-labs/reportkit-ui"><img src="https://img.shields.io/npm/v/@lorapok-labs/reportkit-ui?style=flat-square&color=f97316&labelColor=020617" alt="npm reportkit-ui" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/actions/workflows/core-ci.yml"><img src="https://github.com/Maijied/Reportkit-Core/actions/workflows/core-ci.yml/badge.svg" alt="Core CI" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/actions/workflows/orchestrate-release.yml"><img src="https://github.com/Maijied/Reportkit-Core/actions/workflows/orchestrate-release.yml/badge.svg" alt="Release pipeline" /></a>
+</p>
+
+<p align="center">
+  <a href="https://reportkit.lorapok.tech"><img src="https://img.shields.io/badge/live-reportkit.lorapok.tech-0b7a4b?style=flat-square" alt="Live site" /></a>
+  <a href="https://reportkit.lorapok.tech/docs"><img src="https://img.shields.io/badge/docs-reportkit.lorapok.tech-020617?style=flat-square" alt="Documentation" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/discussions"><img src="https://img.shields.io/badge/discussions-join%20the%20conversation-0969da?style=flat-square&logo=github" alt="Discussions" /></a>
+</p>
+
+---
+[![RepoRanker](https://reporanker.com/badge/Maijied/Reportkit-Core)](https://reporanker.com/repos/Maijied/Reportkit-Core)
+---
+
 **Prepare → Secure Store → Compose → Send** — a PHP report stack that stays fast on legacy Laravel and plain PHP, with honest scale labeling on the public demo.
+
+> **Part of the [Lorapok Ecosystem](https://github.com/Maijied/lorapok)** — Building the future of AI-driven developer tools.
 
 > PHP **5.6 → current** · Laravel **4.1 → currently supported**  
 > Site: **[reportkit.lorapok.tech](https://reportkit.lorapok.tech)** · API: **[reportkit-api.lorapok.tech](https://reportkit-api.lorapok.tech)**  
@@ -8,7 +32,7 @@
 
 ---
 
-## Same server. Different architecture.
+## Why ReportKit?
 
 Modern stacks often fail under report load — one monolithic query, one heavy pipe, timeouts for everyone. ReportKit takes the opposite path: **chunked prepare, in-memory secure store, zero re-query during export**, then compose and send.
 
@@ -33,9 +57,21 @@ All public demo data is **fictional** (dummy operators, hub routes, fares). No r
 
 ---
 
-## Architecture overview
+## Live service
 
-### 1. Report pipeline (core thesis)
+| Resource | URL |
+|----------|-----|
+| Website | [reportkit.lorapok.tech](https://reportkit.lorapok.tech) |
+| Docs | [reportkit.lorapok.tech/docs](https://reportkit.lorapok.tech/docs) |
+| Interactive demo | [reportkit.lorapok.tech/demo](https://reportkit.lorapok.tech/demo) |
+| Demo API | [reportkit-api.lorapok.tech](https://reportkit-api.lorapok.tech) |
+| Discussions | [GitHub Discussions](https://github.com/Maijied/Reportkit-Core/discussions) |
+
+---
+
+## Architecture
+
+### Report pipeline (core thesis)
 
 ```mermaid
 flowchart LR
@@ -76,7 +112,7 @@ flowchart LR
 3. **Compose** — `PseudoPaginator` dedupes, sorts, searches, slices — **no second round-trip to the database**.
 4. **Send** — one response shape (DataTables JSON, export, email) with a provenance label on every number.
 
-### 2. Monorepo layout
+### Monorepo layout
 
 ```mermaid
 graph TB
@@ -104,9 +140,9 @@ graph TB
 | [reportkit-ui/](reportkit-ui/) | `@lorapok-labs/reportkit-ui` | DataTables + ReportKit browser helpers |
 | [reportkit-website/](reportkit-website/) | — | Docs site (GitHub Pages) + Cloudflare Worker demo API |
 
-See [MONOREPO.md](./MONOREPO.md) for CI path filters, secrets, and release tags (`core/v*`, `laravel/v*`, `ui/v*`, …).
+See [MONOREPO.md](./MONOREPO.md) for CI path filters, secrets, release tags (`core/v*`, `laravel/v*`, `ui/v*`, …), and Packagist mirror runbook.
 
-### 3. Dual-database merge
+### Dual-database merge
 
 Production reports often span a **live** database and an **archive**. ReportKit merges them with explicit dedupe and ordering:
 
@@ -130,7 +166,7 @@ $source = ReportKit::merged([
 
 Overlap rows (`trip_id` prefix `X-`) exist in **both** DBs to exercise cross-database dedupe.
 
-### 4. Demo API stack
+### Demo API stack
 
 ```mermaid
 flowchart LR
@@ -160,12 +196,22 @@ flowchart LR
 | `synthetic` | 50,000,000 virtual | Deterministic generator, 2012 → present, O(1) paging |
 | `cached` | Bundled fixtures | Fallback when API or quota unavailable |
 
-Interactive demo: **[reportkit.lorapok.tech/demo](https://reportkit.lorapok.tech/demo)**  
 Research notes: [reportkit-website/docs/RESEARCH.md](./reportkit-website/docs/RESEARCH.md)
 
 ---
 
-## Quick start
+## Requirements
+
+| Component | Supported range |
+|-----------|-----------------|
+| PHP | 5.6 → current |
+| Laravel (modern adapter) | 5.5 → 12 / 13 |
+| Laravel (legacy adapter) | 4.1 – 5.4 |
+| Browser UI | npm `@lorapok-labs/reportkit-ui` |
+
+---
+
+## Install
 
 ### Laravel 5.5+ (beta)
 
@@ -189,9 +235,13 @@ php artisan reportkit:make Sales --route=admin/sales
 npm install @lorapok-labs/reportkit-ui@beta
 ```
 
+Packagist mirror details for Laravel packages: [reportkit-website/docs/PACKAGIST-MONOREPO.md](./reportkit-website/docs/PACKAGIST-MONOREPO.md)
+
 ---
 
-## DNS & API domain
+## Configuration
+
+### DNS and API domain
 
 | Host | Type | Target | Notes |
 |------|------|--------|-------|
@@ -215,7 +265,7 @@ Until DNS is live, use `https://reportkit-demo-api.mdshuvo40.workers.dev` as a t
 
 ---
 
-## CI & operations
+## Development
 
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
@@ -226,11 +276,17 @@ Until DNS is live, use `https://reportkit-demo-api.mdshuvo40.workers.dev` as a t
 
 Secrets live on **Reportkit-Core** only — see [MONOREPO.md](./MONOREPO.md).
 
-Local plan & checklist: [PLAN.md](./PLAN.md)
+Local plan and checklist: [PLAN.md](./PLAN.md)
 
 ---
 
-## Scope & policy
+## Community
+
+Questions, ideas, and integration help: **[GitHub Discussions](https://github.com/Maijied/Reportkit-Core/discussions)**.
+
+---
+
+## Scope and policy
 
 - **One monorepo**, one secrets panel, path-filtered CI
 - Do **not** push package source to Shohoz Azure remotes
