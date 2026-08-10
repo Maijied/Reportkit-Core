@@ -11,7 +11,14 @@ SERVICE="reportkit-demo-api"
 ZONE_NAME="lorapok.tech"
 
 cf() {
-  local method="${1:-GET}"
+  if [[ $# -eq 1 ]]; then
+    curl -sS \
+      -H "Authorization: Bearer ${TOKEN}" \
+      -H "Content-Type: application/json" \
+      "$1"
+    return
+  fi
+  local method="$1"
   shift
   curl -sS \
     -X "$method" \
