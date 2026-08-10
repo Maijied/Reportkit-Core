@@ -64,7 +64,9 @@ if [[ -n "$TAG_PREFIX" ]]; then
     rm -rf "$WORK/stage"
     mkdir -p "$WORK/stage"
     git archive "$tag" "${SUBDIR}" | tar -x -C "$WORK/stage"
-    rsync -a --delete "${WORK}/stage/${SUBDIR}/" "${WORK}/out/"
+    rsync -a --delete \
+      --exclude '.git' \
+      "${WORK}/stage/${SUBDIR}/" "${WORK}/out/"
     cd "$WORK/out"
     git add -A
     git commit -m "Release ${plain_tag} (from Reportkit-Core ${tag})" --allow-empty
