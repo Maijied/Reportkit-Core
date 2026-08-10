@@ -261,6 +261,8 @@ npm install @lorapok-labs/reportkit-ui@beta
 
 See [VERSIONING.md](./VERSIONING.md) for beta release workflow.
 
+**Packagist monorepo migration (`laravel` + `laravel-legacy`):** [docs/PACKAGIST-MONOREPO.md](./docs/PACKAGIST-MONOREPO.md)
+
 ## PAT hygiene
 
 Package remotes must use clean HTTPS (`https://github.com/Maijied/...`) without embedded tokens.

@@ -15,7 +15,7 @@
 | Cloudflare zone | **Done** — SSL fix, `reportkit-api` hostname |
 | CI (site, worker, quality, seed) | **Green** |
 | Domain hub blueprint | **Done** — doc only |
-| Packagist monorepo URLs | **Partial** — `core` on monorepo; run **Packagist sync** + one-time URL edit for `laravel` packages on [packagist.org](https://packagist.org) |
+| Packagist monorepo URLs | **Partial** — `core` done; follow [PACKAGIST-MONOREPO.md](./reportkit-website/docs/PACKAGIST-MONOREPO.md) for `laravel` + `laravel-legacy` |
 | Deprecated split repos | **Archived** on GitHub |
 
 ---
@@ -70,9 +70,7 @@ Automation: [cloudflare-fix-api-domain.yml](./.github/workflows/cloudflare-fix-a
 
 | Item | Action |
 |------|--------|
-| Packagist `reportkit/laravel` | [packagist.org/packages/reportkit/laravel](https://packagist.org/packages/reportkit/laravel) → Repository URL → `https://github.com/Maijied/Reportkit-Core` |
-| Packagist `reportkit/laravel-legacy` | Same for [laravel-legacy](https://packagist.org/packages/reportkit/laravel-legacy) |
-| Then | **Actions → Packagist sync → Run workflow** |
+| Packagist `laravel` + `laravel-legacy` | **[PACKAGIST-MONOREPO.md](./reportkit-website/docs/PACKAGIST-MONOREPO.md)** — Process A & B (web UI), then Process C (CI sync) |
 | Orphan Advanced cert | Delete `api.reportkit` row in [Edge Certificates](https://dash.cloudflare.com/f049faaf2f67549f5c58837479596a4a/lorapok.tech/ssl-tls/edge-certificates) if still visible |
 | PAT hygiene | Rotate any exposed `ghp_` tokens |
 

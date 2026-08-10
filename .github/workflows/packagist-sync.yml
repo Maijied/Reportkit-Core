@@ -2,6 +2,15 @@ name: Packagist sync
 
 on:
   workflow_dispatch:
+    inputs:
+      strict:
+        description: Fail if laravel packages are not on the monorepo URL yet
+        type: boolean
+        default: true
+      notify:
+        description: Call Packagist update-package after verify
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -14,14 +23,13 @@ jobs:
       PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
       MONOREPO: https://github.com/Maijied/Reportkit-Core
     steps:
-      - name: Check current Packagist repository URLs
-        run: |
-          for pkg in core laravel laravel-legacy; do
-            url=$(curl -sS "https://packagist.org/packages/reportkit/${pkg}.json" | jq -r '.package.repository // "unknown"')
-            echo "reportkit/${pkg} → ${url}"
-          done
+      - uses: actions/checkout@v4
+
+      - name: Verify Packagist repository URLs
+        run: bash reportkit-website/scripts/packagist-verify-monorepo.sh --strict
 
       - name: Notify Packagist (monorepo hook)
+        if: inputs.notify == true
         run: |
           if [ -z "${PACKAGIST_USER:-}" ] || [ -z "${PACKAGIST_TOKEN:-}" ]; then
             echo "::warning::PACKAGIST_USER/TOKEN missing — set secrets on Reportkit-Core"
@@ -36,7 +44,7 @@ jobs:
               -d "{\"repository\":{\"url\":\"${MONOREPO}\"}}")
             echo "$resp" | jq -c '{status, message: (.message // .error // "ok")}' 2>/dev/null || echo "$resp"
           done
-          echo
-          echo "If laravel packages still show old repo URLs, update each package on packagist.org:"
-          echo "  https://packagist.org/packages/reportkit/laravel → Repository URL → ${MONOREPO}"
-          echo "  https://packagist.org/packages/reportkit/laravel-legacy → Repository URL → ${MONOREPO}"
+
+      - name: Re-verify after notify
+        if: inputs.notify == true
+        run: bash reportkit-website/scripts/packagist-verify-monorepo.sh --strict

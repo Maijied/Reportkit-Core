@@ -52,4 +52,8 @@ These standalone repos are **superseded** by this monorepo — archived on GitHu
 - [Maijied/Reportkit-UI](https://github.com/Maijied/Reportkit-UI) → `reportkit-ui/`
 - [Maijied/Reportkit-Website](https://github.com/Maijied/Reportkit-Website) → `reportkit-website/`
 
-Update Packagist package URLs to `https://github.com/Maijied/Reportkit-Core` (subdir auto-detected). Run **Actions → Packagist sync** after changing URLs on [packagist.org](https://packagist.org).
+Update Packagist package URLs to `https://github.com/Maijied/Reportkit-Core` (subdir auto-detected).
+
+**Runbook (both Laravel packages):** [reportkit-website/docs/PACKAGIST-MONOREPO.md](./reportkit-website/docs/PACKAGIST-MONOREPO.md)
+
+After changing URLs on [packagist.org](https://packagist.org), run **Actions → Packagist sync** (strict verify + hook).
