@@ -1,7 +1,7 @@
 # ReportKit
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/png/reportkit-logo-1200.png" width="140" alt="ReportKit" />
+  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/png/reportkit-logo-1200.png" width="320" alt="ReportKit — Kit-Larva logo" />
 </p>
 
 <p align="center">
