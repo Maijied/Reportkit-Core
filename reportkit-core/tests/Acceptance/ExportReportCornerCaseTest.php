@@ -45,6 +45,14 @@ class ExportReportCornerCaseTest extends TestCase
         return file_get_contents($path);
     }
 
+    protected function readLegacyStub($name)
+    {
+        $path = $this->monorepoRoot() . '/reportkit-laravel-legacy/resources/stubs/' . $name;
+        $this->assertFileExists($path);
+
+        return file_get_contents($path);
+    }
+
     public function testConfigExcelSoftMaxMatchesCeiling()
     {
         $configPath = $this->monorepoRoot() . '/reportkit-laravel-legacy/config/reportkit.php';
@@ -353,5 +361,23 @@ class ExportReportCornerCaseTest extends TestCase
         $this->assertStringContainsString('applyPdfWatermark', $js);
         $this->assertStringContainsString('updatePdfDownloadUi', $js);
         $this->assertStringContainsString('Prepared rows:', $js);
+    }
+
+    public function testHybridBrowseStubWiresLedgerBrowseAndLldp()
+    {
+        $blade = $this->readLegacyStub('report.blade.hybrid-browse.stub');
+        $js = $this->readLegacyStub('report.js.hybrid-browse.stub');
+        $this->assertStringContainsString('browse_prepared', $blade);
+        $this->assertStringContainsString('ui.ledger-panel', $blade);
+        $this->assertStringContainsString('lldp-core.js', $blade);
+        $this->assertStringContainsString('fromPreparedStore', $js);
+        $this->assertStringContainsString('renderTxnPill', $js);
+    }
+
+    public function testLedgerSyncStubUsesSyncDatatables()
+    {
+        $blade = $this->readLegacyStub('report.blade.ledger-sync.stub');
+        $this->assertStringContainsString("'sync' => true", $blade);
+        $this->assertStringContainsString('ui.ledger-panel', $blade);
     }
 }
