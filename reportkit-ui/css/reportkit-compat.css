@@ -1,4 +1,12 @@
 /**
+ * Lorapok ReportKit
+ * Copyright (c) 2026 Lorapok Labs (https://lorapok.tech)
+ * Licensed under the Lorapok Non-Commercial License 1.0 (Lorapok-NCL-1.0)
+ *
+ * reportkit-compat.css — ReportKit stylesheet.
+ */
+
+/**
  * Compatibility aliases for CAS / sales-* class names used by design-source hosts.
  * Prefer rk-* in new markup. Load after reportkit.css.
  */

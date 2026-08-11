@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Lorapok ReportKit
+ * Copyright (c) 2026 Lorapok Labs (https://lorapok.tech)
+ * Licensed under the Lorapok Non-Commercial License 1.0 (Lorapok-NCL-1.0)
+ *
+ * Column — Column definition for ReportTable / DataTables.
+ */
+
 namespace ReportKit\Core\Table;
 
 /**

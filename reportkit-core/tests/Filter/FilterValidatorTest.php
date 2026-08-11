@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Lorapok ReportKit
+ * Copyright (c) 2026 Lorapok Labs (https://lorapok.tech)
+ * Licensed under the Lorapok Non-Commercial License 1.0 (Lorapok-NCL-1.0)
+ *
+ * FilterValidatorTest — ReportKit core component.
+ */
+
 namespace ReportKit\Core\Tests\Filter;
 
 use PHPUnit\Framework\TestCase;

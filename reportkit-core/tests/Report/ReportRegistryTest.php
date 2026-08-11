@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Lorapok ReportKit
+ * Copyright (c) 2026 Lorapok Labs (https://lorapok.tech)
+ * Licensed under the Lorapok Non-Commercial License 1.0 (Lorapok-NCL-1.0)
+ *
+ * ReportRegistryTest — ReportKit core component.
+ */
+
 namespace ReportKit\Core\Tests\Report;
 
 use PHPUnit\Framework\TestCase;
@@ -38,6 +46,7 @@ class ReportRegistryTest extends TestCase
                 ->service('App\\Services\\Reports\\DemoReportService')
                 ->flags(array('datatables', 'kpi' => true, 'excel' => false))
                 ->dateRange(array('max_months' => 6))
+                ->settings(array('date' => array('ledger_max_days' => 21)))
                 ->kpis(array(array('key' => 'rows', 'label' => 'Rows')))
                 ->table(ReportTable::make('demoTable'))
                 ->meta(array('preset' => 'hybrid'));
@@ -52,6 +61,7 @@ class ReportRegistryTest extends TestCase
         $this->assertTrue($def->hasFlag('kpi'));
         $this->assertFalse($def->hasFlag('excel'));
         $this->assertEquals('hybrid', $def->meta['preset']);
+        $this->assertSame(21, $def->settings['date']['ledger_max_days']);
         $this->assertCount(1, Report::all());
     }
 

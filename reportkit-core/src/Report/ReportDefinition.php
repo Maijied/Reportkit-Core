@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Lorapok ReportKit
+ * Copyright (c) 2026 Lorapok Labs (https://lorapok.tech)
+ * Licensed under the Lorapok Non-Commercial License 1.0 (Lorapok-NCL-1.0)
+ *
+ * ReportDefinition — Immutable-ish report definition built via ReportBuilder.
+ */
+
 namespace ReportKit\Core\Report;
 
 /**
@@ -42,6 +50,9 @@ class ReportDefinition
 
     /** @var array */
     public $meta = [];
+
+    /** @var array Per-report config overrides (merged over config/reportkit.php) */
+    public $settings = [];
 
     /**
      * @param string $flag

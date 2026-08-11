@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Lorapok ReportKit
+ * Copyright (c) 2026 Lorapok Labs (https://lorapok.tech)
+ * Licensed under the Lorapok Non-Commercial License 1.0 (Lorapok-NCL-1.0)
+ *
+ * ReportBuilder — Fluent builder for ReportDefinition.
+ */
+
 namespace ReportKit\Core\Report;
 
 /**
@@ -142,6 +150,23 @@ class ReportBuilder
     public function table($table)
     {
         $this->definition->tables[] = $table;
+
+        return $this;
+    }
+
+    /**
+     * Per-report settings overrides — merged over host config/reportkit.php.
+     * Example: array('date' => array('ledger_max_days' => 14))
+     *
+     * @param array $settings
+     * @return $this
+     */
+    public function settings(array $settings)
+    {
+        $this->definition->settings = array_replace_recursive(
+            $this->definition->settings,
+            $settings
+        );
 
         return $this;
     }

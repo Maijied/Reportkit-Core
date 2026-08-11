@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Lorapok ReportKit
+ * Copyright (c) 2026 Lorapok Labs (https://lorapok.tech)
+ * Licensed under the Lorapok Non-Commercial License 1.0 (Lorapok-NCL-1.0)
+ *
+ * ExportHelper — Filename sanitization and download naming helpers.
+ */
+
 namespace ReportKit\Core\Export;
 
 /**
@@ -32,6 +40,15 @@ class ExportHelper
         }
 
         return strtoupper(substr($value, 0, 1)) . strtolower(substr($value, 1));
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public function titleCaseUserType($value)
+    {
+        return $this->titleCaseLabel($value);
     }
 
     /**

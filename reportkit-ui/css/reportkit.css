@@ -1,3 +1,11 @@
+/**
+ * Lorapok ReportKit
+ * Copyright (c) 2026 Lorapok Labs (https://lorapok.tech)
+ * Licensed under the Lorapok Non-Commercial License 1.0 (Lorapok-NCL-1.0)
+ *
+ * reportkit.css — ReportKit stylesheet.
+ */
+
 :root {
   --rk-ink: #1f2f38;
   --rk-muted: #5a7385;
@@ -273,6 +281,19 @@
   border: 1px solid var(--rk-line);
   border-radius: var(--rk-radius);
   box-shadow: var(--rk-shadow);
+  min-width: 240px;
+}
+
+.rk-async-mascot {
+  display: block;
+  margin: 0 auto 12px;
+  border-radius: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rk-async-mascot {
+    display: none;
+  }
 }
 
 .rk-progress {
@@ -301,4 +322,240 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+/* Toast host (ReportKit.ui.toast fallback) */
+.rk-toast-host {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 10050;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: min(360px, calc(100vw - 32px));
+}
+
+.rk-toast {
+  padding: 10px 14px;
+  border-radius: var(--rk-radius);
+  border: 1px solid var(--rk-line);
+  background: var(--rk-surface);
+  color: var(--rk-ink);
+  box-shadow: var(--rk-shadow);
+  font-size: 13px;
+}
+
+.rk-toast--warn {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.rk-toast--info {
+  border-color: var(--rk-accent);
+  background: var(--rk-accent-soft);
+}
+
+/* Activity log (ReportKit.log) */
+.rk-activity-log-panel .rk-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rk-activity-log {
+  max-height: 220px;
+  overflow: auto;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.rk-log-entry {
+  padding: 4px 0;
+  border-bottom: 1px solid var(--rk-line);
+}
+
+.rk-log-ts {
+  color: var(--rk-muted);
+  margin-right: 6px;
+}
+
+.rk-log-empty {
+  color: var(--rk-muted);
+  font-style: italic;
+}
+
+.rk-log-entry--prepare { color: var(--rk-accent); }
+.rk-log-entry--export { color: #2563eb; }
+.rk-log-entry--mail { color: #7c3aed; }
+.rk-log-entry--browse { color: #0f766e; }
+
+/* Table loading overlay during browse AJAX */
+.rk-table-loader {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.72);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  font-size: 13px;
+  color: var(--rk-muted);
+}
+
+.rk-table-loader.is-visible {
+  display: flex;
+}
+
+.rk-ledger-table-wrap {
+  position: relative;
+}
+
+.rk-ledger-table thead th {
+  white-space: nowrap;
+}
+
+.rk-ledger-table .rk-money,
+.rk-money {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.rk-ledger-table--enhanced {
+  max-height: 70vh;
+  overflow: auto;
+}
+
+.rk-ledger-table--enhanced .rk-ledger-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--rk-surface);
+  z-index: 2;
+}
+
+.rk-filter-totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 12px 0 16px;
+  padding: 10px 14px;
+  border: 1px solid var(--rk-line);
+  border-radius: var(--rk-radius);
+  background: var(--rk-surface);
+}
+
+.rk-filter-totals-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--rk-muted);
+}
+
+.rk-filter-totals-value {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.rk-action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.rk-action-bar.is-disabled .rk-btn:not(.rk-btn-fetch) {
+  opacity: 0.55;
+}
+
+.rk-btn-fetch { background: var(--rk-fetch, #2f6fae); color: #fff; }
+.rk-btn-excel { background: var(--rk-csv, #1f8a5a); color: #fff; }
+.rk-btn-csv { background: var(--rk-accent); color: #fff; }
+.rk-btn-pdf { background: var(--rk-pdf, #c0392b); color: #fff; }
+.rk-btn-send { background: var(--rk-send, #6c5ce7); color: #fff; }
+
+.rk-txn-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  background: var(--rk-line);
+  color: var(--rk-ink);
+}
+
+.rk-txn-pill--recharge { background: #dbeafe; color: #1d4ed8; }
+.rk-txn-pill--sell,
+.rk-txn-pill--ticket_sell { background: #dcfce7; color: #166534; }
+.rk-txn-pill--cancel,
+.rk-txn-pill--ticket_cancel { background: #fee2e2; color: #991b1b; }
+.rk-txn-pill--default { background: #f3f4f6; color: #374151; }
+
+.rk-send-steps {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+}
+
+.rk-send-step {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  padding: 6px;
+  border-radius: var(--rk-radius);
+  background: var(--rk-line);
+  color: var(--rk-muted);
+}
+
+.rk-send-step.is-active {
+  background: var(--rk-accent-soft);
+  color: var(--rk-accent);
+  font-weight: 600;
+}
+
+.rk-alert {
+  padding: 10px 14px;
+  border-radius: var(--rk-radius);
+  border: 1px solid var(--rk-line);
+  margin-bottom: 12px;
+}
+
+.rk-alert--error { border-color: #dc2626; background: #fef2f2; }
+.rk-alert--success { border-color: var(--rk-accent); background: var(--rk-accent-soft); }
+
+.rk-download-status {
+  margin-bottom: 12px;
+}
+
+.rk-download-status.is-hidden {
+  display: none;
+}
+
+.rk-download-status-bar {
+  height: 6px;
+  background: var(--rk-line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.rk-download-status-fill {
+  height: 100%;
+  background: var(--rk-accent);
+  transition: width 0.2s ease;
+}
+
+.rk-howto-panel {
+  margin-top: 16px;
+  border: 1px solid var(--rk-line);
+  border-radius: var(--rk-radius);
+  padding: 10px 14px;
+}
+
+.rk-howto-summary {
+  cursor: pointer;
+  font-weight: 600;
 }
