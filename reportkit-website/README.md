@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/assets/reportkit-logo.png" alt="ReportKit" width="168">
+  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/png/reportkit-logo-1200.png" alt="ReportKit" width="168">
 </p>
 
 <h1 align="center">ReportKit — Website &amp; Docs</h1>

@@ -84,7 +84,9 @@ class ExportReportCornerCaseTest extends TestCase
         $this->assertStringContainsString('createDownloadRunner', $dl);
         $this->assertStringContainsString('mergePdfPartsToSingleBlob', $dl);
         $this->assertStringContainsString('buildPdfDownload', $dl);
-        $this->assertStringContainsString('shouldStreamCsvDownload', $dl);
+        $this->assertStringContainsString('buildStreamCsvDownload', $dl);
+        $this->assertStringContainsString('zipNamedBlobs', $dl);
+        $this->assertStringContainsString('ensureStreamSaver', $dl);
         $this->assertStringContainsString('ensureJsPdf', $dl);
         $this->assertStringContainsString('ReportKit.pdf', $kit);
         $this->assertStringNotContainsString('win.print()', $kit);
@@ -311,10 +313,12 @@ class ExportReportCornerCaseTest extends TestCase
         $this->assertSame('lldp', $config['features']['pattern']);
     }
 
-    public function testExportHelperPrepareLongRunningReport()
+    public function testReadmeLogoPointsAtKitLarvaBrandPng()
     {
-        $helper = new ExportHelper();
-        $helper->prepareLongRunningReport();
-        $this->assertTrue(true);
+        $readme = file_get_contents($this->monorepoRoot() . '/README.md');
+        $this->assertStringContainsString('brand/png/reportkit-logo-1200.png', $readme);
+        $this->assertFileExists($this->monorepoRoot() . '/brand/png/reportkit-logo-1200.png');
+        $legacy = file_get_contents($this->monorepoRoot() . '/brand/reportkit-logo.svg');
+        $this->assertStringContainsString('8ef0c4', $legacy);
     }
 }

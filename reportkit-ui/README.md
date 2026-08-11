@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-UI/main/assets/reportkit-logo.png" alt="@lorapok-labs/reportkit-ui" width="168">
+  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/png/reportkit-logo-1200.png" alt="@lorapok-labs/reportkit-ui" width="168">
 </p>
 
 <h1 align="center">@lorapok-labs/reportkit-ui</h1>
@@ -23,7 +23,8 @@
   <a href="https://reportkit.lorapok.tech">Website &amp; Docs</a> ·
   <a href="https://reportkit.lorapok.tech/showcase">Live Demo</a> ·
   <a href="docs/CSS.md">CSS</a> ·
-  <a href="docs/JS.md">JS</a>
+  <a href="docs/JS.md">JS</a> ·
+  <a href="docs/UPGRADE.md">Upgrade</a>
 </p>
 
 > **Part of the Lorapok Labs ecosystem.** Framework-free CSS + JS that pairs with the [`reportkit/core`](https://github.com/Maijied/Reportkit-Core) engine and its Laravel adapters.

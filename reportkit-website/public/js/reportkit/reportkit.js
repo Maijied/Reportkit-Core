@@ -961,6 +961,11 @@
         csv: function (rows, options) {
             options = options || {};
             rows = rows || [];
+            if (window.ReportKitLLDP &&
+                window.ReportKitLLDP.shouldStreamCsvDownload(rows.length) &&
+                window.ReportKitLLDP.buildStreamCsvDownload) {
+                return window.ReportKitLLDP.buildStreamCsvDownload(rows, options);
+            }
             var columns = options.columns || this.inferColumns(rows);
             var chunkSize = Number(ReportKit.util.setting('export.csv_chunk_rows', options.chunkSize || 400));
             var lines = [];
@@ -1691,6 +1696,9 @@
         }
         if (window.ReportKitLLDP.buildPdfDownload) {
             ReportKit.buildPdfDownload = window.ReportKitLLDP.buildPdfDownload;
+        }
+        if (window.ReportKitLLDP.buildStreamCsvDownload) {
+            ReportKit.buildStreamCsvDownload = window.ReportKitLLDP.buildStreamCsvDownload;
         }
 
         ReportKit.initSecureStore = function (options) {

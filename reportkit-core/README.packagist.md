@@ -1,7 +1,7 @@
 > Plain-text overview for Packagist (no Mermaid). GitHub renders the full diagram version in [README.md](README.md).
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/assets/reportkit-logo.png" alt="ReportKit" width="160">
+  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/png/reportkit-logo-1200.png" alt="ReportKit" width="160">
 </p>
 
 <h1 align="center">ReportKit Core</h1>
@@ -34,7 +34,7 @@ The signature use case: **pull rows from several databases (live + archive + rea
 - **Prepare once, export many** — long date ranges are split into week chunks; downloads compose from prepared data.
 - **DataTables-native** — `DataTableResponder` speaks server-side DataTables out of the box.
 - **Definitions are code** — `Report::define()` is version-controlled and unit-testable.
-- **Legacy → current** — engine runs on PHP 5.6 → 8.5; adapters cover Laravel 4.1 → 13.
+- **Legacy → current** — engine runs on PHP 5.6 → 8.5; adapters cover Laravel 4.1 → all supported.
 - **Zero framework coupling** — not a single Laravel import in this package.
 
 ## Features

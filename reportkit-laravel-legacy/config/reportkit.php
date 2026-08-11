@@ -60,7 +60,6 @@ return [
         'csv_chunk_rows' => 400,
         'excel_chunk_rows' => 400,
         'stream_csv_row_threshold' => 50000,
-        'stream_csv_row_threshold' => 50000,
         'memory_limit' => '2048M',
         'rows_response_shape' => 'array',
     ],

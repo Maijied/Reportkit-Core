@@ -207,12 +207,268 @@
         });
     }
 
-    function shouldStreamCsvDownload(rowCount) {
+    function shouldStreamCsvDownload(rowCount, returnBlob) {
+        if (returnBlob) {
+            return false;
+        }
         var threshold = 50000;
         if (window.ReportKit && ReportKit.util && ReportKit.util.setting) {
             threshold = Number(ReportKit.util.setting('export.stream_csv_row_threshold', threshold));
         }
-        return rowCount >= threshold;
+        return supportsStreamSaver() && (Number(rowCount) || 0) >= threshold;
+    }
+
+    function supportsStreamSaver() {
+        return !!(window.WritableStream && window.TextEncoder);
+    }
+
+    function ensureStreamSaver(onReady) {
+        if (window.streamSaver && window.streamSaver.createWriteStream) {
+            if (window.streamSaver.mitm) {
+                onReady(null);
+                return;
+            }
+        }
+        var id = 'reportkit-streamsaver-cdn';
+        if (document.getElementById(id)) {
+            var tries = 0;
+            var timer = window.setInterval(function () {
+                tries += 1;
+                if (window.streamSaver && window.streamSaver.createWriteStream) {
+                    window.clearInterval(timer);
+                    onReady(null);
+                } else if (tries > 120) {
+                    window.clearInterval(timer);
+                    onReady(new Error('StreamSaver failed to load.'));
+                }
+            }, 50);
+            return;
+        }
+        var s = document.createElement('script');
+        s.id = id;
+        s.src = 'https://cdn.jsdelivr.net/npm/streamsaver@2.0.6/StreamSaver.min.js';
+        s.onload = function () {
+            if (window.streamSaver) {
+                window.streamSaver.mitm = 'https://jimmywarting.github.io/StreamSaver.js/mitm.html';
+                onReady(null);
+            } else {
+                onReady(new Error('StreamSaver global missing.'));
+            }
+        };
+        s.onerror = function () { onReady(new Error('StreamSaver CDN failed.')); };
+        document.head.appendChild(s);
+    }
+
+    function processInChunksAsync(items, chunkSize, eachChunkAsync, onProgress, isCancelled) {
+        return new Promise(function (resolve, reject) {
+            var list = items || [];
+            var total = list.length;
+            var size = Number(chunkSize) || 400;
+            var index = 0;
+
+            function cancelled() {
+                return typeof isCancelled === 'function' && isCancelled();
+            }
+
+            function step() {
+                if (cancelled()) {
+                    reject(new Error('cancelled'));
+                    return;
+                }
+                if (index >= total) {
+                    if (onProgress) {
+                        onProgress(total, total);
+                    }
+                    resolve();
+                    return;
+                }
+                var end = Math.min(index + size, total);
+                Promise.resolve(eachChunkAsync(list, index, end)).then(function () {
+                    index = end;
+                    if (onProgress) {
+                        onProgress(index, total);
+                    }
+                    scheduleYield(step);
+                }).catch(reject);
+            }
+
+            scheduleYield(step);
+        });
+    }
+
+    function buildStreamCsvDownload(rows, options) {
+        options = options || {};
+        rows = rows || [];
+        var columns = inferColumns(rows, options.columns);
+        var chunkSize = Number(options.chunkSize || 400);
+        if (window.ReportKit && ReportKit.util && ReportKit.util.setting) {
+            chunkSize = Number(ReportKit.util.setting('export.csv_chunk_rows', chunkSize));
+        }
+        var RK = window.ReportKit || {};
+        var filename = options.filename || buildFilename(options, 'csv');
+        var runner = { cancelled: false };
+
+        if (RK.ui && RK.ui.setDownloadStatus) {
+            RK.ui.setDownloadStatus({
+                selector: options.statusSelector || '#rkDownloadStatus',
+                hidden: false,
+                label: 'Streaming CSV…',
+                pct: 0
+            });
+        }
+
+        function fail(msg) {
+            if (RK.ui && RK.ui.toast) {
+                RK.ui.toast(msg, 'warn');
+            }
+            if (RK.ui && RK.ui.setDownloadStatus) {
+                RK.ui.setDownloadStatus({ selector: options.statusSelector || '#rkDownloadStatus', hidden: true });
+            }
+            if (options.onError) {
+                options.onError(msg);
+            }
+        }
+
+        if (!rows.length) {
+            fail('No prepared rows for CSV.');
+            return { ok: false };
+        }
+
+        ensureStreamSaver(function (err) {
+            if (err) {
+                fail(formatReportError(err));
+                return;
+            }
+            try {
+                var fileStream = window.streamSaver.createWriteStream(filename);
+                var writer = fileStream.getWriter();
+                var encoder = new TextEncoder();
+                var header = columns.map(function (col) {
+                    if (window.ReportKit && ReportKit.util && ReportKit.util.escapeCsvCell) {
+                        return ReportKit.util.escapeCsvCell(col.label || col.key || col);
+                    }
+                    return String(col.label || col.key || col).replace(/"/g, '""');
+                }).join(',');
+
+                writer.write(encoder.encode(header + '\r\n')).then(function () {
+                    return processInChunksAsync(rows, chunkSize, function (list, start, end) {
+                        var slice = list.slice(start, end);
+                        var lines = slice.map(function (row) {
+                            return columns.map(function (col) {
+                                var key = col.key || col;
+                                var val = row && typeof row === 'object' ? row[key] : row;
+                                if (window.ReportKit && ReportKit.util && ReportKit.util.escapeCsvCell) {
+                                    return ReportKit.util.escapeCsvCell(val);
+                                }
+                                return String(val == null ? '' : val).replace(/"/g, '""');
+                            }).join(',');
+                        }).join('\r\n');
+                        if (!lines.length) {
+                            return Promise.resolve();
+                        }
+                        return writer.write(encoder.encode(lines + '\r\n'));
+                    }, function (done, total) {
+                        if (RK.ui && RK.ui.setDownloadStatus) {
+                            RK.ui.setDownloadStatus({
+                                selector: options.statusSelector || '#rkDownloadStatus',
+                                label: 'Streaming CSV…',
+                                pct: total ? Math.round((done / total) * 100) : 0
+                            });
+                        }
+                    }, function () { return runner.cancelled; });
+                }).then(function () {
+                    return writer.close();
+                }).then(function () {
+                    if (RK.ui && RK.ui.setDownloadStatus) {
+                        RK.ui.setDownloadStatus({ selector: options.statusSelector || '#rkDownloadStatus', hidden: true });
+                    }
+                    if (RK.notify && RK.notify.ping) {
+                        RK.notify.ping();
+                    }
+                    if (RK.log && RK.log.add) {
+                        RK.log.add('export', 'CSV stream download (' + rows.length + ' rows)');
+                    }
+                    if (options.onComplete) {
+                        options.onComplete({ format: 'csv', rows: rows.length, filename: filename, streamed: true });
+                    }
+                }).catch(function (e) {
+                    fail(formatReportError(e));
+                });
+            } catch (eSink) {
+                fail(formatReportError(eSink));
+            }
+        });
+
+        return { ok: true, format: 'csv', rows: rows.length, cancel: function () { runner.cancelled = true; } };
+    }
+
+    function ensureJsZip(onReady) {
+        if (window.JSZip) {
+            onReady(null, window.JSZip);
+            return;
+        }
+        var id = 'reportkit-jszip-cdn';
+        if (document.getElementById(id)) {
+            var tries = 0;
+            var timer = window.setInterval(function () {
+                tries += 1;
+                if (window.JSZip) {
+                    window.clearInterval(timer);
+                    onReady(null, window.JSZip);
+                } else if (tries > 120) {
+                    window.clearInterval(timer);
+                    onReady(new Error('JSZip failed to load.'));
+                }
+            }, 50);
+            return;
+        }
+        var s = document.createElement('script');
+        s.id = id;
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+        s.onload = function () {
+            if (window.JSZip) {
+                onReady(null, window.JSZip);
+            } else {
+                onReady(new Error('JSZip global missing.'));
+            }
+        };
+        s.onerror = function () { onReady(new Error('JSZip CDN failed.')); };
+        document.head.appendChild(s);
+    }
+
+    function zipNamedBlobs(entries, onDone, onProgress, isCancelled) {
+        ensureJsZip(function (err, JSZipCtor) {
+            if (err) {
+                onDone(err);
+                return;
+            }
+            try {
+                var zip = new JSZipCtor();
+                (entries || []).forEach(function (entry) {
+                    if (entry && entry.name && entry.blob) {
+                        zip.file(entry.name, entry.blob);
+                    }
+                });
+                zip.generateAsync({
+                    type: 'blob',
+                    compression: 'DEFLATE',
+                    compressionOptions: { level: 6 }
+                }, function (metadata) {
+                    if (onProgress && metadata && metadata.percent) {
+                        onProgress(Math.round(metadata.percent));
+                    }
+                    if (typeof isCancelled === 'function' && isCancelled()) {
+                        throw new Error('cancelled');
+                    }
+                }).then(function (blob) {
+                    onDone(null, blob);
+                }).catch(function (e) {
+                    onDone(e);
+                });
+            } catch (eZip) {
+                onDone(eZip);
+            }
+        });
     }
 
     function inferColumns(rows, columns) {
@@ -307,6 +563,18 @@
             }
         }
 
+        function finishDownload(name) {
+            if (RK.ui && RK.ui.setDownloadStatus) {
+                RK.ui.setDownloadStatus({ selector: options.statusSelector || '#rkDownloadStatus', hidden: true });
+            }
+            if (RK.notify && RK.notify.ping) {
+                RK.notify.ping();
+            }
+            if (options.onComplete) {
+                options.onComplete({ format: 'pdf', rows: rows.length, filename: name });
+            }
+        }
+
         if (!rows.length) {
             fail('No prepared rows for PDF.');
             return { ok: false };
@@ -316,15 +584,7 @@
             buildPdfPart(rows, columns, options, {
                 done: function (blob) {
                     downloadBlob(filename, blob);
-                    if (RK.ui && RK.ui.setDownloadStatus) {
-                        RK.ui.setDownloadStatus({ selector: options.statusSelector || '#rkDownloadStatus', hidden: true });
-                    }
-                    if (RK.notify && RK.notify.ping) {
-                        RK.notify.ping();
-                    }
-                    if (options.onComplete) {
-                        options.onComplete({ format: 'pdf', rows: rows.length, filename: filename });
-                    }
+                    finishDownload(filename);
                 },
                 fail: fail
             });
@@ -340,21 +600,41 @@
             }
             var slice = rows.slice(cursor, cursor + perVolume);
             if (!slice.length) {
+                var deliverZip = rows.length > singleMax;
+                if (deliverZip) {
+                    var zipEntries = parts.map(function (ab, idx) {
+                        var blob = ab instanceof Blob ? ab : new Blob([ab], { type: 'application/pdf' });
+                        return {
+                            name: 'part-' + String(idx + 1).padStart(2, '0') + '.pdf',
+                            blob: blob
+                        };
+                    });
+                    zipNamedBlobs(zipEntries, function (err, blob) {
+                        if (err) {
+                            fail(formatReportError(err));
+                            return;
+                        }
+                        var zipName = filename.replace(/\.pdf$/i, '') + '.pdf.zip';
+                        downloadBlob(zipName, blob);
+                        finishDownload(zipName);
+                    }, function (pct) {
+                        if (RK.ui && RK.ui.setDownloadStatus) {
+                            RK.ui.setDownloadStatus({
+                                selector: options.statusSelector || '#rkDownloadStatus',
+                                label: 'Zipping PDF volumes…',
+                                pct: pct
+                            });
+                        }
+                    }, function () { return runner.cancelled; });
+                    return;
+                }
                 mergePdfPartsToSingleBlob(parts, function (err, blob) {
                     if (err) {
                         fail(formatReportError(err));
                         return;
                     }
                     downloadBlob(filename, blob);
-                    if (RK.ui && RK.ui.setDownloadStatus) {
-                        RK.ui.setDownloadStatus({ selector: options.statusSelector || '#rkDownloadStatus', hidden: true });
-                    }
-                    if (RK.notify && RK.notify.ping) {
-                        RK.notify.ping();
-                    }
-                    if (options.onComplete) {
-                        options.onComplete({ format: 'pdf', rows: rows.length, filename: filename });
-                    }
+                    finishDownload(filename);
                 }, function (pct, label) {
                     if (RK.ui && RK.ui.setDownloadStatus) {
                         RK.ui.setDownloadStatus({
@@ -498,7 +778,10 @@
     window.ReportKitLLDP = window.ReportKitLLDP || {};
     window.ReportKitLLDP.createDownloadRunner = createDownloadRunner;
     window.ReportKitLLDP.buildPdfDownload = buildPdfDownload;
+    window.ReportKitLLDP.buildStreamCsvDownload = buildStreamCsvDownload;
     window.ReportKitLLDP.mergePdfPartsToSingleBlob = mergePdfPartsToSingleBlob;
+    window.ReportKitLLDP.zipNamedBlobs = zipNamedBlobs;
     window.ReportKitLLDP.shouldStreamCsvDownload = shouldStreamCsvDownload;
+    window.ReportKitLLDP.supportsStreamSaver = supportsStreamSaver;
     window.ReportKitLLDP.ensureJsPdf = ensureJsPdf;
 }(window));
