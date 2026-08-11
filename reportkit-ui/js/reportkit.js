@@ -1198,12 +1198,25 @@
             if (!$) {
                 return;
             }
+            function syncSendButton() {
+                var email = String($('#rkSendEmail').val() || '').trim();
+                var gate = ReportKit.mail.canSend();
+                var emailOk = ReportKit.mail.assessSendEmail(email);
+                var enabled = gate.ok && emailOk.ok;
+                $('#rkSendBtn').prop('disabled', !enabled);
+                $('#rkSendForm button[type="submit"]').prop('disabled', !enabled);
+            }
+            $('#rkSendEmail').off('input.reportkitSend change.reportkitSend').on('input.reportkitSend change.reportkitSend', syncSendButton);
+            syncSendButton();
             $('#rkSendForm').off('submit.reportkitSend').on('submit.reportkitSend', function (evt) {
                 evt.preventDefault();
                 var email = $('#rkSendEmail').val();
                 ReportKit.ui.sendStep(1);
+                var extra = typeof options.extra === 'function' ? options.extra() : options.extra;
                 ReportKit.mail.send($.extend({}, options, {
                     email: email,
+                    extra: extra,
+                    zip: options.zip !== false,
                     onBuildStart: function () { ReportKit.ui.sendStep(2); },
                     onUploadStart: function () { ReportKit.ui.sendStep(3); },
                     onComplete: function () {
@@ -1375,8 +1388,56 @@
      * Email prepared export (Phase C5).
      */
     ReportKit.mail = ReportKit.mail || {
+        _sending: false,
         enabled: function () {
             return ReportKit.util.setting('mail.enabled', true) !== false;
+        },
+        isSending: function () {
+            return !!this._sending;
+        },
+        canSend: function () {
+            if (this.isSending()) {
+                return { ok: false, error: 'Send already in progress.' };
+            }
+            if (ReportKit.export && ReportKit.export.getDownloadRunner && ReportKit.export.getDownloadRunner().isActive && ReportKit.export.getDownloadRunner().isActive()) {
+                return { ok: false, error: 'Please wait — download in progress.' };
+            }
+            if (ReportKit.prepare && ReportKit.prepare._cancelled === false && ReportKit.store && ReportKit.store.count && ReportKit.store.count() === 0) {
+                var runnerActive = ReportKit.asyncLoader && ReportKit.asyncLoader.isVisible && ReportKit.asyncLoader.isVisible('#rkAsyncLoading');
+                if (runnerActive) {
+                    return { ok: false, error: 'Please wait — prepare is still running.' };
+                }
+            }
+            if (!ReportKit.store || !ReportKit.store.count || ReportKit.store.count() < 1) {
+                return { ok: false, error: 'No prepared data. Run Fetch & Prepare first.' };
+            }
+            return { ok: true };
+        },
+        assessSendEmail: function (email) {
+            email = String(email || '').trim();
+            var base = this.assessEmail(email);
+            if (!base.ok) {
+                return base;
+            }
+            var typos = {
+                '@gmial.com': '@gmail.com',
+                '@gmai.com': '@gmail.com',
+                '@yahooo.com': '@yahoo.com',
+                '@hotmial.com': '@hotmail.com'
+            };
+            var lower = base.email.toLowerCase();
+            var keys = Object.keys(typos);
+            for (var i = 0; i < keys.length; i++) {
+                var bad = keys[i];
+                if (lower.slice(-bad.length) === bad) {
+                    return {
+                        ok: false,
+                        error: 'Did you mean ' + base.email.slice(0, -bad.length) + typos[bad] + '?',
+                        suggestion: base.email.slice(0, -bad.length) + typos[bad]
+                    };
+                }
+            }
+            return base;
         },
         assessEmail: function (email) {
             var maxLen = Number(ReportKit.util.setting('mail.email_max_length', 254));
@@ -1425,8 +1486,26 @@
                 ok: true,
                 content: content,
                 filename: filename,
-                mime: format === 'excel' ? 'application/vnd.ms-excel' : 'text/csv;charset=utf-8'
+                mime: format === 'excel' ? 'application/vnd.ms-excel' : 'text/csv;charset=utf-8',
+                csvBlob: new Blob([content], { type: 'text/csv;charset=utf-8' })
             };
+        },
+        zipCsvBlob: function (csvBlob, csvFileName, onDone) {
+            if (typeof onDone !== 'function') {
+                return;
+            }
+            var zipFn = window.ReportKitLLDP && window.ReportKitLLDP.zipNamedBlobs;
+            if (zipFn) {
+                zipFn([{ name: csvFileName, blob: csvBlob }], function (err, zipBlob) {
+                    if (err) {
+                        onDone(err);
+                        return;
+                    }
+                    onDone(null, zipBlob, csvFileName.replace(/\.csv$/i, '') + '.csv.zip');
+                });
+                return;
+            }
+            onDone(new Error('ZIP helper unavailable — load lldp-download.js'));
         },
         send: function (options) {
             options = options || {};
@@ -1442,78 +1521,116 @@
                 ReportKit.ui.toast('Missing sendUrl for mail export.', 'warn');
                 return null;
             }
-            var assessment = this.assessEmail(options.email);
+            var pre = this.canSend();
+            if (!pre.ok) {
+                ReportKit.ui.toast(pre.error, 'warn');
+                return null;
+            }
+            var assessment = this.assessSendEmail(options.email);
             if (!assessment.ok) {
                 ReportKit.ui.toast(assessment.error, 'warn');
                 return null;
             }
+            var self = this;
+            self._sending = true;
             if (typeof options.onBuildStart === 'function') {
                 options.onBuildStart();
             }
             var attach = this.buildAttachment(options.format || 'csv', options);
             if (!attach.ok) {
+                self._sending = false;
                 ReportKit.ui.toast(attach.error, attach.tooLarge ? 'warn' : 'info');
                 return null;
             }
-            var formData = new FormData();
-            formData.append('email', assessment.email);
-            if (options.subject) {
-                formData.append('subject', options.subject);
-            }
-            try {
-                formData.append('file', new Blob([attach.content], { type: attach.mime }), attach.filename);
-            } catch (e) {
-                formData.append('file', attach.content, attach.filename);
-            }
-            if (options.extra && typeof options.extra === 'object') {
-                Object.keys(options.extra).forEach(function (key) {
-                    formData.append(key, options.extra[key]);
+            var useZip = options.zip !== false;
+            function uploadBlob(blob, filename, mime) {
+                var formData = new FormData();
+                formData.append('email', assessment.email);
+                if (options.subject) {
+                    formData.append('subject', options.subject);
+                }
+                try {
+                    formData.append('file', blob, filename);
+                } catch (e) {
+                    self._sending = false;
+                    ReportKit.ui.toast('Could not attach file.', 'warn');
+                    return null;
+                }
+                if (options.extra && typeof options.extra === 'object') {
+                    Object.keys(options.extra).forEach(function (key) {
+                        formData.append(key, options.extra[key]);
+                    });
+                }
+                var csrf = ReportKit.util.getCsrfToken ? ReportKit.util.getCsrfToken() : null;
+                if (typeof options.onUploadStart === 'function') {
+                    options.onUploadStart();
+                }
+                var ajaxOptions = {
+                    url: options.sendUrl,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function () {
+                        var xhr = $.ajaxSettings.xhr();
+                        if (xhr.upload && typeof options.onUploadProgress === 'function') {
+                            xhr.upload.addEventListener('progress', options.onUploadProgress);
+                        } else if (xhr.upload) {
+                            xhr.upload.addEventListener('progress', function (evt) {
+                                if (!evt.lengthComputable) {
+                                    return;
+                                }
+                                var pct = Math.round((evt.loaded / evt.total) * 100);
+                                ReportKit.ui.setSendUploadProgress(pct, 'Uploading ' + pct + '%…');
+                            });
+                        }
+                        return xhr;
+                    }
+                };
+                if (csrf) {
+                    ajaxOptions.headers = { 'X-CSRF-TOKEN': csrf };
+                }
+                return $.ajax(ajaxOptions).done(function () {
+                    self._sending = false;
+                    ReportKit.log.add('mail', 'Report emailed to ' + assessment.email);
+                    ReportKit.ui.toast('Report sent.', 'info');
+                    if (ReportKit.notify && ReportKit.notify.ping) {
+                        ReportKit.notify.ping();
+                    }
+                    if (typeof options.onComplete === 'function') {
+                        options.onComplete();
+                    }
+                }).fail(function (xhr) {
+                    self._sending = false;
+                    var msg = ReportKit.formatReportError
+                        ? ReportKit.formatReportError(xhr, 'Could not send report.')
+                        : 'Could not send report.';
+                    ReportKit.ui.toast(msg, 'warn');
+                    if (typeof options.onError === 'function') {
+                        options.onError(msg);
+                    }
                 });
             }
-            var csrf = ReportKit.util.getCsrfToken ? ReportKit.util.getCsrfToken() : null;
-            if (typeof options.onUploadStart === 'function') {
-                options.onUploadStart();
-            }
-            var ajaxOptions = {
-                url: options.sendUrl,
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                xhr: function () {
-                    var xhr = $.ajaxSettings.xhr();
-                    if (xhr.upload && typeof options.onUploadProgress === 'function') {
-                        xhr.upload.addEventListener('progress', options.onUploadProgress);
-                    } else if (xhr.upload) {
-                        xhr.upload.addEventListener('progress', function (evt) {
-                            if (!evt.lengthComputable) {
-                                return;
-                            }
-                            var pct = Math.round((evt.loaded / evt.total) * 100);
-                            ReportKit.ui.setSendUploadProgress(pct, 'Uploading ' + pct + '%…');
-                        });
+            if (useZip && attach.csvBlob) {
+                this.zipCsvBlob(attach.csvBlob, attach.filename, function (err, zipBlob, zipName) {
+                    if (err) {
+                        self._sending = false;
+                        ReportKit.ui.toast(String(err.message || err), 'warn');
+                        if (typeof options.onError === 'function') {
+                            options.onError(String(err.message || err));
+                        }
+                        return;
                     }
-                    return xhr;
-                }
-            };
-            if (csrf) {
-                ajaxOptions.headers = { 'X-CSRF-TOKEN': csrf };
+                    uploadBlob(zipBlob, zipName, 'application/zip');
+                });
+                return;
             }
-            return $.ajax(ajaxOptions).done(function () {
-                ReportKit.log.add('mail', 'Report emailed to ' + assessment.email);
-                ReportKit.ui.toast('Report sent.', 'info');
-                if (typeof options.onComplete === 'function') {
-                    options.onComplete();
-                }
-            }).fail(function (xhr) {
-                var msg = ReportKit.formatReportError
-                    ? ReportKit.formatReportError(xhr, 'Could not send report.')
-                    : 'Could not send report.';
-                ReportKit.ui.toast(msg, 'warn');
-                if (typeof options.onError === 'function') {
-                    options.onError(msg);
-                }
-            });
+            try {
+                uploadBlob(new Blob([attach.content], { type: attach.mime }), attach.filename, attach.mime);
+            } catch (e2) {
+                self._sending = false;
+                uploadBlob(attach.content, attach.filename, attach.mime);
+            }
         }
     };
 

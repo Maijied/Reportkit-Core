@@ -1,0 +1,17 @@
+<?php
+/**
+ * Lorapok ReportKit
+ * Copyright (c) 2026 Lorapok Labs (https://lorapok.tech)
+ * Licensed under the Lorapok Non-Commercial License 1.0 (Lorapok-NCL-1.0)
+ *
+ * Example route registration — copy into your Laravel host routes/web.php.
+ */
+
+Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth']], function () {
+    // After: php artisan reportkit:make OperatorExport --preset=hybrid-export --route=admin/operator-export
+    Route::get('operator-export', 'OperatorExportController@index');
+    Route::get('operator-export/weeks', 'OperatorExportController@weeks');
+    Route::get('operator-export/rows', 'OperatorExportController@rows');
+});
+
+Route::post('reportkit/operator-export/send', 'OperatorExportController@send');

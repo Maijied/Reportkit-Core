@@ -483,9 +483,92 @@
         });
     }
 
+    function drawPdfStatementHeader(doc, options) {
+        var y = 12;
+        var title = options.title || 'ReportKit Export';
+        doc.setFontSize(11);
+        doc.setTextColor(40);
+        doc.text(title, 14, y);
+        y += 6;
+        doc.setFontSize(9);
+        doc.setTextColor(80);
+        var meta = [];
+        if (options.start_date && options.end_date) {
+            meta.push('Period: ' + options.start_date + ' — ' + options.end_date);
+        }
+        if (options.rowCount != null) {
+            meta.push('Prepared rows: ' + options.rowCount);
+        }
+        meta.push('Generated: ' + (options.generatedAt || new Date().toISOString().slice(0, 19).replace('T', ' ')));
+        meta.forEach(function (line) {
+            doc.text(line, 14, y);
+            y += 4.5;
+        });
+        var disclaimer = options.disclaimer || (window.ReportKit && ReportKit.brand && ReportKit.brand.pdf_disclaimer) || '';
+        if (disclaimer) {
+            doc.setFontSize(7);
+            doc.setTextColor(120);
+            doc.text(String(disclaimer), 14, y);
+            y += 4;
+        }
+        doc.setTextColor(0);
+        return y + 2;
+    }
+
+    function applyPdfWatermark(doc, pageWidth, pageHeight) {
+        var text = (window.ReportKit && ReportKit.brand && ReportKit.brand.pdf_watermark) || 'ReportKit';
+        doc.saveGraphicsState();
+        doc.setTextColor(230);
+        doc.setFontSize(42);
+        if (typeof doc.text === 'function') {
+            doc.text(text, pageWidth / 2, pageHeight / 2, {
+                align: 'center',
+                angle: 45
+            });
+        }
+        doc.restoreGraphicsState();
+    }
+
+    function updatePdfDownloadUi(options, label, pct) {
+        var RK = window.ReportKit || {};
+        if (RK.ui && RK.ui.setDownloadStatus) {
+            RK.ui.setDownloadStatus({
+                selector: options.statusSelector || '#rkDownloadStatus',
+                hidden: false,
+                label: label,
+                pct: pct == null ? undefined : pct
+            });
+        }
+        if (options.pdfBtnSelector) {
+            var $ = window.jQuery;
+            if ($) {
+                var $btn = $(options.pdfBtnSelector);
+                if ($btn.length) {
+                    if (!$btn.data('rkPdfOrig')) {
+                        $btn.data('rkPdfOrig', $btn.text());
+                    }
+                    $btn.text(pct != null ? 'PDF ' + pct + '%' : label);
+                }
+            }
+        }
+    }
+
+    function resetPdfButtonLabel(options) {
+        if (!options.pdfBtnSelector) {
+            return;
+        }
+        var $ = window.jQuery;
+        if (!$) {
+            return;
+        }
+        var $btn = $(options.pdfBtnSelector);
+        if ($btn.length && $btn.data('rkPdfOrig')) {
+            $btn.text($btn.data('rkPdfOrig'));
+        }
+    }
+
     function buildPdfPart(rows, columns, options, callbacks) {
         callbacks = callbacks || {};
-        var chunkRows = Number(options.pdfChunkRows || 80);
         ensureJsPdf(function (err) {
             if (err) {
                 if (callbacks.fail) {
@@ -495,13 +578,8 @@
             }
             var JsPDF = resolveJsPdfConstructor();
             var doc = new JsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-            var disclaimer = (window.ReportKit && ReportKit.brand && ReportKit.brand.pdf_disclaimer) || '';
-            doc.setFontSize(10);
-            doc.text(options.title || 'ReportKit Export', 14, 12);
-            if (disclaimer) {
-                doc.setFontSize(8);
-                doc.text(disclaimer, 14, 18);
-            }
+            var partOptions = Object.assign({}, options, { rowCount: rows.length });
+            var startY = drawPdfStatementHeader(doc, partOptions);
             var head = columns.map(function (c) { return c.label || c.key || c; });
             var body = rows.map(function (row) {
                 return columns.map(function (col) {
@@ -513,11 +591,21 @@
             doc.autoTable({
                 head: [head],
                 body: body,
-                startY: 24,
+                startY: startY,
                 styles: { fontSize: 7, cellPadding: 1.5 },
                 margin: { left: 10, right: 10 },
                 rowPageBreak: 'avoid',
-                pageBreak: 'auto'
+                pageBreak: 'auto',
+                didDrawPage: function (data) {
+                    var pageWidth = doc.internal.pageSize.getWidth();
+                    var pageHeight = doc.internal.pageSize.getHeight();
+                    applyPdfWatermark(doc, pageWidth, pageHeight);
+                    if (data.pageNumber > 1) {
+                        doc.setFontSize(8);
+                        doc.setTextColor(100);
+                        doc.text(String(options.title || 'ReportKit Export'), 14, 10);
+                    }
+                }
             });
             try {
                 var blob = pdfDocumentToBlob(doc);
@@ -543,15 +631,11 @@
         var runner = { cancelled: false };
 
         if (RK.ui && RK.ui.setDownloadStatus) {
-            RK.ui.setDownloadStatus({
-                selector: options.statusSelector || '#rkDownloadStatus',
-                hidden: false,
-                label: 'Building PDF…',
-                pct: 0
-            });
+            updatePdfDownloadUi(options, 'Building PDF…', 0);
         }
 
         function fail(msg) {
+            resetPdfButtonLabel(options);
             if (RK.ui && RK.ui.toast) {
                 RK.ui.toast(msg, 'warn');
             }
@@ -564,6 +648,7 @@
         }
 
         function finishDownload(name) {
+            resetPdfButtonLabel(options);
             if (RK.ui && RK.ui.setDownloadStatus) {
                 RK.ui.setDownloadStatus({ selector: options.statusSelector || '#rkDownloadStatus', hidden: true });
             }
@@ -581,8 +666,10 @@
         }
 
         if (rows.length <= singleMax) {
-            buildPdfPart(rows, columns, options, {
+            updatePdfDownloadUi(options, 'Building PDF… 0%', 0);
+            buildPdfPart(rows, columns, Object.assign({}, options, { rowCount: rows.length }), {
                 done: function (blob) {
+                    updatePdfDownloadUi(options, 'Saving PDF…', 100);
                     downloadBlob(filename, blob);
                     finishDownload(filename);
                 },
@@ -598,6 +685,8 @@
                 fail('PDF download cancelled.');
                 return;
             }
+            var pct = rows.length ? Math.min(100, Math.round((cursor / rows.length) * 100)) : 0;
+            updatePdfDownloadUi(options, 'Building PDF… ' + pct + '% (' + cursor + '/' + rows.length + ' rows)', pct);
             var slice = rows.slice(cursor, cursor + perVolume);
             if (!slice.length) {
                 var deliverZip = rows.length > singleMax;

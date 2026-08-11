@@ -14,6 +14,7 @@
         @if(!empty($content))
             {!! $content !!}
         @else
+            @yield('reportkit.howto')
             @yield('reportkit.howto-content')
         @endif
     </div>

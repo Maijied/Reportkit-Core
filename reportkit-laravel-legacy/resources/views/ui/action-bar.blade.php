@@ -14,7 +14,7 @@
 @endphp
 <div class="rk-action-bar {{ $disabled ? 'is-disabled' : '' }}" id="{{ $barId }}">
     @if(empty($reportFlags) || !empty($reportFlags['async_prepare']))
-        <button type="button" class="rk-btn rk-btn-fetch" id="rkPrepareBtn" {{ $disabled ? 'disabled' : '' }}>Prepare</button>
+        <button type="button" class="rk-btn rk-btn-fetch" id="rkPrepareBtn" {{ $disabled ? 'disabled' : '' }}>Fetch &amp; Prepare</button>
     @endif
     @if(empty($reportFlags) || !empty($reportFlags['excel']))
         <button type="button" class="rk-btn rk-btn-excel" id="rkExcelBtn" data-rk-export="excel" {{ $disabled ? 'disabled' : '' }}>Excel</button>

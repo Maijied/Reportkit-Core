@@ -321,4 +321,37 @@ class ExportReportCornerCaseTest extends TestCase
         $legacy = file_get_contents($this->monorepoRoot() . '/brand/reportkit-mark.svg');
         $this->assertStringContainsString('8ef0c4', $legacy);
     }
+
+    public function testSendPipelineExportsZipAndAssessSendEmail()
+    {
+        $kit = $this->readUiJs('reportkit.js');
+        $this->assertStringContainsString('assessSendEmail', $kit);
+        $this->assertStringContainsString('zipCsvBlob', $kit);
+        $this->assertStringContainsString('canSend', $kit);
+        $this->assertStringContainsString('@gmial.com', $kit);
+        $this->assertStringContainsString('.csv.zip', $kit);
+    }
+
+    public function testActionBarUsesFetchAndPrepareLabel()
+    {
+        $bar = $this->readLegacyPartial('action-bar.blade.php');
+        $this->assertStringContainsString('Fetch &amp; Prepare', $bar);
+        $this->assertStringContainsString('rkPrepareBtn', $bar);
+    }
+
+    public function testKpiRowHasExportAnchorId()
+    {
+        $kpi = $this->readLegacyPartial('kpi-row.blade.php');
+        $this->assertStringContainsString('id="rkKpiRow"', $kpi);
+        $this->assertStringContainsString('row_count', $kpi);
+    }
+
+    public function testPdfComposeHasStatementHeaderWatermarkAndProgress()
+    {
+        $js = $this->readUiJs('lldp-download.js');
+        $this->assertStringContainsString('drawPdfStatementHeader', $js);
+        $this->assertStringContainsString('applyPdfWatermark', $js);
+        $this->assertStringContainsString('updatePdfDownloadUi', $js);
+        $this->assertStringContainsString('Prepared rows:', $js);
+    }
 }
