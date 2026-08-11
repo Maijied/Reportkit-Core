@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "test": "vitest run",
+    "test": "vitest run && node scripts/ci-d1-seed.mjs",
     "seed:sql": "node seed/generate-seed.mjs"
   },
   "devDependencies": {

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/sync-ui-assets.mjs && node scripts/sync-docs.mjs && node scripts/fetch-versions.mjs && astro build && node scripts/copy-cname.mjs && npx --yes pagefind --site dist",
+    "build": "node scripts/sync-ui-assets.mjs && node scripts/sync-docs.mjs && node scripts/fetch-versions.mjs && astro build && node scripts/copy-cname.mjs && npx --yes pagefind --site dist && node scripts/ci-gate.mjs",
     "preview": "astro preview",
     "sync-docs": "node scripts/sync-docs.mjs",
     "fetch-versions": "node scripts/fetch-versions.mjs",
