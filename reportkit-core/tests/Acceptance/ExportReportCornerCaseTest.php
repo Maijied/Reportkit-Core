@@ -438,6 +438,9 @@ class ExportReportCornerCaseTest extends TestCase
         $root = $this->monorepoRoot();
         $this->assertFileExists($root . '/reportkit-website/playwright.config.ts');
         $this->assertFileExists($root . '/reportkit-website/e2e/simulation.spec.ts');
-        $this->assertFileExists($root . '/.github/workflows/simulation-e2e.yml');
+        $this->assertFileExists($root . '/.github/workflows/quality.yml');
+        $this->assertFileExists($root . '/reportkit-website/src/components/marketing/PrepareSequenceAnimation.astro');
+        $sim = file_get_contents($root . '/reportkit-website/src/pages/simulation.astro');
+        $this->assertStringContainsString('PrepareSequenceAnimation', $sim);
     }
 }

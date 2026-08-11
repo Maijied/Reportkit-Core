@@ -1,0 +1,124 @@
+name: Website CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'reportkit-website/**'
+      - 'reportkit-ui/**'
+      - '.github/workflows/quality.yml'
+  pull_request:
+    paths:
+      - 'reportkit-website/**'
+      - 'reportkit-ui/**'
+      - '.github/workflows/quality.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: reportkit-website
+
+jobs:
+  sync-build-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: reportkit-website/.nvmrc
+          cache: npm
+          cache-dependency-path: reportkit-website/package-lock.json
+
+      - name: Sync UI assets
+        run: node scripts/sync-ui-assets.mjs
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Astro type check
+        run: npm run check
+        continue-on-error: true
+
+      - name: Build site
+        run: npm run build
+
+      - name: Verify CNAME + key routes
+        run: |
+          test "$(tr -d '\n' < dist/CNAME)" = "reportkit.lorapok.tech"
+          test -f dist/index.html
+          test -f dist/demo/index.html
+          test -f dist/simulation/index.html
+
+  worker-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: reportkit-website/worker
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: reportkit-website/.nvmrc
+          cache: npm
+          cache-dependency-path: reportkit-website/worker/package-lock.json
+
+      - name: Install worker dependencies
+        run: npm ci
+
+      - name: Run worker unit tests
+        run: npm test
+
+  playwright:
+    needs: sync-build-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: reportkit-website/.nvmrc
+          cache: npm
+          cache-dependency-path: reportkit-website/package-lock.json
+
+      - name: Sync UI assets
+        run: node scripts/sync-ui-assets.mjs
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build site
+        run: npm run build
+
+      - name: Run Playwright E2E
+        run: npm run test:e2e
+
+  lighthouse:
+    needs: sync-build-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: reportkit-website/.nvmrc
+          cache: npm
+          cache-dependency-path: reportkit-website/package-lock.json
+
+      - name: Build site
+        run: |
+          node scripts/sync-ui-assets.mjs
+          npm ci
+          npm run build
+
+      - name: Run Lighthouse (informational)
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: reportkit-website/lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+        continue-on-error: true

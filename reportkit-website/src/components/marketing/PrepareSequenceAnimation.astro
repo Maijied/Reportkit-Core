@@ -1,0 +1,177 @@
+---
+/**
+ * Prepare flow simulation — detailed validation, compose, and mail pipeline.
+ */
+---
+<div class="rk-flow" data-prepare-sequence>
+  <div class="rk-flow-top">
+    <div>
+      <div class="rk-flow-kicker">How ReportKit works</div>
+      <h2 class="rk-flow-title" data-flow-title>Starting…</h2>
+      <p class="rk-flow-detail" data-flow-detail>Fictional demo data only — same flow in your Laravel host.</p>
+    </div>
+    <div class="rk-flow-meta">
+      <span class="rk-flow-step-pill" data-flow-step>Step 1 of 18</span>
+      <button type="button" class="btn btn-sm rk-btn-ghost" data-flow-replay>Replay</button>
+    </div>
+  </div>
+
+  <div class="rk-flow-phases rk-flow-phases--7" aria-label="Pipeline phases">
+    <div class="rk-flow-phase" data-flow-phase="validate"><span>1</span> Validate</div>
+    <div class="rk-flow-phase" data-flow-phase="plan"><span>2</span> Plan</div>
+    <div class="rk-flow-phase" data-flow-phase="prepare"><span>3</span> Prepare</div>
+    <div class="rk-flow-phase" data-flow-phase="fetch"><span>4</span> Fetch</div>
+    <div class="rk-flow-phase" data-flow-phase="merge"><span>5</span> Merge</div>
+    <div class="rk-flow-phase" data-flow-phase="compose"><span>6</span> Compose</div>
+    <div class="rk-flow-phase" data-flow-phase="send"><span>7</span> Send</div>
+  </div>
+
+  <div class="rk-flow-stage" data-flow-stage>
+    <div class="rk-flow-actors-row" data-flow-actors-row>
+      <div class="rk-flow-actor" data-flow-actor="user">
+        <div class="rk-flow-actor-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <circle cx="12" cy="8" r="3.5"></circle>
+            <path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6"></path>
+          </svg>
+        </div>
+        <div class="rk-flow-actor-name">Operator</div>
+      </div>
+      <div class="rk-flow-actor" data-flow-actor="ui">
+        <div class="rk-flow-actor-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <rect x="3" y="4" width="18" height="13" rx="2"></rect>
+            <path d="M8 20h8"></path>
+            <path d="M12 17v3"></path>
+          </svg>
+        </div>
+        <div class="rk-flow-actor-name">Browser UI</div>
+      </div>
+      <div class="rk-flow-actor" data-flow-actor="engine">
+        <div class="rk-flow-actor-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M12 3v3"></path>
+            <path d="M12 18v3"></path>
+            <path d="M3 12h3"></path>
+            <path d="M18 12h3"></path>
+            <circle cx="12" cy="12" r="4"></circle>
+          </svg>
+        </div>
+        <div class="rk-flow-actor-name">Prepare engine</div>
+      </div>
+      <div class="rk-flow-actor" data-flow-actor="data">
+        <div class="rk-flow-actor-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <ellipse cx="12" cy="6" rx="7" ry="3"></ellipse>
+            <path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"></path>
+            <path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"></path>
+          </svg>
+        </div>
+        <div class="rk-flow-actor-name">Host API</div>
+      </div>
+      <div class="rk-flow-actor" data-flow-actor="mail">
+        <div class="rk-flow-actor-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+            <path d="M3 7l9 6 9-6"></path>
+          </svg>
+        </div>
+        <div class="rk-flow-actor-name">Cloudflare Mail</div>
+      </div>
+    </div>
+
+    <div class="rk-flow-connector" data-flow-connector hidden>
+      <div class="rk-flow-connector-track"></div>
+      <div class="rk-flow-connector-label" data-flow-connector-label>request</div>
+      <div class="rk-flow-packet" data-flow-packet></div>
+    </div>
+
+    <div class="rk-flow-validation" data-flow-validation hidden>
+      <div class="rk-flow-validation-title">Filter validation</div>
+      <ul class="rk-flow-validation-list">
+        <li class="rk-flow-val-item" data-val-item>Dates in order</li>
+        <li class="rk-flow-val-item" data-val-item>Span ≤ 6 months</li>
+        <li class="rk-flow-val-item" data-val-item>Company selected</li>
+      </ul>
+    </div>
+
+    <div class="rk-flow-parallel" data-flow-parallel hidden>
+      <div class="rk-flow-parallel-title">3 concurrent week fetches</div>
+      <div class="rk-flow-parallel-lanes">
+        <div class="rk-flow-par-lane" data-par-lane>W01</div>
+        <div class="rk-flow-par-lane" data-par-lane>W02</div>
+        <div class="rk-flow-par-lane" data-par-lane>W03</div>
+      </div>
+    </div>
+
+    <div class="rk-flow-compose" data-flow-compose hidden>
+      <div class="rk-flow-compose-title" data-compose-label>Compose from JSON</div>
+      <div class="rk-flow-compose-formats">
+        <div class="rk-flow-compose-fmt" data-compose-fmt="xls">XLS</div>
+        <div class="rk-flow-compose-fmt" data-compose-fmt="csv">CSV</div>
+        <div class="rk-flow-compose-fmt" data-compose-fmt="pdf">PDF</div>
+      </div>
+      <div class="rk-flow-compose-bar-track"><div class="rk-flow-compose-bar" data-compose-bar></div></div>
+    </div>
+
+    <div class="rk-flow-mail" data-flow-mail hidden>
+      <div class="rk-flow-mail-title">Email pipeline</div>
+      <div class="rk-flow-mail-steps">
+        <div class="rk-flow-mail-step" data-mail-step="validate">Validate</div>
+        <div class="rk-flow-mail-step" data-mail-step="zip">ZIP</div>
+        <div class="rk-flow-mail-step" data-mail-step="post">POST</div>
+        <div class="rk-flow-mail-step" data-mail-step="route">Route</div>
+        <div class="rk-flow-mail-step" data-mail-step="confirm">OK</div>
+      </div>
+    </div>
+
+    <div class="rk-flow-self" data-flow-self hidden>
+      <div class="rk-flow-self-ring"></div>
+      <div class="rk-flow-self-label" data-flow-self-label>In-memory step</div>
+    </div>
+  </div>
+
+  <div class="rk-flow-stats">
+    <div class="rk-flow-stat">
+      <span class="rk-flow-stat-label">Weeks</span>
+      <span class="rk-flow-stat-value" data-stat-weeks>—</span>
+    </div>
+    <div class="rk-flow-stat">
+      <span class="rk-flow-stat-label">Prepared rows</span>
+      <span class="rk-flow-stat-value" data-stat-rows>0</span>
+    </div>
+    <div class="rk-flow-stat">
+      <span class="rk-flow-stat-label">Export SQL</span>
+      <span class="rk-flow-stat-value" data-stat-sql>—</span>
+    </div>
+    <div class="rk-flow-stat rk-flow-stat--files">
+      <span class="rk-flow-stat-label">Files ready</span>
+      <div class="rk-flow-file-chips">
+        <span class="rk-flow-file-chip" data-flow-file="xls">XLS</span>
+        <span class="rk-flow-file-chip" data-flow-file="csv">CSV</span>
+        <span class="rk-flow-file-chip" data-flow-file="pdf">PDF</span>
+      </div>
+    </div>
+    <div class="rk-flow-progress-wrap">
+      <div class="rk-flow-progress-track"><div class="rk-flow-progress-fill" data-flow-progress-fill></div></div>
+      <span class="rk-flow-progress-caption">Prepare progress</span>
+    </div>
+  </div>
+
+  <div class="rk-flow-static-fallback">
+    <ol class="mb-0 small">
+      <li>Validate filters (client + FilterValidator)</li>
+      <li>Plan weeks → parallel fetch (≤3) → merge 742 rows</li>
+      <li>Compose XLS · CSV · PDF from same JSON (0 SQL)</li>
+      <li>Validate email → ZIP → POST /send → Cloudflare → 200 OK</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+  import { mountPrepareSequence } from './PrepareSequenceAnimation';
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const root = document.querySelector('[data-prepare-sequence]') as HTMLElement | null;
+  if (root && !reduce) mountPrepareSequence(root);
+</script>

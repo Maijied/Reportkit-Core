@@ -1,5 +1,6 @@
 ---
 import MarketingLayout from '../layouts/MarketingLayout.astro';
+import PrepareSequenceAnimation from '../components/marketing/PrepareSequenceAnimation.astro';
 import playlistData from '../data/simulation-playlist.json';
 
 const phases = [
@@ -17,15 +18,33 @@ const cornerCases = playlistData.cornerCases;
   description="Animated prepare → store → browse → export flow with fictional 50M virtual ledger backing."
 >
   <link rel="stylesheet" href="/css/reportkit/reportkit.css" />
-  <section class="rk-section">
+
+  <section class="rk-section bg-white border-bottom">
     <div class="container">
       <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
         <div>
-          <div class="rk-kicker"><span class="rk-brand-dot"></span> Phase L</div>
-          <h1 class="rk-section-title mb-1">Animated report pipeline</h1>
-          <p class="text-secondary mb-0">Fictional data only — 50M virtual ledger, zero production SQL on browse.</p>
+          <div class="rk-kicker"><span class="rk-brand-dot"></span> Pipeline simulation</div>
+          <h1 class="rk-section-title mb-1">How ReportKit runs end-to-end</h1>
+          <p class="text-secondary mb-0">
+            Landing-page animation (18 steps) plus an interactive lab below — all fictional data, zero production SQL on browse.
+          </p>
         </div>
         <span id="rkProvBadge" class="rk-badge-provenance" data-provenance="synthetic">synthetic</span>
+      </div>
+      <div class="rk-card">
+        <PrepareSequenceAnimation />
+      </div>
+    </div>
+  </section>
+
+  <section class="rk-section">
+    <div class="container">
+      <div class="row mb-4">
+        <div class="col-lg-8">
+          <div class="rk-kicker"><span class="rk-brand-dot"></span> Interactive lab</div>
+          <h2 class="rk-section-title mb-1">Animated report playlist</h2>
+          <p class="text-secondary mb-0">Run the default corner-case playlist against the mock API — pause, step, or change speed.</p>
+        </div>
       </div>
 
       <div class="rk-sim-rail mb-4" id="rkPhaseRail">
