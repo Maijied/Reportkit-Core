@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-11T08:12:48.798Z",
+  "updated_at": "2026-08-11T08:16:04.739Z",
   "repo": "Maijied/Reportkit-Core",
   "topic_count": 8,
   "topics": [
@@ -13,13 +13,13 @@
     "reporting"
   ],
   "languages": {
-    "php": 45.8,
-    "astro": 15.9,
-    "typescript": 11.4,
-    "shell": 8.9,
-    "javascript": 8.9,
-    "scss": 4.1,
-    "css": 2.8,
-    "blade": 2.2
+    "php": 39,
+    "javascript": 34.9,
+    "astro": 7,
+    "blade": 6.2,
+    "typescript": 5,
+    "shell": 3.9,
+    "css": 2.2,
+    "scss": 1.8
   }
 }
