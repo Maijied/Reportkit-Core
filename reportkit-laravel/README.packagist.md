@@ -113,7 +113,7 @@ $rows = $source->getRows($filters);  // merged + deduped + sorted
 
 ## Author
 
-**Mohammad Maizied Hasan Majumder** (Maijied) · Senior Software Engineer @ Shohoz Ltd · Founder @ Lorapok Labs  
+**Mohammad Maizied Hasan Majumder** (Maijied) · Senior Software Engineer @ Shohoz Ltd · Founder and Principal Engineer @ Lorapok Labs  
 Dhaka, Bangladesh · [mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) · [GitHub @Maijied](https://github.com/Maijied)
 
 ## License

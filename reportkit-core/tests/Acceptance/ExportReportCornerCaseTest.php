@@ -325,9 +325,13 @@ class ExportReportCornerCaseTest extends TestCase
     {
         $readme = file_get_contents($this->monorepoRoot() . '/README.md');
         $this->assertStringContainsString('brand/png/reportkit-mark-1024.png', $readme);
+        $this->assertStringContainsString('reportkit-mark-dark-1024.png', $readme);
         $this->assertFileExists($this->monorepoRoot() . '/brand/png/reportkit-mark-1024.png');
+        $this->assertFileExists($this->monorepoRoot() . '/brand/png/reportkit-mark-dark-1024.png');
         $legacy = file_get_contents($this->monorepoRoot() . '/brand/reportkit-mark.svg');
         $this->assertStringContainsString('8ef0c4', $legacy);
+        $dark = file_get_contents($this->monorepoRoot() . '/brand/reportkit-mark-dark.svg');
+        $this->assertStringContainsString('rx="96"', $dark);
     }
 
     public function testSendPipelineExportsZipAndAssessSendEmail()
@@ -379,5 +383,25 @@ class ExportReportCornerCaseTest extends TestCase
         $blade = $this->readLegacyStub('report.blade.ledger-sync.stub');
         $this->assertStringContainsString("'sync' => true", $blade);
         $this->assertStringContainsString('ui.ledger-panel', $blade);
+    }
+
+    public function testPrepareLoaderPartialExists()
+    {
+        $partial = $this->readLegacyPartial('prepare-loader.blade.php');
+        $this->assertStringContainsString('async-loader', $partial);
+        $this->assertStringContainsString('rkAsyncLoading', $partial);
+    }
+
+    public function testActivityLogPhpRingBuffer()
+    {
+        $this->assertFileExists($this->monorepoRoot() . '/reportkit-core/src/Logging/ActivityLog.php');
+        \ReportKit\Core\Logging\ActivityLog::configure(true, 3);
+        \ReportKit\Core\Logging\ActivityLog::clear();
+        \ReportKit\Core\Logging\ActivityLog::info('prepare', 'Week 1 done');
+        $entries = \ReportKit\Core\Logging\ActivityLog::flushToArray();
+        $this->assertCount(1, $entries);
+        $this->assertSame('prepare', $entries[0]['category']);
+        \ReportKit\Core\Logging\ActivityLog::configure(false, 200);
+        \ReportKit\Core\Logging\ActivityLog::clear();
     }
 }

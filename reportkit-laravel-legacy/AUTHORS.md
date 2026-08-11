@@ -2,7 +2,7 @@
 
 **Mohammad Maizied Hasan Majumder** (Maijied)  
 Senior Software Engineer @ [Shohoz Ltd](https://shohoz.com) · Dhaka, Bangladesh  
-Founder & Maintainer @ [Lorapok Labs](https://lorapok.tech)
+Founder and Principal Engineer @ [Lorapok Labs](https://lorapok.tech)
 
 - Email: [mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com)
 - GitHub: [@Maijied](https://github.com/Maijied)

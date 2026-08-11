@@ -78,4 +78,4 @@ Browser bundle gates are exposed as `bundles` in the settings payload (`lldp`, `
 
 ## Author
 
-**Mohammad Maizied Hasan Majumder** (Maijied) — Senior Software Engineer @ Shohoz Ltd · Founder & Maintainer, [Lorapok Labs](https://lorapok.tech) · Dhaka, Bangladesh
+**Mohammad Maizied Hasan Majumder** (Maijied) — Founder, [Lorapok Labs](https://lorapok.tech) · Senior Software Engineer @ Shohoz Ltd · Dhaka, Bangladesh

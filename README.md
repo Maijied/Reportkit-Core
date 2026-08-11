@@ -1,7 +1,17 @@
 # ReportKit
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/png/reportkit-mark-1024.png" width="160" alt="ReportKit — Kit-Larva mark" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/png/reportkit-mark-dark-1024.png" />
+    <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/png/reportkit-mark-1024.png" width="160" alt="ReportKit — Kit-Larva mark" />
+  </picture>
+</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/png/reportkit-wordmark-dark-1200.png" />
+    <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/png/reportkit-wordmark-1000.png" width="420" alt="ReportKit — rounded DB-chain wordmark" />
+  </picture>
 </p>
 
 <p align="center">
@@ -342,24 +352,25 @@ Please read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) before posting.
 ## Author
 
 **Mohammad Maizied Hasan Majumder** (Maijied)  
-Senior Software Engineer @ [Shohoz Ltd](https://shohoz.com) · Dhaka, Bangladesh  
-[mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) · [GitHub @Maijied](https://github.com/Maijied) · [Lorapok Labs](https://lorapok.tech)
+Founder and Principal Engineer @ [Lorapok Labs](https://lorapok.tech) · Senior Software Engineer @ [Shohoz Ltd](https://shohoz.com) · Dhaka, Bangladesh  
+[mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) · [GitHub @Maijied](https://github.com/Maijied)
 
 | | |
 |---|---|
 | **Designation** | Mohammad Maizied Hasan Majumder |
 | **Alias** | Maijied |
-| **Role** | Senior Software Engineer @ Shohoz |
+| **Role** | Founder and Principal Engineer @ Lorapok Labs · Senior Software Engineer @ Shohoz |
 | **Location** | Dhaka, Bangladesh |
 
-### Side project · Open source
+### Lorapok Labs · Open source
 
 | | |
 |---|---|
-| **Project** | Lorapok Labs |
-| **Role** | Founder & Maintainer |
+| **Company** | Lorapok Labs |
+| **Role** | Founder and Principal Engineer |
+| **Model** | Mostly open source — **20+** public projects |
 | **Focus** | Cross-platform media, Laravel packages, Android AI |
-| **Projects** | 20+ (Lorapok Atlas, Media Player, AI Agent, and more) |
+| **Projects** | Lorapok Atlas, Media Player, AI Agent, ReportKit, and more |
 | **Platforms** | Web · Windows · Mac · Linux · Android · npm · PyPI · Packagist |
 | **Status** | **Active** |
 

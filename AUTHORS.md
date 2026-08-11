@@ -6,7 +6,7 @@
 |-------|--------|
 | **Designation** | Mohammad Maizied Hasan Majumder |
 | **Alias** | Maijied |
-| **Role** | Senior Software Engineer @ [Shohoz Ltd](https://shohoz.com) |
+| **Role** | Founder and Principal Engineer @ [Lorapok Labs](https://lorapok.tech) · Senior Software Engineer @ [Shohoz Ltd](https://shohoz.com) |
 | **Location** | Dhaka, Bangladesh |
 | **Email** | [mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) |
 | **GitHub** | [@Maijied](https://github.com/Maijied) |
@@ -23,14 +23,15 @@ ReportKit is an independent open-source project by the author and Lorapok Labs. 
 
 ---
 
-## Side project · Open source
+## Lorapok Labs · Open source
 
 | | |
 |---|---|
-| **Project** | [Lorapok Labs](https://lorapok.tech) |
-| **Role** | Founder & Maintainer |
+| **Company** | [Lorapok Labs](https://lorapok.tech) |
+| **Role** | Founder and Principal Engineer |
+| **Model** | Mostly open source — **20+** public projects |
 | **Focus** | Cross-platform media, Laravel packages, Android AI |
-| **Projects** | 20+ (Lorapok Atlas, Media Player, AI Agent, and more) |
+| **Projects** | Lorapok Atlas, Media Player, AI Agent, ReportKit, and more |
 | **Platforms** | Web · Windows · Mac · Linux · Android · npm · PyPI · Packagist |
 | **Status** | **Active** |
 

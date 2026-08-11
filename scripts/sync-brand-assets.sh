@@ -10,9 +10,12 @@ SVG_FILES=(
   reportkit-icon-small.svg
   reportkit-logo.svg
   reportkit-logo-inverse.svg
+  reportkit-logo-dark.svg
   reportkit-mark.svg
+  reportkit-mark-dark.svg
   reportkit-og.svg
   reportkit-wordmark.svg
+  reportkit-wordmark-dark.svg
 )
 
 PNG_FILES=(
@@ -56,8 +59,11 @@ mkdir -p "$PNG_OUT"
 rsvg-convert -w 1200 "$ROOT/brand/reportkit-logo.svg" -o "$PNG_OUT/reportkit-logo-1200.png"
 rsvg-convert -w 1200 "$ROOT/brand/reportkit-logo-inverse.svg" -o "$PNG_OUT/reportkit-logo-inverse-1200.png"
 rsvg-convert -w 1024 "$ROOT/brand/reportkit-mark.svg" -o "$PNG_OUT/reportkit-mark-1024.png"
+rsvg-convert -w 1024 "$ROOT/brand/reportkit-mark-dark.svg" -o "$PNG_OUT/reportkit-mark-dark-1024.png"
 rsvg-convert -w 512 "$ROOT/brand/reportkit-icon.svg" -o "$PNG_OUT/reportkit-icon-512.png"
 rsvg-convert -w 1000 "$ROOT/brand/reportkit-wordmark.svg" -o "$PNG_OUT/reportkit-wordmark-1000.png"
+rsvg-convert -w 1200 "$ROOT/brand/reportkit-wordmark-dark.svg" -o "$PNG_OUT/reportkit-wordmark-dark-1200.png"
+rsvg-convert -w 1200 "$ROOT/brand/reportkit-logo-dark.svg" -o "$PNG_OUT/reportkit-logo-dark-1200.png"
 rsvg-convert -w 1200 "$ROOT/brand/reportkit-og.svg" -o "$PNG_OUT/reportkit-og.png"
 
 cp -f "$PNG_OUT/reportkit-mark-1024.png" "$ROOT/reportkit-website/assets/reportkit-logo.png"

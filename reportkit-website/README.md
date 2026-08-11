@@ -80,7 +80,7 @@ GitHub Actions → Pages (`deploy-site.yml`). Rebuilds on push and on package `r
 
 ## Author
 
-**Mohammad Maizied Hasan Majumder** (Maijied) · Senior Software Engineer @ **Shohoz Ltd** · Founder @ **Lorapok Labs**  
+**Mohammad Maizied Hasan Majumder** (Maijied) · Senior Software Engineer @ **Shohoz Ltd** · Founder and Principal Engineer @ **Lorapok Labs**  
 Dhaka, Bangladesh · [mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) · [GitHub @Maijied](https://github.com/Maijied)
 
 Full profile: [AUTHORS.md](../AUTHORS.md)
