@@ -223,9 +223,9 @@ ReportKit spans **legacy → currently supported** PHP and Laravel.
 | Package | Role | PHP | Laravel |
 |---------|------|-----|---------|
 | [`reportkit/core`](https://github.com/Maijied/Reportkit-Core) | This repository — engine only | **5.6 → 8.5** | — |
-| [`reportkit/laravel-legacy`](https://github.com/Maijied/Reportkit-Laravel-Legacy) | Classic adapter | 5.6 – 7.4 | **4.1 – 5.4** |
-| [`reportkit/laravel`](https://github.com/Maijied/Reportkit-Laravel) | Modern adapter | 7.0 – current | **5.5 → 12 / 13** |
-| [`@lorapok-labs/reportkit-ui`](https://github.com/Maijied/Reportkit-UI) | Browser CSS/JS | — | Any host |
+| [`reportkit/laravel-legacy`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel-legacy) | Classic adapter | 5.6 – 7.4 | **4.1 – 5.4** |
+| [`reportkit/laravel`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel) | Modern adapter | 7.0 – current | **5.5 → 12 / 13** |
+| [`@lorapok-labs/reportkit-ui`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-ui) | Browser CSS/JS | — | Any host |
 
 ```mermaid
 flowchart LR

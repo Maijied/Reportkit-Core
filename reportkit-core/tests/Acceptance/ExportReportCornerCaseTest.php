@@ -420,10 +420,24 @@ class ExportReportCornerCaseTest extends TestCase
         $root = $this->monorepoRoot() . '/examples/laravel-demo';
         $this->assertFileExists($root . '/public/index.php');
         $this->assertFileExists($root . '/app/Reports/OperatorExportReport.php');
+        $this->assertFileExists($root . '/app/Reports/LedgerBrowseReport.php');
         $this->assertFileExists($root . '/app/Repositories/Reports/OperatorExportReportRepository.php');
+        $this->assertFileExists($root . '/app/Repositories/Reports/LedgerBrowseReportRepository.php');
+        $this->assertFileExists($root . '/public/js/reports/ledger-browse.js');
         $this->assertFileExists($root . '/bin/setup-demo.sh');
-        $report = file_get_contents($root . '/app/Reports/OperatorExportReport.php');
-        $this->assertStringContainsString('operator-export', $report);
-        $this->assertStringContainsString('async_prepare', $report);
+        $operator = file_get_contents($root . '/app/Reports/OperatorExportReport.php');
+        $ledger = file_get_contents($root . '/app/Reports/LedgerBrowseReport.php');
+        $this->assertStringContainsString('operator-export', $operator);
+        $this->assertStringContainsString('async_prepare', $operator);
+        $this->assertStringContainsString('ledger-browse', $ledger);
+        $this->assertStringContainsString('browse_prepared', $ledger);
+    }
+
+    public function testSimulationPlaywrightConfigExists()
+    {
+        $root = $this->monorepoRoot();
+        $this->assertFileExists($root . '/reportkit-website/playwright.config.ts');
+        $this->assertFileExists($root . '/reportkit-website/e2e/simulation.spec.ts');
+        $this->assertFileExists($root . '/.github/workflows/simulation-e2e.yml');
     }
 }

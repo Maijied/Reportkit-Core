@@ -56,7 +56,7 @@
 
 > PHP **5.6 → current** · Laravel **4.1 → currently supported**  
 > Site: **[reportkit.lorapok.tech](https://reportkit.lorapok.tech)** · API: **[reportkit-api.lorapok.tech/v1/health](https://reportkit-api.lorapok.tech/v1/health)**  
-> Repo: **[Maijied/Reportkit-Core](https://github.com/Maijied/Reportkit-Core)**  
+> Repo: **[Maijied/Reportkit-Core](https://github.com/Maijied/Reportkit-Core)** — **one monorepo** for Core, Laravel adapters, UI, website, and demos ([MONOREPO.md](./MONOREPO.md)). Older split repos (`Reportkit-Laravel`, `Reportkit-UI`, etc.) are archived mirrors only.
 > License: **[Lorapok-NCL-1.0](./LICENSE)** — free to use and modify; **not free to sell**
 
 ---

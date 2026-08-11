@@ -1,6 +1,6 @@
 {
   "name": "lorapok/reportkit-laravel-demo",
-  "description": "Fictional Laravel 5.4 host demonstrating ReportKit LLDP hybrid-export",
+  "description": "Fictional Laravel 5.4 host demonstrating ReportKit hybrid-export and hybrid-browse",
   "type": "project",
   "license": "LicenseRef-Lorapok-NCL-1.0",
   "require": {

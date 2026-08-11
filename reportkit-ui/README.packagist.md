@@ -19,7 +19,7 @@
 >
 > **Website & docs:** https://reportkit.lorapok.tech · **Part of the Lorapok Labs ecosystem.**
 >
-> Engine: [`reportkit/core`](https://github.com/Maijied/Reportkit-Core) · Laravel adapters: [`reportkit/laravel`](https://github.com/Maijied/Reportkit-Laravel), [`reportkit/laravel-legacy`](https://github.com/Maijied/Reportkit-Laravel-Legacy).
+> Engine: [`reportkit/core`](https://github.com/Maijied/Reportkit-Core) · Laravel adapters: [`reportkit/laravel`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel), [`reportkit/laravel-legacy`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel-legacy).
 
 ## JS surface
 

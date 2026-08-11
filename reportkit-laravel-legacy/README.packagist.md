@@ -20,9 +20,9 @@
 >
 > **Website & docs:** https://reportkit.lorapok.tech · **Part of the Lorapok Labs ecosystem.**
 >
-> For Laravel **5.5 → 13**, use [`reportkit/laravel`](https://github.com/Maijied/Reportkit-Laravel).
+> For Laravel **5.5 → 13**, use [`reportkit/laravel`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel).
 
-> A diagram-rich version of this README (with Mermaid) is shown on the [GitHub repository page](https://github.com/Maijied/Reportkit-Laravel-Legacy).
+> A diagram-rich version of this README (with Mermaid) is shown on the [monorepo package page](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel-legacy).
 
 ## What you get
 
@@ -51,7 +51,7 @@ Install from Git (VCS):
 {
   "repositories": [
     { "type": "vcs", "url": "https://github.com/Maijied/Reportkit-Core.git" },
-    { "type": "vcs", "url": "https://github.com/Maijied/Reportkit-Laravel-Legacy.git" }
+    { "type": "vcs", "url": "https://github.com/Maijied/Reportkit-Core.git" }
   ],
   "require": {
     "reportkit/core": "dev-main",
@@ -124,8 +124,8 @@ Route::get('admin/demo-report/data', 'DemoReportController@data');
 |---------|------|
 | `reportkit/core` | [Reportkit-Core](https://github.com/Maijied/Reportkit-Core) |
 | `reportkit/laravel-legacy` | This repository |
-| `reportkit/laravel` | [Reportkit-Laravel](https://github.com/Maijied/Reportkit-Laravel) (5.5 → 13) |
-| `@lorapok-labs/reportkit-ui` | [Reportkit-UI](https://github.com/Maijied/Reportkit-UI) |
+| `reportkit/laravel` | [reportkit-laravel/](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel) (5.5 → 13) |
+| `@lorapok-labs/reportkit-ui` | [reportkit-ui/](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-ui) |
 
 ## Author
 

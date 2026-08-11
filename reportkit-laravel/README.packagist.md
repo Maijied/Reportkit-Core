@@ -20,9 +20,9 @@
 >
 > **Website & docs:** https://reportkit.lorapok.tech · **Part of the Lorapok Labs ecosystem.**
 >
-> For Laravel **4.1–5.4**, use [`reportkit/laravel-legacy`](https://github.com/Maijied/Reportkit-Laravel-Legacy).
+> For Laravel **4.1–5.4**, use [`reportkit/laravel-legacy`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel-legacy).
 
-> A diagram-rich version of this README (with Mermaid) is shown on the [GitHub repository page](https://github.com/Maijied/Reportkit-Laravel).
+> A diagram-rich version of this README (with Mermaid) is shown on the [monorepo package page](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel).
 
 ## What you get
 
@@ -61,8 +61,7 @@ Install from Git (VCS):
 ```json
 {
   "repositories": [
-    { "type": "vcs", "url": "https://github.com/Maijied/Reportkit-Core.git" },
-    { "type": "vcs", "url": "https://github.com/Maijied/Reportkit-Laravel.git" }
+    { "type": "vcs", "url": "https://github.com/Maijied/Reportkit-Core.git" }
   ],
   "require": {
     "reportkit/core": "dev-main",

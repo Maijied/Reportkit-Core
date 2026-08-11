@@ -10,7 +10,9 @@
     "preview": "astro preview",
     "sync-docs": "node scripts/sync-docs.mjs",
     "fetch-versions": "node scripts/fetch-versions.mjs",
-    "check": "astro check"
+    "check": "astro check",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.2.0",
@@ -21,6 +23,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
+    "@playwright/test": "^1.62.1",
     "pagefind": "^1.5.2",
     "sass": "^1.85.0",
     "typescript": "^5.8.2"

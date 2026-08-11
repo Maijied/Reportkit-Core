@@ -1,6 +1,6 @@
 # Laravel demo — runnable host app
 
-Full **fictional** Laravel 5.4 host proving ReportKit **hybrid-export** end-to-end with SQLite fixtures.
+Full **fictional** Laravel 5.4 host proving ReportKit **hybrid-export** and **hybrid-browse** end-to-end with SQLite fixtures.
 
 ## Requirements
 
@@ -14,9 +14,11 @@ chmod +x bin/setup-demo.sh
 php -S localhost:8080 -t public
 ```
 
-Open [http://localhost:8080/admin/operator-export](http://localhost:8080/admin/operator-export)
+Open [http://localhost:8080/](http://localhost:8080/) — pick a demo report.
 
 ## What it proves
+
+### Operator Export (`hybrid-export`)
 
 1. **Fetch & Prepare** — week-chunked AJAX via `reportkit/operator-export/weeks` + `/rows`
 2. **Secure store** — browser-side merge + commit (LLDP)
@@ -24,15 +26,21 @@ Open [http://localhost:8080/admin/operator-export](http://localhost:8080/admin/o
 4. **Send** — `.csv.zip` email gate with typo detection
 5. **Activity log** — categorized timeline when `REPORTKIT_LOG=true`
 
-## Pre-built report
+### Ledger Browse (`hybrid-browse`)
 
-| File | Role |
-|------|------|
-| `app/Reports/OperatorExportReport.php` | Definition + flags |
-| `app/Services/Reports/OperatorExportReportService.php` | Week chunking orchestration |
-| `app/Repositories/Reports/OperatorExportReportRepository.php` | SQLite fictional SQL |
-| `resources/views/admin/reports/operator-export.blade.php` | CAS Blade page |
-| `public/js/reports/operator-export.js` | LLDP client wiring |
+1. Same prepare flow — ledger-shaped rows from fictional SQLite
+2. **Session browse** — POST `/reportkit/ledger-browse/prepared`, GET `/browse` (DataTables, SQL = 0)
+3. **Ledger panel** — txn pills, running balance, KPI row
+4. Export from prepared store after browse mounts
+
+## Pre-built reports
+
+| Preset | Files |
+|--------|-------|
+| hybrid-export | `OperatorExportReport.php`, `OperatorExportReportService.php`, `operator-export.blade.php`, `operator-export.js` |
+| hybrid-browse | `LedgerBrowseReport.php`, `LedgerBrowseReportService.php`, `ledger-browse.blade.php`, `ledger-browse.js` |
+
+Shared: `app/Repositories/Reports/*` (SQLite fictional SQL / ledger mapping).
 
 ## Path repositories
 
@@ -51,9 +59,13 @@ Local monorepo packages via `composer.json`:
 
 | Method | Path | Handler |
 |--------|------|---------|
-| GET | `/admin/operator-export` | Demo report page |
-| GET | `/reportkit/operator-export/weeks` | Week list JSON |
-| GET | `/reportkit/operator-export/rows` | Prepare row JSON |
+| GET | `/` | Demo home — links to both reports |
+| GET | `/admin/operator-export` | hybrid-export page |
+| GET | `/admin/ledger-browse` | hybrid-browse page |
+| GET | `/reportkit/{slug}/weeks` | Week list JSON |
+| GET | `/reportkit/{slug}/rows` | Prepare row JSON |
+| POST | `/reportkit/{slug}/prepared` | Store prepared rows (browse) |
+| GET | `/reportkit/{slug}/browse` | DataTables browse JSON |
 | POST | `/reportkit/operator-export/send` | Email ZIP |
 
 Enabled via `config/reportkit.php` → `routes.enabled = true` and `ReportKit::routes()`.
@@ -69,7 +81,7 @@ All data is synthetic — operators like `NORTHSTAR`, `BLUELINE` are fictional.
 ## Related
 
 - Public simulation: [reportkit.lorapok.tech/simulation](https://reportkit.lorapok.tech/simulation)
-- Live API demo: [reportkit.lorapok.tech/demo](https://reportkit.lorapok.tech/demo)
+- Monorepo: [github.com/Maijied/Reportkit-Core](https://github.com/Maijied/Reportkit-Core)
 
 ## License
 

@@ -11,7 +11,7 @@
   <a href="https://www.npmjs.com/package/@lorapok-labs/reportkit-ui"><img src="https://img.shields.io/npm/v/@lorapok-labs/reportkit-ui?style=flat-square&color=0b7a4b&labelColor=08130f" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/@lorapok-labs/reportkit-ui"><img src="https://img.shields.io/npm/dm/@lorapok-labs/reportkit-ui?style=flat-square&color=34c98a&labelColor=08130f" alt="npm downloads" /></a>
   <img src="https://img.shields.io/badge/peer-jQuery%20%E2%89%A5%201.10-0769ad?style=flat-square&labelColor=08130f" alt="jQuery" />
-  <a href="https://github.com/Maijied/Reportkit-UI/actions/workflows/publish.yml"><img src="https://github.com/Maijied/Reportkit-UI/actions/workflows/publish.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/Maijied/Reportkit-Core/actions/workflows/ui-ci.yml"><img src="https://github.com/Maijied/Reportkit-Core/actions/workflows/ui-ci.yml/badge.svg" alt="CI" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/npm/l/@lorapok-labs/reportkit-ui?style=flat-square&color=0b7a4b&labelColor=08130f" alt="License" /></a>
 </p>
 
@@ -126,9 +126,9 @@ Docs: [docs/CSS.md](docs/CSS.md) · [docs/JS.md](docs/JS.md)
 | Package | Role |
 |---------|------|
 | [`reportkit/core`](https://github.com/Maijied/Reportkit-Core) | PHP engine (5.6 → 8.5) |
-| [`reportkit/laravel-legacy`](https://github.com/Maijied/Reportkit-Laravel-Legacy) | Laravel 4.1–5.4 |
-| [`reportkit/laravel`](https://github.com/Maijied/Reportkit-Laravel) | Laravel 5.5 → 12 / 13 |
-| [`@lorapok-labs/reportkit-ui`](https://github.com/Maijied/Reportkit-UI) | This repository |
+| [`reportkit/laravel-legacy`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel-legacy) | Laravel 4.1–5.4 |
+| [`reportkit/laravel`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel) | Laravel 5.5 → 12 / 13 |
+| [`@lorapok-labs/reportkit-ui`](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-ui) | This package |
 
 ## Author
 

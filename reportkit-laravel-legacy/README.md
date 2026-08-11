@@ -23,7 +23,7 @@
   <a href="https://reportkit.lorapok.tech">Website &amp; Docs</a> ·
   <a href="docs/INSTALL.md">Install guide</a> ·
   <a href="docs/UPGRADE.md">Upgrade</a> ·
-  <a href="https://github.com/Maijied/Reportkit-Laravel">Laravel 5.5 → 13</a>
+  <a href="https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel">Laravel 5.5 → 13</a>
 </p>
 
 > **Part of the Lorapok Labs ecosystem.** Classic Laravel adapter for [ReportKit Core](https://github.com/Maijied/Reportkit-Core). Same engine, same Artisan DX — tuned for pre-auto-discovery Laravel and PHP 5.6.
@@ -99,7 +99,7 @@ composer require reportkit/laravel-legacy
 {
   "repositories": [
     { "type": "vcs", "url": "https://github.com/Maijied/Reportkit-Core.git" },
-    { "type": "vcs", "url": "https://github.com/Maijied/Reportkit-Laravel-Legacy.git" }
+    { "type": "vcs", "url": "https://github.com/Maijied/Reportkit-Core.git" }
   ],
   "require": {
     "reportkit/core": "dev-main",
@@ -159,8 +159,8 @@ $rows = $source->getRows($filters); // merged + deduped + sorted
 |---------|------|
 | `reportkit/core` | [Reportkit-Core](https://github.com/Maijied/Reportkit-Core) |
 | `reportkit/laravel-legacy` | This repository |
-| `reportkit/laravel` | [Reportkit-Laravel](https://github.com/Maijied/Reportkit-Laravel) (5.5 → 13) |
-| `@lorapok-labs/reportkit-ui` | [Reportkit-UI](https://github.com/Maijied/Reportkit-UI) |
+| `reportkit/laravel` | [reportkit-laravel/](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-laravel) (5.5 → 13) |
+| `@lorapok-labs/reportkit-ui` | [reportkit-ui/](https://github.com/Maijied/Reportkit-Core/tree/main/reportkit-ui) |
 
 ## Author
 
