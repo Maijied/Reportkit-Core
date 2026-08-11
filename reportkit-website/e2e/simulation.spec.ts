@@ -28,7 +28,7 @@ test.describe('Simulation page', () => {
     await page.goto('/simulation');
     const select = page.locator('#rkSimCase');
     await expect(select).toBeVisible();
-    await expect(select.locator('option')).toContainText(['hybrid-browse-no-sql']);
+    await expect(select.locator('option[value="hybrid-browse-no-sql"]')).toHaveCount(1);
   });
 });
 
