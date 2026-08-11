@@ -193,6 +193,7 @@ class InstallCommand extends Command
             'css/reportkit.css' => $public . '/css/reportkit/reportkit.css',
             'css/reportkit-compat.css' => $public . '/css/reportkit/reportkit-compat.css',
             'js/lldp-core.js' => $public . '/js/reportkit/lldp-core.js',
+            'js/lldp-download.js' => $public . '/js/reportkit/lldp-download.js',
             'js/reportkit.js' => $public . '/js/reportkit/reportkit.js',
         );
 

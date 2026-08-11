@@ -861,6 +861,51 @@
      * Compose exports from prepared rows — ceilings from settings (Phase C3).
      */
     ReportKit.export = ReportKit.export || {
+        _downloadRunner: null,
+        _activePdfCancel: null,
+        cancel: function () {
+            if (this._downloadRunner && typeof this._downloadRunner.cancel === 'function') {
+                this._downloadRunner.cancel();
+            }
+            if (typeof this._activePdfCancel === 'function') {
+                this._activePdfCancel();
+                this._activePdfCancel = null;
+            }
+        },
+        getDownloadRunner: function (options) {
+            options = options || {};
+            if (!this._downloadRunner && window.ReportKitLLDP && window.ReportKitLLDP.createDownloadRunner) {
+                var self = this;
+                this._downloadRunner = window.ReportKitLLDP.createDownloadRunner({
+                    hasPreparedData: function () {
+                        return ReportKit.store.count() > 0;
+                    },
+                    isPreparing: function () {
+                        return ReportKit.prepare && ReportKit.prepare._cancelled === false &&
+                            ReportKit.store && ReportKit.store.count() === 0;
+                    },
+                    onError: function (msg) {
+                        ReportKit.ui.toast(msg, 'warn');
+                    },
+                    onDownloadStart: function (format) {
+                        ReportKit.ui.setDownloadStatus({
+                            hidden: false,
+                            label: 'Preparing ' + format.toUpperCase() + '…',
+                            pct: 0
+                        });
+                        ReportKit.ui.setActionsEnabled('#rkActionBar', false);
+                    },
+                    onDownloadEnd: function () {
+                        ReportKit.ui.setDownloadStatus({ hidden: true });
+                        ReportKit.ui.setActionsEnabled('#rkActionBar', true);
+                    },
+                    onSuccess: function (format) {
+                        ReportKit.log.add('export', format.toUpperCase() + ' download complete');
+                    }
+                });
+            }
+            return this._downloadRunner;
+        },
         assess: function (rowCount, format) {
             rowCount = Number(rowCount) || 0;
             format = format || 'csv';
@@ -1010,26 +1055,23 @@
     ReportKit.pdf = ReportKit.pdf || {
         compose: function (rows, options) {
             options = options || {};
+            rows = rows || [];
             var assessment = ReportKit.export.assess(rows.length, 'pdf');
             if (!assessment.allowed) {
                 return ReportKit.export.csv(rows, options);
             }
-
-            ReportKit.ui.toast('PDF export opens print dialog for this build; full merge volumes ship in C4.', 'info');
-            var html = ['<html><head><title>Report</title></head><body>'];
-            html.push('<p>' + String(ReportKit.brand.pdf_disclaimer || '').replace(/</g, '&lt;') + '</p>');
-            html.push('<p>Rows: ' + rows.length + '</p>');
-            html.push('</body></html>');
-            var win = window.open('', '_blank');
-            if (!win) {
-                ReportKit.ui.toast('Pop-up blocked — allow pop-ups to print PDF.', 'warn');
-                return ReportKit.export.csv(rows, options);
+            if (window.ReportKitLLDP && window.ReportKitLLDP.buildPdfDownload) {
+                options.pdfRowsPerVolume = Number(ReportKit.util.setting('export.pdf_rows_per_volume', 25000));
+                options.pdfSingleFileMaxRows = Number(ReportKit.util.setting('export.pdf_single_file_max_rows', 40000));
+                options.prefix = options.prefix || 'report';
+                var result = window.ReportKitLLDP.buildPdfDownload(rows, options);
+                if (result && typeof result.cancel === 'function') {
+                    ReportKit.export._activePdfCancel = result.cancel;
+                }
+                return result;
             }
-            win.document.write(html.join(''));
-            win.document.close();
-            win.focus();
-            win.print();
-            return { ok: true, format: 'pdf', rows: rows.length };
+            ReportKit.ui.toast('Load lldp-download.js for PDF export.', 'warn');
+            return ReportKit.export.csv(rows, options);
         }
     };
 
@@ -1644,6 +1686,12 @@
         ReportKit.createSecurePreparedStore = lldp.createSecurePreparedStore;
         ReportKit.createEtaTracker = lldp.createEtaTracker;
         ReportKit.canUseWebCrypto = lldp.canUseWebCrypto;
+        if (window.ReportKitLLDP.createDownloadRunner) {
+            ReportKit.createDownloadRunner = window.ReportKitLLDP.createDownloadRunner;
+        }
+        if (window.ReportKitLLDP.buildPdfDownload) {
+            ReportKit.buildPdfDownload = window.ReportKitLLDP.buildPdfDownload;
+        }
 
         ReportKit.initSecureStore = function (options) {
             options = options || {};
