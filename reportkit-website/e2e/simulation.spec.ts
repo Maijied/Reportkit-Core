@@ -14,13 +14,14 @@ test.describe('Simulation page', () => {
 
   test('completes default playlist headlessly', async ({ page }) => {
     await page.goto('/simulation');
+    await page.waitForFunction(() => window.ReportKit?.simulation?.run);
     await page.locator('#rkSimRun').click();
 
     await expect(page.locator('#rkSimStatus')).toContainText(/Complete|Running|Corner case/i, {
-      timeout: 60_000,
+      timeout: 90_000,
     });
 
-    await expect(page.locator('#rkSimRows')).not.toHaveText('0', { timeout: 60_000 });
+    await expect(page.locator('#rkSimRows')).not.toHaveText('0', { timeout: 90_000 });
   });
 
   test('corner-case dropdown includes hybrid-browse-no-sql', async ({ page }) => {

@@ -12,6 +12,7 @@ const phases = [
 ];
 const playlist = playlistData.default;
 const cornerCases = playlistData.cornerCases;
+const demoApiUrl = (import.meta.env.PUBLIC_DEMO_API_URL || 'https://reportkit-api.lorapok.tech').replace(/\/$/, '');
 ---
 <MarketingLayout
   title="Simulation · ReportKit"
@@ -137,8 +138,8 @@ const cornerCases = playlistData.cornerCases;
 </script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
 <script is:inline src="/js/reportkit/reportkit.js"></script>
-<script define:vars={{ playlist, cornerCases }}>
-  const API = (import.meta.env.PUBLIC_DEMO_API_URL || 'https://reportkit-api.lorapok.tech').replace(/\/$/, '');
+<script define:vars={{ playlist, cornerCases, demoApiUrl }}>
+  const API = demoApiUrl;
   const timeline = document.getElementById('rkSimTimeline');
   const ledgerBody = document.getElementById('rkSimLedgerBody');
   const provBadge = document.getElementById('rkProvBadge');

@@ -2,6 +2,8 @@
 import MarketingLayout from '../layouts/MarketingLayout.astro';
 import fixture from '../data/fixtures/demo-page.json';
 import ledgerFixture from '../data/fixtures/demo-ledger.json';
+
+const demoApiUrl = import.meta.env.PUBLIC_DEMO_API_URL || 'https://reportkit-api.lorapok.tech';
 ---
 <MarketingLayout
   title="Live demo · ReportKit"
@@ -142,8 +144,8 @@ browse · Page 1 from prepared JSON</pre>
   </section>
 </MarketingLayout>
 
-<script define:vars={{ ledgerFixture }}>
-  const API = import.meta.env.PUBLIC_DEMO_API_URL || 'https://reportkit-api.lorapok.tech';
+<script define:vars={{ ledgerFixture, demoApiUrl }}>
+  const API = demoApiUrl;
   const badge = document.getElementById('rkModeBadge');
   const traceEl = document.getElementById('rkTrace');
   const body = document.getElementById('rkTableBody');
