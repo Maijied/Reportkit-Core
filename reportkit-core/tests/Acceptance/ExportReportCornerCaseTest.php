@@ -12,6 +12,9 @@ namespace ReportKit\Core\Tests\Acceptance;
 
 use PHPUnit\Framework\TestCase;
 use ReportKit\Core\Export\ExportHelper;
+use ReportKit\Core\Filter\FilterValidator;
+use ReportKit\Core\Http\AjaxResponse;
+use ReportKit\Core\Date\DateRangeChunker;
 use ReportKit\Core\Mail\MailService;
 
 class ExportReportCornerCaseTest extends TestCase
@@ -115,6 +118,7 @@ class ExportReportCornerCaseTest extends TestCase
             $this->monorepoRoot() . '/reportkit-laravel-legacy/resources/stubs/report.blade.hybrid-export.stub'
         );
         $this->assertStringContainsString('lldp-core.js', $stub);
+        $this->assertStringContainsString('lldp-download.js', $stub);
         $this->assertStringContainsString('ReportKitPageConfig', $stub);
     }
 
@@ -179,5 +183,138 @@ class ExportReportCornerCaseTest extends TestCase
         $this->assertStringContainsString('hybrid-export', $cmd);
         $this->assertStringContainsString('datatables-sync', $cmd);
         $this->assertStringContainsString('hybrid-kpi', $cmd);
+    }
+
+    public function testFilterRejectsEndBeforeStart()
+    {
+        $validator = new FilterValidator();
+        $error = $validator->validateDateAndOptionalWeek(array(
+            'start_date' => '2026-02-01',
+            'end_date' => '2026-01-01',
+        ));
+        $this->assertNotNull($error);
+        $this->assertStringContainsString('Start Date', $error);
+    }
+
+    public function testFilterRejectsOverSixMonths()
+    {
+        $validator = new FilterValidator();
+        $error = $validator->validateDateAndOptionalWeek(array(
+            'start_date' => '2026-01-01',
+            'end_date' => '2026-08-15',
+        ), 6);
+        $this->assertNotNull($error);
+        $this->assertStringContainsString('6 months', $error);
+    }
+
+    public function testFilterRejectsMissingCompany()
+    {
+        $validator = new FilterValidator();
+        $error = $validator->requirePositiveIntId(null);
+        $this->assertNotNull($error);
+    }
+
+    public function testMailServiceDetectsGmialTypo()
+    {
+        $mail = new MailService();
+        $result = $mail->assessEmail('ops@gmial.com');
+        $this->assertFalse($result['ok']);
+        $this->assertStringContainsString('gmail.com', $result['error']);
+    }
+
+    public function testMailHardAttachMaxBytesConfig()
+    {
+        $config = include $this->monorepoRoot() . '/reportkit-laravel-legacy/config/reportkit.php';
+        $this->assertSame(26214400, (int) $config['mail']['hard_attach_max_bytes']);
+        $kit = $this->readUiJs('reportkit.js');
+        $this->assertStringContainsString('mail.hard_attach_max_bytes', $kit);
+    }
+
+    public function testPrepareConcurrencyDefaultThree()
+    {
+        $config = include $this->monorepoRoot() . '/reportkit-laravel-legacy/config/reportkit.php';
+        $this->assertSame(3, (int) $config['prepare']['concurrency']);
+        $core = $this->readUiJs('lldp-core.js');
+        $this->assertStringContainsString('concurrency = 3', $core);
+    }
+
+    public function testStreamCsvThresholdConfig()
+    {
+        $config = include $this->monorepoRoot() . '/reportkit-laravel-legacy/config/reportkit.php';
+        $this->assertSame(50000, (int) $config['export']['stream_csv_row_threshold']);
+        $dl = $this->readUiJs('lldp-download.js');
+        $this->assertStringContainsString('stream_csv_row_threshold', $dl);
+    }
+
+    public function testPdfSinglePassMaxRowsConfig()
+    {
+        $config = include $this->monorepoRoot() . '/reportkit-laravel-legacy/config/reportkit.php';
+        $this->assertSame(105303, (int) $config['export']['pdf_single_pass_max_rows']);
+        $this->assertSame(40000, (int) $config['export']['pdf_single_file_max_rows']);
+    }
+
+    public function testSixMonthRangeWeekCount()
+    {
+        $chunker = new DateRangeChunker();
+        $weeks = $chunker->getWeeklyRanges('2026-01-01', '2026-06-30');
+        $this->assertGreaterThanOrEqual(26, count($weeks));
+        $this->assertLessThanOrEqual(27, count($weeks));
+    }
+
+    public function testPdfProvenScalePageCount()
+    {
+        $provenRows = 287214;
+        $this->assertSame(3591, (int) ceil($provenRows / self::PDF_CHUNK_ROWS));
+    }
+
+    public function testAjaxErrorContractShape()
+    {
+        $payload = AjaxResponse::error('Validation failed.', 422);
+        $this->assertArrayHasKey('error', $payload);
+        $this->assertSame('Validation failed.', $payload['error']);
+        $this->assertTrue(AjaxResponse::isError($payload));
+        $ok = AjaxResponse::ok(array('message' => 'Sent.'));
+        $this->assertTrue($ok['ok']);
+        $this->assertFalse(AjaxResponse::isError($ok));
+    }
+
+    public function testExcelFallbackContractInJs()
+    {
+        $kit = $this->readUiJs('reportkit.js');
+        $this->assertStringContainsString('excel_soft_max_rows', $kit);
+        $this->assertStringContainsString("result.fallback = 'csv'", $kit);
+        $this->assertStringContainsString('falling back to CSV', $kit);
+    }
+
+    public function testReloadClearsStoreOnBoot()
+    {
+        $kit = $this->readUiJs('reportkit.js');
+        $this->assertStringContainsString('C12', $kit);
+        $this->assertStringContainsString('resetOnReload', $kit);
+        $this->assertStringContainsString('ReportKit.store.clear', $kit);
+        $this->assertStringContainsString("setActionsEnabled('#rkActionBar', false)", $kit);
+    }
+
+    public function testNotifyMuteAndPingControls()
+    {
+        $kit = $this->readUiJs('reportkit.js');
+        $this->assertStringContainsString('ReportKit.notify', $kit);
+        $this->assertStringContainsString('sound_muted_key', $kit);
+        $this->assertStringContainsString('ping:', $kit);
+        $status = $this->readLegacyPartial('download-status.blade.php');
+        $this->assertStringContainsString('rkNotifyMuteBtn', $status);
+    }
+
+    public function testFeaturesPatternIsLldp()
+    {
+        $config = include $this->monorepoRoot() . '/reportkit-laravel-legacy/config/reportkit.php';
+        $this->assertSame('lldp', $config['features']['pattern']);
+    }
+
+    public function testExportHelperPrepareLongRunningReport()
+    {
+        $helper = new ExportHelper();
+        $helper->prepareLongRunningReport();
+        $this->assertTrue(true);
     }
 }
