@@ -45,6 +45,7 @@
   "exports": {
     ".": "./js/reportkit.js",
     "./js/reportkit.js": "./js/reportkit.js",
+    "./js/lldp-core.js": "./js/lldp-core.js",
     "./css/reportkit.css": "./css/reportkit.css",
     "./css/reportkit-compat.css": "./css/reportkit-compat.css"
   },
