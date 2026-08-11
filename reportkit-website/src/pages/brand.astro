@@ -5,7 +5,7 @@ const logos = [
   {
     name: 'Primary mark',
     file: '/brand/reportkit-mark.svg',
-    png: '/brand/png/reportkit-mark-512.png',
+    png: '/brand/png/reportkit-mark-1024.png',
     note: 'Transparent. Use everywhere the product name already appears in text.',
     bg: '#ffffff',
   },
@@ -36,6 +36,38 @@ const logos = [
     png: '/brand/png/reportkit-icon-small-512.png',
     note: 'Simplified glyph that stays legible at 16–32px. Source of favicon.ico.',
     bg: '#f4f6f5',
+  },
+];
+
+const animated = [
+  {
+    name: 'Kit-Larva idle',
+    file: '/brand/animated/kit-larva-idle.svg',
+    note: 'Eye blink, neon panel pulse, subtle peristalsis. Docs hero & README.',
+    size: 160,
+    bg: '#0a1410',
+  },
+  {
+    name: 'Kit-Larva prepare',
+    file: '/brand/animated/kit-larva-prepare.svg',
+    note: 'Segment wave + data flow during prepare. Async loader overlay.',
+    size: 160,
+    bg: '#0a1410',
+  },
+  {
+    name: 'LLDP flow',
+    file: '/brand/animated/lldp-flow.svg',
+    note: 'Prepare → Secure Store → Compose → Deliver phase rail.',
+    size: '100%',
+    bg: '#060908',
+    wide: true,
+  },
+  {
+    name: 'ReportKit loader',
+    file: '/brand/animated/reportkit-loader.svg',
+    note: 'Compact 128px spinner for inline loading states.',
+    size: 96,
+    bg: '#0a1410',
   },
 ];
 
@@ -78,6 +110,34 @@ const palette = [
         ))}
       </div>
 
+      <h2 class="h4 mt-5 mb-3">Animated SVG</h2>
+      <p class="text-secondary col-lg-9">
+        Vector animations with CSS keyframes. Inline or use <code>&lt;object type="image/svg+xml"&gt;</code> so motion plays.
+        Respects <code>prefers-reduced-motion</code>. GIF fallbacks live beside these in <code>/brand/animated/</code>.
+      </p>
+      <div class="row g-3">
+        {animated.map((a) => (
+          <div class={a.wide ? 'col-12' : 'col-md-6 col-lg-3'}>
+            <div class="rk-card h-100">
+              <div
+                class="d-flex align-items-center justify-content-center rounded mb-3"
+                style={`background:${a.bg};min-height:${a.wide ? '200px' : '180px'};padding:1rem`}
+              >
+                <object
+                  type="image/svg+xml"
+                  data={a.file}
+                  aria-label={`ReportKit ${a.name} animation`}
+                  style={a.wide ? 'width:100%;max-height:180px' : `width:${a.size}px;height:${a.size}px`}
+                />
+              </div>
+              <div class="fw-bold">{a.name}</div>
+              <p class="text-secondary small mb-2">{a.note}</p>
+              <a class="btn rk-btn-ghost btn-sm" href={a.file} download>SVG</a>
+            </div>
+          </div>
+        ))}
+      </div>
+
       <h2 class="h4 mt-5 mb-3">Palette</h2>
       <div class="row g-3">
         {palette.map((c) => (
@@ -105,7 +165,7 @@ const palette = [
       </ul>
 
       <p class="mt-4">
-        Product of <a href="https://lorapok.labs">Lorapok Labs</a>. Assets are MIT-licensed alongside the code.
+        Product of <a href="https://lorapok.tech">Lorapok Labs</a>. Assets ship under the project license.
       </p>
     </div>
   </section>

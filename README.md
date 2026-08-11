@@ -1,7 +1,11 @@
 # ReportKit
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/png/reportkit-logo-1200.png" width="320" alt="ReportKit — Kit-Larva logo" />
+  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/png/reportkit-mark-1024.png" width="160" alt="ReportKit — Kit-Larva mark" />
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Maijied/Reportkit-Core/main/brand/animated/kit-larva-idle.gif" width="128" alt="Kit-Larva idle animation" />
 </p>
 
 <p align="center">
@@ -337,10 +341,38 @@ Please read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) before posting.
 
 ## Author
 
-**Mohammad Maizied Hasan Majumder**  
-Creator · [mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) · [Lorapok Labs](https://lorapok.tech)
+**Mohammad Maizied Hasan Majumder** (Maijied)  
+Senior Software Engineer @ [Shohoz Ltd](https://shohoz.com) · Dhaka, Bangladesh  
+[mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) · [GitHub @Maijied](https://github.com/Maijied) · [Lorapok Labs](https://lorapok.tech)
 
-Developed by **Lorapok Labs**. ReportKit is an independent open-source project by the author; it is not a fork of any proprietary host application.
+| | |
+|---|---|
+| **Designation** | Mohammad Maizied Hasan Majumder |
+| **Alias** | Maijied |
+| **Role** | Senior Software Engineer @ Shohoz |
+| **Location** | Dhaka, Bangladesh |
+
+### Side project · Open source
+
+| | |
+|---|---|
+| **Project** | Lorapok Labs |
+| **Role** | Founder & Maintainer |
+| **Focus** | Cross-platform media, Laravel packages, Android AI |
+| **Projects** | 20+ (Lorapok Atlas, Media Player, AI Agent, and more) |
+| **Platforms** | Web · Windows · Mac · Linux · Android · npm · PyPI · Packagist |
+| **Status** | **Active** |
+
+> *"Code is the language of the future. Every line written is a step toward it."*  
+> — **Maizied**
+
+Senior Software Engineer with **6+ years** building scalable, production-grade systems. At Shohoz Ltd, I engineer backend infrastructure that handles **millions of concurrent users** during peak seasons — keeping everything smooth under pressure.
+
+Founded **[Lorapok Labs](https://lorapok.tech)**, an open-source ecosystem with **20+ shipped projects**: cross-platform media (Web, Windows, Mac, Linux Snap), Laravel packages on Packagist, a Bangla NLP AI keyboard for Android, Firefox AMO extensions, multi-platform APIs on npm/PyPI/Packagist, and an AI coding agent — all actively maintained.
+
+Full profile: [AUTHORS.md](./AUTHORS.md)
+
+Developed by **Lorapok Labs**. ReportKit is an independent open-source project; it is not a fork of any proprietary host application.
 
 ## License
 

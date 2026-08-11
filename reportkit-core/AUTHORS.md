@@ -1,11 +1,12 @@
 # Author
 
-**Mohammad Maizied Hasan Majumder**  
-Email: mdshuvo40@gmail.com  
-GitHub: https://github.com/Maijied
+**Mohammad Maizied Hasan Majumder** (Maijied)  
+Senior Software Engineer @ [Shohoz Ltd](https://shohoz.com) · Dhaka, Bangladesh  
+Founder & Maintainer @ [Lorapok Labs](https://lorapok.tech)
 
-Founder & Principal Engineer at Lorapok Labs (lorapok.labs)  
-Senior Software Engineer @ Shohoz Ltd (shohoz.com)
+- Email: [mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com)
+- GitHub: [@Maijied](https://github.com/Maijied)
 
-ReportKit is an independent open-source project by the author / Lorapok Labs.
-It is not a fork of any proprietary host application.
+Full profile: [AUTHORS.md](../AUTHORS.md) in the monorepo root.
+
+ReportKit Core is an independent open-source project by the author / Lorapok Labs.

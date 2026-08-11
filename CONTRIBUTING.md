@@ -58,5 +58,8 @@ commercial service, contact **mdshuvo40@gmail.com** for a commercial license.
 
 ## Contact
 
-**Mohammad Maizied Hasan Majumder**  
-[mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) · [Lorapok Labs](https://lorapok.tech)
+**Mohammad Maizied Hasan Majumder** (Maijied)  
+Senior Software Engineer @ [Shohoz Ltd](https://shohoz.com) · Founder & Maintainer @ [Lorapok Labs](https://lorapok.tech)  
+Dhaka, Bangladesh · [mdshuvo40@gmail.com](mailto:mdshuvo40@gmail.com) · [GitHub @Maijied](https://github.com/Maijied)
+
+Full profile: [AUTHORS.md](./AUTHORS.md)

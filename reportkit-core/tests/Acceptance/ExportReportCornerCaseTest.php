@@ -316,9 +316,9 @@ class ExportReportCornerCaseTest extends TestCase
     public function testReadmeLogoPointsAtKitLarvaBrandPng()
     {
         $readme = file_get_contents($this->monorepoRoot() . '/README.md');
-        $this->assertStringContainsString('brand/png/reportkit-logo-1200.png', $readme);
-        $this->assertFileExists($this->monorepoRoot() . '/brand/png/reportkit-logo-1200.png');
-        $legacy = file_get_contents($this->monorepoRoot() . '/brand/reportkit-logo.svg');
+        $this->assertStringContainsString('brand/png/reportkit-mark-1024.png', $readme);
+        $this->assertFileExists($this->monorepoRoot() . '/brand/png/reportkit-mark-1024.png');
+        $legacy = file_get_contents($this->monorepoRoot() . '/brand/reportkit-mark.svg');
         $this->assertStringContainsString('8ef0c4', $legacy);
     }
 }
