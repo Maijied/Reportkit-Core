@@ -1,0 +1,19 @@
+{
+  "default": [
+    { "id": "filter", "category": "filter", "label": "Validate date filters", "delayMs": 600 },
+    { "id": "prepare", "category": "prepare", "label": "Prepare week chunks (concurrency 3)", "delayMs": 1200, "fetch": "/v1/sim/weeks?start_date=2026-01-01&end_date=2026-01-31" },
+    { "id": "store", "category": "store", "label": "Commit secure store", "delayMs": 700, "fetch": "/v1/sim/data?start_date=2026-01-01&end_date=2026-01-31&cap=400" },
+    { "id": "browse", "category": "browse", "label": "Browse prepared JSON (sql=0)", "delayMs": 900, "fetch": "/v1/sim/browse?start_date=2026-01-01&end_date=2026-01-31&start=0&length=10" },
+    { "id": "export", "category": "export.csv", "label": "Compose CSV from store", "delayMs": 700 }
+  ],
+  "cornerCases": [
+    { "id": "filter-invalid-dates", "label": "End before start → validation error", "phase": "filter" },
+    { "id": "prepare-cancel-mid", "label": "Cancel at week 3 → partial discarded", "phase": "prepare" },
+    { "id": "excel-over-soft-max", "label": "30k rows → CSV fallback", "phase": "export" },
+    { "id": "send-dns-typo", "label": "gmial.com typo suggestion", "phase": "send" },
+    { "id": "hybrid-browse-no-sql", "label": "Post-prepare paging SQL count = 0", "phase": "browse" },
+    { "id": "pdf-over-single-file", "label": "45k rows → pdf.zip", "phase": "export" },
+    { "id": "store-over-cap", "label": "JSON > 1.5MB memory-only", "phase": "store" },
+    { "id": "provenance-labels", "label": "Badge synthetic / measured / live", "phase": "system" }
+  ]
+}

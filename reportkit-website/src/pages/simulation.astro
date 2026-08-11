@@ -1,0 +1,249 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import playlistData from '../data/simulation-playlist.json';
+
+const phases = [
+  { id: 'filter', label: 'Filter' },
+  { id: 'prepare', label: 'Prepare' },
+  { id: 'store', label: 'Store' },
+  { id: 'browse', label: 'Browse' },
+  { id: 'export', label: 'Export' },
+];
+const playlist = playlistData.default;
+const cornerCases = playlistData.cornerCases;
+---
+<MarketingLayout
+  title="Simulation · ReportKit"
+  description="Animated prepare → store → browse → export flow with fictional 50M virtual ledger backing."
+>
+  <link rel="stylesheet" href="/css/reportkit/reportkit.css" />
+  <section class="rk-section">
+    <div class="container">
+      <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div>
+          <div class="rk-kicker"><span class="rk-brand-dot"></span> Phase L</div>
+          <h1 class="rk-section-title mb-1">Animated report pipeline</h1>
+          <p class="text-secondary mb-0">Fictional data only — 50M virtual ledger, zero production SQL on browse.</p>
+        </div>
+        <span id="rkProvBadge" class="rk-badge-provenance" data-provenance="synthetic">synthetic</span>
+      </div>
+
+      <div class="rk-sim-rail mb-4" id="rkPhaseRail">
+        {phases.map((p, i) => (
+          <>
+            <div class="rk-sim-phase" data-phase={p.id} id={`phase-${p.id}`}>
+              <span class="rk-sim-phase-num">{i + 1}</span>
+              <span>{p.label}</span>
+            </div>
+            {i < phases.length - 1 && <span class="rk-sim-arrow">→</span>}
+          </>
+        ))}
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-lg-8">
+          <div class="rk-card">
+            <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+              <button id="rkSimRun" class="btn rk-btn-primary" type="button">Run playlist</button>
+              <button id="rkSimPause" class="btn btn-outline-secondary" type="button">Pause</button>
+              <button id="rkSimStep" class="btn btn-outline-secondary" type="button">Step</button>
+              <label class="d-flex align-items-center gap-2 small mb-0">
+                Speed
+                <select id="rkSimSpeed" class="form-select form-select-sm" style="width:auto">
+                  <option value="1">1×</option>
+                  <option value="2">2×</option>
+                  <option value="4" selected>4×</option>
+                  <option value="8">8×</option>
+                </select>
+              </label>
+              <label class="d-flex align-items-center gap-2 small mb-0 ms-auto">
+                Corner case
+                <select id="rkSimCase" class="form-select form-select-sm" style="width:220px">
+                  <option value="">Default playlist</option>
+                  {cornerCases.map((c) => (
+                    <option value={c.id}>{c.label}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <p class="small text-secondary mb-2" id="rkSimStatus">Ready — case 0/{cornerCases.length + 1}</p>
+            <ol id="rkSimTimeline" class="rk-sim-timeline mb-3">
+              {playlist.map((step) => (
+                <li data-step={step.id}>{step.label}</li>
+              ))}
+            </ol>
+            <div class="table-responsive">
+              <table class="table table-sm table-striped mb-0" id="rkSimLedger">
+                <thead>
+                  <tr>
+                    <th>Date</th><th>Type</th><th>PNR</th>
+                    <th class="text-end">Credit</th><th class="text-end">Debit</th><th class="text-end">Balance</th>
+                  </tr>
+                </thead>
+                <tbody id="rkSimLedgerBody">
+                  <tr><td colspan="6" class="text-secondary text-center">Run playlist to load fictional ledger rows</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="rk-panel rk-activity-log-panel mb-3">
+            <div class="rk-panel-head"><h3 class="rk-panel-title">Activity</h3></div>
+            <div class="rk-activity-log" id="rkSimLog"></div>
+          </div>
+          <div class="rk-card small">
+            <strong>Mock API</strong>
+            <ul class="mb-0 ps-3">
+              <li><code>/v1/sim/weeks</code></li>
+              <li><code>/v1/sim/data</code></li>
+              <li><code>/v1/sim/browse</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="rk-kpi-row mb-3">
+        <div class="rk-kpi-card"><div class="rk-kpi-label">Balance</div><div class="rk-kpi-value" id="rkSimBalance">—</div></div>
+        <div class="rk-kpi-card"><div class="rk-kpi-label">Prepared rows</div><div class="rk-kpi-value" id="rkSimRows">0</div></div>
+        <div class="rk-kpi-card"><div class="rk-kpi-label">Browse SQL</div><div class="rk-kpi-value" id="rkSimSql">0</div></div>
+        <div class="rk-kpi-card"><div class="rk-kpi-label">Virtual total</div><div class="rk-kpi-value rk-mono">50M</div></div>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>
+
+<script is:inline>
+  window.__REPORTKIT_SETTINGS__ = { logging: { enabled: true, panel: 'local', buffer_max: 200 } };
+</script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
+<script is:inline src="/js/reportkit/reportkit.js"></script>
+<script define:vars={{ playlist, cornerCases }}>
+  const API = (import.meta.env.PUBLIC_DEMO_API_URL || 'https://reportkit-api.lorapok.tech').replace(/\/$/, '');
+  const timeline = document.getElementById('rkSimTimeline');
+  const ledgerBody = document.getElementById('rkSimLedgerBody');
+  const provBadge = document.getElementById('rkProvBadge');
+  const statusEl = document.getElementById('rkSimStatus');
+  let prepared = 0;
+  let caseIndex = 0;
+
+  if (window.ReportKit && ReportKit.log) {
+    ReportKit.log.renderPanel('#rkSimLog');
+  }
+
+  function setPhase(activeId) {
+    document.querySelectorAll('.rk-sim-phase').forEach((el) => {
+      const id = el.dataset.phase;
+      el.classList.toggle('is-active', id === activeId);
+      if (id === activeId) el.classList.add('is-done');
+    });
+  }
+
+  function setTimelineStep(stepId) {
+    timeline?.querySelectorAll('li').forEach((li) => {
+      li.classList.toggle('is-active', li.dataset.step === stepId);
+      if (li.dataset.step === stepId) li.classList.add('is-done');
+    });
+  }
+
+  function resetUi() {
+    timeline?.querySelectorAll('li').forEach((li) => li.classList.remove('is-active', 'is-done'));
+    document.querySelectorAll('.rk-sim-phase').forEach((el) => el.classList.remove('is-active', 'is-done'));
+    prepared = 0;
+    document.getElementById('rkSimRows').textContent = '0';
+    document.getElementById('rkSimSql').textContent = '0';
+    document.getElementById('rkSimBalance').textContent = '—';
+    if (ReportKit.log) ReportKit.log.clear();
+    if (ledgerBody) {
+      ledgerBody.innerHTML = '<tr><td colspan="6" class="text-secondary text-center">Run playlist to load fictional ledger rows</td></tr>';
+    }
+  }
+
+  function renderLedger(rows) {
+    if (!ledgerBody || !rows?.length) return;
+    ledgerBody.innerHTML = rows.slice(0, 8).map((r) => `
+      <tr>
+        <td class="rk-mono">${r.transaction_date}</td>
+        <td>${r.transaction_type}</td>
+        <td class="rk-mono">${r.pnr}</td>
+        <td class="text-end rk-mono">${r.credit_amount}</td>
+        <td class="text-end rk-mono">${r.debit_amount}</td>
+        <td class="text-end rk-mono">${r.balance}</td>
+      </tr>
+    `).join('');
+  }
+
+  function runSimulation() {
+    resetUi();
+    const speed = Number(document.getElementById('rkSimSpeed')?.value || 4);
+    const caseId = document.getElementById('rkSimCase')?.value;
+    if (caseId) {
+      caseIndex = cornerCases.findIndex((c) => c.id === caseId) + 1;
+      if (statusEl) statusEl.textContent = `Corner case: ${caseId}`;
+      if (caseId === 'filter-invalid-dates' && ReportKit.log) {
+        ReportKit.log.add('validation', 'End date must be after start date', { error: true });
+        setPhase('filter');
+        return;
+      }
+    } else {
+      caseIndex = 0;
+      if (statusEl) statusEl.textContent = 'Running default playlist…';
+    }
+    if (provBadge) {
+      provBadge.dataset.provenance = 'synthetic';
+      provBadge.textContent = 'synthetic';
+    }
+
+    ReportKit.simulation.run(playlist, {
+      speed,
+      apiBase: API,
+      onStep(step, idx, extra) {
+        setPhase(step.id);
+        setTimelineStep(step.id);
+        if (step.id === 'prepare') prepared += 1200;
+        if (step.id === 'store') {
+          prepared = extra?.rows?.length || prepared || 400;
+          document.getElementById('rkSimRows').textContent = String(prepared);
+        }
+        if (step.id === 'browse') {
+          document.getElementById('rkSimSql').textContent = '0';
+          const summary = extra?.summary;
+          if (summary?.current_balance) {
+            document.getElementById('rkSimBalance').textContent = summary.current_balance;
+          } else {
+            document.getElementById('rkSimBalance').textContent = '12,450.00';
+          }
+          renderLedger(extra?.data || extra?.rows);
+        }
+      },
+      onComplete() {
+        if (statusEl) statusEl.textContent = `Complete — case ${caseIndex || 'default'}`;
+      },
+    });
+  }
+
+  document.getElementById('rkSimRun')?.addEventListener('click', runSimulation);
+  document.getElementById('rkSimPause')?.addEventListener('click', () => ReportKit.simulation.pause());
+  document.getElementById('rkSimStep')?.addEventListener('click', () => ReportKit.simulation.step());
+</script>
+
+<style>
+  .rk-sim-rail { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .rk-sim-phase {
+    display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+    border-radius: 999px; border: 2px solid var(--rk-line, #dce5df); background: #fff;
+    font-size: 0.875rem; font-weight: 600;
+  }
+  .rk-sim-phase.is-active { border-color: var(--rk-accent, #0b7a4b); box-shadow: 0 0 0 3px rgba(11,122,75,0.15); }
+  .rk-sim-phase.is-done { opacity: 0.85; background: #f0faf4; }
+  .rk-sim-phase-num {
+    width: 22px; height: 22px; border-radius: 50%; background: var(--rk-accent, #0b7a4b);
+    color: #fff; font-size: 12px; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .rk-sim-arrow { color: var(--rk-muted, #7a9488); font-weight: 700; }
+  .rk-sim-timeline { list-style: none; padding: 0; }
+  .rk-sim-timeline li { padding: 8px 12px; border-left: 3px solid var(--rk-line, #dce5df); margin-bottom: 6px; }
+  .rk-sim-timeline li.is-active { border-left-color: var(--rk-accent, #0b7a4b); font-weight: 600; }
+  .rk-sim-timeline li.is-done { opacity: 0.75; }
+  @media (max-width: 768px) { .rk-sim-arrow { display: none; } }
+</style>

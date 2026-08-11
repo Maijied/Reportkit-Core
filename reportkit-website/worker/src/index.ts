@@ -1,6 +1,12 @@
 import { corsHeaders, jsonResponse } from './cors';
 import { getWeeklyRanges, mergeSources, sliceRows, type TripRow } from './merge';
 import { SYNTHETIC_TOTAL, syntheticPage } from './generate';
+import {
+  SYNTHETIC_LEDGER_TOTAL,
+  browsePreparedRows,
+  ledgerRowsForRange,
+  buildSummary,
+} from './ledger';
 
 export interface Env {
   DB_LIVE: D1Database;
@@ -113,6 +119,10 @@ export default {
               stats: '/v1/stats',
               trace: '/v1/trace',
               weeks: '/v1/weeks',
+              sim_weeks: '/v1/sim/weeks',
+              sim_data: '/v1/sim/data',
+              sim_browse: '/v1/sim/browse',
+              sim_health: '/v1/sim/health',
             },
             note: 'All demo data is fictional. Use /v1/health for service metadata.',
           },
@@ -143,6 +153,68 @@ export default {
         const start = url.searchParams.get('start_date') || '2012-01-01';
         const end = url.searchParams.get('end_date') || '2026-08-10';
         return jsonResponse({ weeks: getWeeklyRanges(start, end) }, { mode: 'live', origin, allowed });
+      }
+
+      if (url.pathname === '/v1/sim/health') {
+        return jsonResponse(
+          {
+            ok: true,
+            service: 'reportkit-simulation',
+            virtual_ledger_total: SYNTHETIC_LEDGER_TOTAL,
+            virtual_trip_total: SYNTHETIC_TOTAL,
+            provenance: 'synthetic',
+            note: 'Fictional LLDP simulation — no production data.',
+          },
+          { mode: 'synthetic', origin, allowed }
+        );
+      }
+
+      if (url.pathname === '/v1/sim/weeks') {
+        const start = url.searchParams.get('start_date') || '2026-01-01';
+        const end = url.searchParams.get('end_date') || '2026-01-31';
+        return jsonResponse({ weeks: getWeeklyRanges(start, end) }, { mode: 'synthetic', origin, allowed });
+      }
+
+      if (url.pathname === '/v1/sim/data') {
+        const start = url.searchParams.get('start_date') || '2026-01-01';
+        const end = url.searchParams.get('end_date') || '2026-01-31';
+        const cap = Math.min(parseInt(url.searchParams.get('cap') || '400', 10), 2000);
+        const rows = ledgerRowsForRange(start, end, cap);
+        return jsonResponse(
+          {
+            rows,
+            count: rows.length,
+            virtual_total: SYNTHETIC_LEDGER_TOTAL,
+            provenance: 'synthetic',
+          },
+          { mode: 'synthetic', origin, allowed }
+        );
+      }
+
+      if (url.pathname === '/v1/sim/browse') {
+        const start = url.searchParams.get('start_date') || '2026-01-01';
+        const end = url.searchParams.get('end_date') || '2026-01-31';
+        const prepared = ledgerRowsForRange(start, end, 800);
+        const draw = parseInt(url.searchParams.get('draw') || '1', 10);
+        const pageStart = parseInt(url.searchParams.get('start') || '0', 10);
+        const length = parseInt(url.searchParams.get('length') || '25', 10);
+        const search = url.searchParams.get('search[value]') || url.searchParams.get('search') || '';
+        const payload = browsePreparedRows(
+          { draw, start: pageStart, length, search: { value: search } },
+          prepared,
+          ['transaction_date', 'transaction_type', 'pnr', 'credit_amount', 'debit_amount', 'balance']
+        );
+        return jsonResponse(payload, { mode: 'synthetic', origin, allowed });
+      }
+
+      if (url.pathname === '/v1/sim/summary') {
+        const start = url.searchParams.get('start_date') || '2026-01-01';
+        const end = url.searchParams.get('end_date') || '2026-01-31';
+        const rows = ledgerRowsForRange(start, end, 500);
+        return jsonResponse(
+          { summary: buildSummary(rows), provenance: 'synthetic', virtual_total: SYNTHETIC_LEDGER_TOTAL },
+          { mode: 'synthetic', origin, allowed }
+        );
       }
 
       const mode = url.searchParams.get('mode') || 'live';

@@ -1,39 +1,42 @@
-# Laravel demo — reference host app
+# Laravel demo — runnable host app
 
-Minimal **fictional** Laravel host proving ReportKit end-to-end. Uses path repositories to local monorepo packages.
+Full **fictional** Laravel 5.4 host proving ReportKit **hybrid-export** end-to-end with SQLite fixtures.
 
-## Reports (planned)
+## Requirements
 
-| Report | Preset | Proves |
-|--------|--------|--------|
-| Operator Export | `hybrid-export` | LLDP prepare → CSV/PDF/send |
-| Ledger Browse | `hybrid-browse` | Prepare + JSON browse |
-| Trip Merge | `datatables-sync` | Server-side DataTables |
-
-All fixture data is synthetic — no real operators or production identifiers.
-
-## Quick start (scaffold)
+- **PHP 7.0–7.2** recommended (Laravel 5.4). PHP 8+ is not supported by Laravel 5.4.
+- Composer, SQLite extension
 
 ```bash
-# From monorepo root
 cd examples/laravel-demo
-
-# Point Composer at local packages (see composer.json repositories)
-composer install
-
-# Publish ReportKit assets + config
-php artisan reportkit:install --with-config --publish-assets
-
-# Scaffold the demo export report
-php artisan reportkit:make OperatorExport --preset=hybrid-export --route=admin/operator-export
-
-# Load fictional SQLite fixtures
-sqlite3 database/demo.sqlite < database/seeds/demo_fixtures.sql
-
-composer dump-autoload
+chmod +x bin/setup-demo.sh
+./bin/setup-demo.sh
+php -S localhost:8080 -t public
 ```
 
+Open [http://localhost:8080/admin/operator-export](http://localhost:8080/admin/operator-export)
+
+## What it proves
+
+1. **Fetch & Prepare** — week-chunked AJAX via `reportkit/operator-export/weeks` + `/rows`
+2. **Secure store** — browser-side merge + commit (LLDP)
+3. **Export** — CSV / Excel / PDF from prepared store (no re-query)
+4. **Send** — `.csv.zip` email gate with typo detection
+5. **Activity log** — categorized timeline when `REPORTKIT_LOG=true`
+
+## Pre-built report
+
+| File | Role |
+|------|------|
+| `app/Reports/OperatorExportReport.php` | Definition + flags |
+| `app/Services/Reports/OperatorExportReportService.php` | Week chunking orchestration |
+| `app/Repositories/Reports/OperatorExportReportRepository.php` | SQLite fictional SQL |
+| `resources/views/admin/reports/operator-export.blade.php` | CAS Blade page |
+| `public/js/reports/operator-export.js` | LLDP client wiring |
+
 ## Path repositories
+
+Local monorepo packages via `composer.json`:
 
 ```json
 {
@@ -44,15 +47,30 @@ composer dump-autoload
 }
 ```
 
-## Routes (after scaffold)
+## Routes
 
+| Method | Path | Handler |
+|--------|------|---------|
+| GET | `/admin/operator-export` | Demo report page |
+| GET | `/reportkit/operator-export/weeks` | Week list JSON |
+| GET | `/reportkit/operator-export/rows` | Prepare row JSON |
+| POST | `/reportkit/operator-export/send` | Email ZIP |
+
+Enabled via `config/reportkit.php` → `routes.enabled = true` and `ReportKit::routes()`.
+
+## Fixtures
+
+```bash
+sqlite3 database/demo.sqlite < database/seeds/demo_fixtures.sql
 ```
-GET  admin/operator-export
-GET  admin/operator-export/weeks
-GET  admin/operator-export/rows
-POST reportkit/operator-export/send
-```
+
+All data is synthetic — operators like `NORTHSTAR`, `BLUELINE` are fictional.
+
+## Related
+
+- Public simulation: [reportkit.lorapok.tech/simulation](https://reportkit.lorapok.tech/simulation)
+- Live API demo: [reportkit.lorapok.tech/demo](https://reportkit.lorapok.tech/demo)
 
 ## License
 
-Same as monorepo — Lorapok-NCL-1.0. Commercial use requires a separate license from Lorapok Labs.
+Lorapok-NCL-1.0 — same as monorepo.

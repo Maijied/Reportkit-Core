@@ -76,10 +76,10 @@ Each transition animates: progress bar, week counter, row count, KPI cards, log 
 | L1 | `simulation/ANIMATED-FLOW.md` ✓ |
 | L2 | `worker/src/ledger-synthetic.ts` — deterministic txn generator |
 | L3 | Extend D1 seed scripts for ledger tables |
-| L4 | Astro page `/simulation` — canvas + controls | done (skeleton) |
-| L5 | `ReportKit.simulation.run(playlist)` — JS driver | done (skeleton) |
-| L6 | Corner-case playlist JSON — see CORNER-CASES.md |
-| L7 | Wire activity log to simulation events | partial |
+| L4 | Astro page `/simulation` — canvas + controls | done |
+| L5 | `ReportKit.simulation.run(playlist)` — JS driver | done |
+| L6 | Corner-case playlist JSON — see CORNER-CASES.md | done |
+| L7 | Wire activity log to simulation events | done |
 | L8 | Benchmarks page links + provenance labels |
 | L9 | Headless Playwright smoke for CI |
 | L10 | `/showcase` card linking to simulation | done |

@@ -35,7 +35,7 @@ Central architecture and rollout docs for the ReportKit monorepo. Replaces the m
 | [I](./phases/I-monorepo-infra.md) | Monorepo infra | mostly done |
 | [J](./phases/J-activity-log.md) | Activity log (fast) | mostly done |
 | [K](./phases/K-ledger-table-json-browse.md) | Ledger table + JSON browse | mostly done |
-| [L](./phases/L-mock-simulation.md) | Mock DB + animated flow | partial |
+| [L](./phases/L-mock-simulation.md) | Mock DB + animated flow | mostly done |
 | [M](./phases/M-brand-mascot.md) | Kit-Larva logo & brand rollout | done |
 | [N](./phases/N-seo-marketing.md) | SEO, sitemap, marketing pages | mostly done |
 | [O](./phases/O-developer-upgrades.md) | Developer upgrade documentation | done |

@@ -404,4 +404,26 @@ class ExportReportCornerCaseTest extends TestCase
         \ReportKit\Core\Logging\ActivityLog::configure(false, 200);
         \ReportKit\Core\Logging\ActivityLog::clear();
     }
+
+    public function testSimulationDriverAndPlaylistExist()
+    {
+        $kit = $this->readUiJs('reportkit.js');
+        $this->assertStringContainsString('ReportKit.simulation', $kit);
+        $this->assertStringContainsString('resume:', $kit);
+        $playlist = $this->monorepoRoot() . '/reportkit-website/src/data/simulation-playlist.json';
+        $this->assertFileExists($playlist);
+        $this->assertStringContainsString('hybrid-browse-no-sql', file_get_contents($playlist));
+    }
+
+    public function testLaravelDemoAppScaffoldIsRunnable()
+    {
+        $root = $this->monorepoRoot() . '/examples/laravel-demo';
+        $this->assertFileExists($root . '/public/index.php');
+        $this->assertFileExists($root . '/app/Reports/OperatorExportReport.php');
+        $this->assertFileExists($root . '/app/Repositories/Reports/OperatorExportReportRepository.php');
+        $this->assertFileExists($root . '/bin/setup-demo.sh');
+        $report = file_get_contents($root . '/app/Reports/OperatorExportReport.php');
+        $this->assertStringContainsString('operator-export', $report);
+        $this->assertStringContainsString('async_prepare', $report);
+    }
 }

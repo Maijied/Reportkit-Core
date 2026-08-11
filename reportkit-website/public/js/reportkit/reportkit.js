@@ -1926,45 +1926,101 @@
      */
     ReportKit.simulation = ReportKit.simulation || {
         _timer: null,
+        _paused: false,
+        _playlist: [],
+        _index: 0,
+        _options: {},
+        _preparedRows: [],
         run: function (playlist, options) {
             options = options || {};
-            playlist = playlist || [];
-            var index = 0;
+            this._playlist = playlist || [];
+            this._index = 0;
+            this._options = options;
+            this._paused = false;
+            this._preparedRows = [];
             var speed = Number(options.speed) || 1;
             var self = this;
+            var apiBase = options.apiBase || '';
 
-            function emit(step) {
-                if (window.ReportKit && ReportKit.log) {
-                    ReportKit.log.add('simulation', step.label || step.id || 'step');
+            function afterStep(step, done) {
+                function finish(extra) {
+                    if (window.ReportKit && ReportKit.log) {
+                        ReportKit.log.add(step.category || 'simulation', step.label || step.id || 'step', extra || null);
+                    }
+                    if (typeof options.onStep === 'function') {
+                        options.onStep(step, self._index, extra || {});
+                    }
+                    if (typeof done === 'function') {
+                        done();
+                    }
                 }
-                if (typeof options.onStep === 'function') {
-                    options.onStep(step, index);
+                if (step.fetch && apiBase) {
+                    window.jQuery.getJSON(apiBase + step.fetch).done(function (payload) {
+                        if (payload && payload.rows) {
+                            self._preparedRows = payload.rows;
+                        }
+                        finish(payload || {});
+                    }).fail(function () {
+                        finish({ error: 'mock_fetch_failed' });
+                    });
+                    return;
                 }
+                finish({});
             }
 
-            function next() {
-                if (index >= playlist.length) {
+            function scheduleNext() {
+                if (self._paused) {
+                    return;
+                }
+                if (self._index >= self._playlist.length) {
                     if (typeof options.onComplete === 'function') {
-                        options.onComplete();
+                        options.onComplete({ rows: self._preparedRows.length });
                     }
                     return;
                 }
-                var step = playlist[index];
-                index += 1;
-                emit(step);
-                var delay = Number(step.delayMs || 800) / speed;
-                self._timer = setTimeout(next, delay);
+                var step = self._playlist[self._index];
+                self._index += 1;
+                afterStep(step, function () {
+                    var delay = Number(step.delayMs || 800) / speed;
+                    self._timer = window.setTimeout(scheduleNext, delay);
+                });
             }
 
             if (typeof options.onStart === 'function') {
-                options.onStart(playlist);
+                options.onStart(this._playlist);
             }
-            next();
+            scheduleNext();
         },
         pause: function () {
+            this._paused = true;
             if (this._timer) {
                 clearTimeout(this._timer);
                 this._timer = null;
+            }
+        },
+        resume: function () {
+            if (!this._paused) {
+                return;
+            }
+            this._paused = false;
+            var speed = Number(this._options.speed) || 1;
+            var self = this;
+            this._timer = window.setTimeout(function () {
+                self.run(self._playlist.slice(self._index), self._options);
+            }, Number(400 / speed));
+        },
+        step: function () {
+            this.pause();
+            if (this._index >= this._playlist.length) {
+                return;
+            }
+            var step = this._playlist[this._index];
+            this._index += 1;
+            if (window.ReportKit && ReportKit.log) {
+                ReportKit.log.add(step.category || 'simulation', step.label || step.id || 'step');
+            }
+            if (typeof this._options.onStep === 'function') {
+                this._options.onStep(step, this._index, {});
             }
         }
     };

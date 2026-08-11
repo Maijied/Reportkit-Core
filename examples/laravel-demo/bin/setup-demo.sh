@@ -1,35 +1,42 @@
 #!/usr/bin/env bash
-# Lorapok ReportKit — fictional Laravel demo bootstrap helper
+# Lorapok ReportKit — install and boot the fictional Laravel demo host
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 MONOREPO="$(cd "$ROOT/../.." && pwd)"
 
-echo "ReportKit laravel-demo setup"
-echo "  demo root:   $ROOT"
-echo "  monorepo:    $MONOREPO"
-echo ""
-
-if [[ ! -f "$ROOT/composer.json" ]]; then
-  echo "composer.json missing — run from examples/laravel-demo" >&2
-  exit 1
-fi
+echo "ReportKit laravel-demo install"
+echo "  demo:     $ROOT"
+echo "  monorepo: $MONOREPO"
 
 cd "$ROOT"
 
 if ! command -v composer >/dev/null 2>&1; then
-  echo "Composer is required. Install packages manually:" >&2
-  echo "  cd examples/laravel-demo && composer install" >&2
+  echo "Composer required." >&2
   exit 1
 fi
 
 composer install --no-interaction
 
+if [[ ! -f .env ]]; then
+  cp .env.example .env
+  php -r "file_put_contents('.env', str_replace('APP_KEY=', 'APP_KEY=base64:'.base64_encode(random_bytes(32)), file_get_contents('.env')));"
+fi
+
+mkdir -p public/css/reportkit public/js/reportkit public/js/reports database storage/framework/{sessions,views,cache} storage/logs bootstrap/cache
+
+cp -f "$MONOREPO/reportkit-ui/css/reportkit.css" public/css/reportkit/
+cp -f "$MONOREPO/reportkit-ui/css/reportkit-compat.css" public/css/reportkit/ 2>/dev/null || true
+cp -f "$MONOREPO/reportkit-ui/js/reportkit.js" "$MONOREPO/reportkit-ui/js/lldp-core.js" "$MONOREPO/reportkit-ui/js/lldp-download.js" public/js/reportkit/
+
+if [[ ! -f database/demo.sqlite ]]; then
+  sqlite3 database/demo.sqlite < database/seeds/demo_fixtures.sql
+  echo "Created database/demo.sqlite with fictional fixtures."
+fi
+
 echo ""
-echo "Next steps (inside your Laravel host app that uses this path repo):"
-echo "  1. php artisan reportkit:install --with-config --publish-assets"
-echo "  2. php artisan reportkit:make OperatorExport --preset=hybrid-export --route=admin/operator-export"
-echo "  3. sqlite3 database/demo.sqlite < database/seeds/demo_fixtures.sql"
-echo "  4. Wire routes from routes/reportkit-demo.php.example"
+echo "Start the demo:"
+echo "  cd examples/laravel-demo"
+echo "  php -S localhost:8080 -t public"
 echo ""
-echo "See SCAFFOLD.md for the full fictional host checklist."
+echo "Open http://localhost:8080/admin/operator-export"
