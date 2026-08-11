@@ -3,14 +3,14 @@
  * Research-aligned D1 seed generator.
  *
  * Provenance model (see docs/RESEARCH.md):
- * - synthetic: 50M virtual rows (2012 → now) — not stored on D1
+ * - synthetic: 1B virtual rows (2012 → now) — not stored on D1
  * - live (measured): dual-D1 sample with operator catalog cross-reference
  *
  * Scales (SEED_SCALE):
  * - default     → 2k + 2k
  * - large       → 50k + 50k
- * - research    → 500k + 500k (1M measured — max for free-tier CI)
- * - research-full → 25M + 25M (local/paid D1 only — run manually)
+ * - research    → 500k + 500k (1M measured — practical max for free-tier D1)
+ * - research-full → 25M + 25M (paid D1 only — run manually, not on free tier)
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -40,8 +40,8 @@ const LIVE_END = Date.now();
 const ARCHIVE_START = Date.parse('2012-01-01T00:00:00Z');
 const ARCHIVE_END = Date.parse('2017-12-31T00:00:00Z');
 
-/** Dummy demo totals — no real customer or production data. */
-const VIRTUAL_LOGICAL_TOTAL = 50_000_000;
+/** Dummy demo totals — measured rows live on free D1; billions are virtual address space only. */
+const VIRTUAL_LOGICAL_TOTAL = 1_000_000_000;
 
 function isoDay(ts) {
   return new Date(ts).toISOString().slice(0, 10);

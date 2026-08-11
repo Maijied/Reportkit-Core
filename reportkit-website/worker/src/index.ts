@@ -143,7 +143,7 @@ export default {
               live_db: '2018 → present (operator_id FK)',
               archive_db: '2012 → 2017 (operator_code cross-ref)',
             },
-            note: 'All demo rows are fictional. Free-tier D1 stores a sample; synthetic mode exposes 50M virtual rows.',
+            note: 'All demo rows are fictional. Free-tier D1 stores a measured sample; synthetic mode exposes 1B virtual rows.',
           },
           { mode: 'live', origin, allowed }
         );
@@ -248,7 +248,7 @@ export default {
               dropped: 0,
               sliced: data.length,
               total_ms: 0.2,
-              note: 'Virtual 50M address space — rows materialized on demand (2012 → now)',
+              note: 'Virtual 1B address space — rows materialized on demand (2012 → now)',
             },
             { mode: 'synthetic', origin, allowed }
           );

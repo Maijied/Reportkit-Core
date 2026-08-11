@@ -11,7 +11,7 @@ export type LedgerRow = {
   comments: string;
 };
 
-export const SYNTHETIC_LEDGER_TOTAL = 50_000_000;
+export const SYNTHETIC_LEDGER_TOTAL = 1_000_000_000;
 const TXN_TYPES = ['recharge', 'ticket_sell', 'ticket_cancel', 'adjustment'];
 const PAGE_LIMIT_MAX = 10_000;
 

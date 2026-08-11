@@ -27,7 +27,7 @@ const ROUTES = ['HUB-A-HUB-B', 'HUB-A-HUB-C', 'HUB-A-HUB-D', 'HUB-B-HUB-A', 'HUB
 const CHANNELS = ['online', 'offline'];
 
 /** Dummy virtual fleet size for synthetic paging demo. */
-export const SYNTHETIC_TOTAL = 50_000_000;
+export const SYNTHETIC_TOTAL = 1_000_000_000;
 
 const RANGE_START = Date.UTC(2012, 0, 1);
 const RANGE_END = Date.UTC(2026, 7, 10);
