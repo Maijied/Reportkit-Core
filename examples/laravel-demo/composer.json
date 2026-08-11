@@ -1,0 +1,17 @@
+{
+  "name": "lorapok/reportkit-laravel-demo",
+  "description": "Fictional Laravel host app demonstrating ReportKit LLDP presets",
+  "type": "project",
+  "license": "LicenseRef-Lorapok-NCL-1.0",
+  "require": {
+    "php": ">=5.6.0",
+    "reportkit/core": "@dev",
+    "reportkit/laravel-legacy": "@dev"
+  },
+  "repositories": [
+    { "type": "path", "url": "../../reportkit-core" },
+    { "type": "path", "url": "../../reportkit-laravel-legacy" }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
