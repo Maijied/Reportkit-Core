@@ -5,9 +5,10 @@
  */
 import { execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = new URL('.', import.meta.url).pathname.replace(/\/$/, '');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const isCi = process.env.GITHUB_ACTIONS === 'true' || process.env.CI === 'true';
 
 function run(cmd, opts = {}) {
