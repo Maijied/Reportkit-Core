@@ -27,7 +27,7 @@
         @include('reportkit::ui.sync-loader')
     @endif
     @if(empty($reportFlags) || !empty($reportFlags['async_prepare']))
-        @include('reportkit::ui.async-loader')
+        @include('reportkit::ui.prepare-loader')
     @endif
     @if(!empty($reportFlags['email']))
         @include('reportkit::ui.send-panel')

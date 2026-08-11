@@ -1,18 +1,19 @@
 ---
 import MarketingLayout from '../layouts/MarketingLayout.astro';
 import fixture from '../data/fixtures/demo-page.json';
+import ledgerFixture from '../data/fixtures/demo-ledger.json';
 ---
 <MarketingLayout
   title="Live demo · ReportKit"
-  description="Live multi-DB merge playground with DataTables JSON and stage timings."
+  description="Multi-DB merge, hybrid-export LLDP, and hybrid-browse ledger playground."
 >
   <section class="rk-section">
     <div class="container">
       <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
         <div>
           <div class="rk-kicker"><span class="rk-brand-dot"></span> Interactive demo</div>
-          <h1 class="rk-section-title mb-1">Multi-DB grab → merge → JSON</h1>
-          <p class="text-secondary mb-0">Calls the Cloudflare Worker when available; falls back to bundled fixtures.</p>
+          <h1 class="rk-section-title mb-1" id="rkDemoTitle">Multi-DB grab → merge → JSON</h1>
+          <p class="text-secondary mb-0" id="rkDemoLead">Calls the Cloudflare Worker when available; falls back to bundled fixtures.</p>
         </div>
         <span id="rkModeBadge" class="rk-badge-provenance" data-provenance="cached">loading…</span>
       </div>
@@ -23,6 +24,8 @@ import fixture from '../data/fixtures/demo-page.json';
           <select id="rkMode" class="form-select">
             <option value="live">Live dual-D1</option>
             <option value="synthetic">Synthetic (huge virtual)</option>
+            <option value="hybrid-export">Hybrid export (LLDP)</option>
+            <option value="hybrid-browse">Hybrid browse (ledger)</option>
           </select>
         </div>
         <div class="col-md-3">
@@ -34,68 +37,150 @@ import fixture from '../data/fixtures/demo-page.json';
           <input id="rkEnd" type="date" class="form-control" value="2026-08-10" />
         </div>
         <div class="col-md-3 d-flex align-items-end">
-          <button id="rkRun" class="btn rk-btn-primary w-100" type="button">Run merge</button>
+          <button id="rkRun" class="btn rk-btn-primary w-100" type="button">Run demo</button>
         </div>
       </div>
 
-      <div class="row g-3 mb-4">
-        <div class="col-lg-4">
-          <div class="rk-card">
-            <h3>Trace inspector</h3>
-            <pre id="rkTrace" class="small mb-0" style="max-height: 280px; overflow:auto; background:#0f1a16; color:#d7ebe1; padding:1rem; border-radius:10px;">{JSON.stringify(fixture.trace, null, 2)}</pre>
+      <div id="rkMergePanel">
+        <div class="row g-3 mb-4">
+          <div class="col-lg-4">
+            <div class="rk-card">
+              <h3>Trace inspector</h3>
+              <pre id="rkTrace" class="small mb-0" style="max-height: 280px; overflow:auto; background:#0f1a16; color:#d7ebe1; padding:1rem; border-radius:10px;">{JSON.stringify(fixture.trace, null, 2)}</pre>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="rk-card">
+              <div class="table-responsive">
+                <table class="table table-sm table-striped align-middle mb-0" id="rkTable">
+                  <thead>
+                    <tr>
+                      <th>trip_id</th>
+                      <th>booked_at</th>
+                      <th>operator</th>
+                      <th>route</th>
+                      <th>channel</th>
+                      <th class="text-end">fare</th>
+                      <th>source</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rkTableBody">
+                    {fixture.data.map((row) => (
+                      <tr>
+                        <td class="rk-mono">{row.trip_id}</td>
+                        <td class="rk-mono">{row.booked_at}</td>
+                        <td>{row.operator}</td>
+                        <td>{row.route}</td>
+                        <td>{row.channel}</td>
+                        <td class="text-end rk-mono">{(row.fare_cents / 100).toFixed(2)}</td>
+                        <td><span class="badge" style={`background:${row._source === 'live' ? '#0b7a4b' : '#f0ad4e'}`}>{row._source}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p class="small text-secondary mt-2 mb-0">
+                Showing page rows · <span id="rkMeta" class="rk-mono">recordsTotal={fixture.recordsTotal}</span>
+              </p>
+            </div>
           </div>
         </div>
-        <div class="col-lg-8">
-          <div class="rk-card">
-            <div class="table-responsive">
-              <table class="table table-sm table-striped align-middle mb-0" id="rkTable">
-                <thead>
-                  <tr>
-                    <th>trip_id</th>
-                    <th>booked_at</th>
-                    <th>operator</th>
-                    <th>route</th>
-                    <th>channel</th>
-                    <th class="text-end">fare</th>
-                    <th>source</th>
-                  </tr>
-                </thead>
-                <tbody id="rkTableBody">
-                  {fixture.data.map((row) => (
-                    <tr>
-                      <td class="rk-mono">{row.trip_id}</td>
-                      <td class="rk-mono">{row.booked_at}</td>
-                      <td>{row.operator}</td>
-                      <td>{row.route}</td>
-                      <td>{row.channel}</td>
-                      <td class="text-end rk-mono">{(row.fare_cents / 100).toFixed(2)}</td>
-                      <td><span class="badge" style={`background:${row._source === 'live' ? '#0b7a4b' : '#f0ad4e'}`}>{row._source}</span></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p class="small text-secondary mt-2 mb-0">
-              Showing page rows · <span id="rkMeta" class="rk-mono">recordsTotal={fixture.recordsTotal}</span>
-            </p>
+      </div>
+
+      <div id="rkLldpPanel" class="d-none">
+        <div class="row g-3 mb-3">
+          <div class="col-md-3"><div class="rk-card text-center"><div class="small text-secondary">Rows prepared</div><div class="fs-4 fw-bold rk-mono" id="rkKpiRows">{ledgerFixture.summary.row_count}</div></div></div>
+          <div class="col-md-3"><div class="rk-card text-center"><div class="small text-secondary">Total credit</div><div class="fs-4 fw-bold rk-mono" id="rkKpiCredit">{ledgerFixture.summary.total_credit}</div></div></div>
+          <div class="col-md-3"><div class="rk-card text-center"><div class="small text-secondary">Total debit</div><div class="fs-4 fw-bold rk-mono" id="rkKpiDebit">{ledgerFixture.summary.total_debit}</div></div></div>
+          <div class="col-md-3"><div class="rk-card text-center"><div class="small text-secondary">Balance</div><div class="fs-4 fw-bold rk-mono" id="rkKpiBalance">{ledgerFixture.summary.current_balance}</div></div></div>
+        </div>
+        <div class="rk-card mb-3">
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <span class="badge bg-success">Fetch &amp; Prepare</span>
+            <span class="badge bg-secondary">CSV</span>
+            <span class="badge bg-secondary">Excel</span>
+            <span class="badge bg-secondary">PDF</span>
+            <span class="badge bg-secondary" id="rkSendBadge">Send ZIP</span>
           </div>
+          <div class="table-responsive">
+            <table class="table table-sm table-striped align-middle mb-0" id="rkLedgerTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>PNR</th>
+                  <th class="text-end">Credit</th>
+                  <th class="text-end">Debit</th>
+                  <th class="text-end">Balance</th>
+                </tr>
+              </thead>
+              <tbody id="rkLedgerBody">
+                {ledgerFixture.data.map((row) => (
+                  <tr>
+                    <td class="rk-mono">{row.transaction_date}</td>
+                    <td><span class="badge" style="background:#0b7a4b">{row.transaction_type}</span></td>
+                    <td class="rk-mono">{row.pnr}</td>
+                    <td class="text-end rk-mono">{row.credit_amount}</td>
+                    <td class="text-end rk-mono">{row.debit_amount}</td>
+                    <td class="text-end rk-mono">{row.balance}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="small text-secondary mt-2 mb-0">Fictional ledger — post-prepare browse uses <span class="rk-mono">PseudoPaginator</span> (0 SQL on paging).</p>
+        </div>
+        <div class="rk-card">
+          <h3 class="h6">Activity log (sample)</h3>
+          <pre id="rkActivitySample" class="small mb-0" style="max-height:160px;overflow:auto;background:#0f1a16;color:#d7ebe1;padding:1rem;border-radius:10px;">prepare · Week 1/2 fetched (842 rows)
+store · Merged 5 rows into secure store
+export.csv · Built from store (0 re-query)
+browse · Page 1 from prepared JSON</pre>
         </div>
       </div>
     </div>
   </section>
 </MarketingLayout>
 
-<script>
+<script define:vars={{ ledgerFixture }}>
   const API = import.meta.env.PUBLIC_DEMO_API_URL || 'https://reportkit-api.lorapok.tech';
   const badge = document.getElementById('rkModeBadge');
   const traceEl = document.getElementById('rkTrace');
   const body = document.getElementById('rkTableBody');
   const meta = document.getElementById('rkMeta');
+  const mergePanel = document.getElementById('rkMergePanel');
+  const lldpPanel = document.getElementById('rkLldpPanel');
+  const demoTitle = document.getElementById('rkDemoTitle');
+  const demoLead = document.getElementById('rkDemoLead');
+  const sendBadge = document.getElementById('rkSendBadge');
 
   function setBadge(mode, label) {
     if (!badge) return;
     badge.dataset.provenance = mode;
     badge.textContent = label;
+  }
+
+  function isLldpMode(mode) {
+    return mode === 'hybrid-export' || mode === 'hybrid-browse';
+  }
+
+  function togglePanels(mode) {
+    const lldp = isLldpMode(mode);
+    mergePanel?.classList.toggle('d-none', lldp);
+    lldpPanel?.classList.toggle('d-none', !lldp);
+    if (demoTitle) {
+      demoTitle.textContent = lldp
+        ? (mode === 'hybrid-browse' ? 'Hybrid browse — prepared ledger' : 'Hybrid export — LLDP pipeline')
+        : 'Multi-DB grab → merge → JSON';
+    }
+    if (demoLead) {
+      demoLead.textContent = lldp
+        ? 'Synthetic fictional data demonstrating prepare → store → compose. No production identifiers.'
+        : 'Calls the Cloudflare Worker when available; falls back to bundled fixtures.';
+    }
+    if (sendBadge) {
+      sendBadge.style.display = mode === 'hybrid-export' ? 'inline-block' : 'none';
+    }
   }
 
   function renderRows(rows) {
@@ -113,8 +198,25 @@ import fixture from '../data/fixtures/demo-page.json';
     `).join('');
   }
 
+  function renderLldp() {
+    setBadge('synthetic', 'synthetic · LLDP');
+    if (traceEl) {
+      traceEl.textContent = JSON.stringify({
+        preset: document.getElementById('rkMode')?.value,
+        phases: ['filter', 'prepare', 'store', 'compose'],
+        rows_prepared: ledgerFixture.summary.row_count,
+        sql_on_browse: 0,
+      }, null, 2);
+    }
+  }
+
   async function run() {
     const mode = (document.getElementById('rkMode') as HTMLSelectElement).value;
+    togglePanels(mode);
+    if (isLldpMode(mode)) {
+      renderLldp();
+      return;
+    }
     const start = (document.getElementById('rkStart') as HTMLInputElement).value;
     const end = (document.getElementById('rkEnd') as HTMLInputElement).value;
     const qs = new URLSearchParams({ mode, start_date: start, end_date: end, start: '0', length: '25', draw: '1' });
@@ -143,6 +245,7 @@ import fixture from '../data/fixtures/demo-page.json';
     }
   }
 
+  document.getElementById('rkMode')?.addEventListener('change', run);
   document.getElementById('rkRun')?.addEventListener('click', run);
   run();
 </script>

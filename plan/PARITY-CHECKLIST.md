@@ -40,7 +40,7 @@ All demo data is **fictional** — no real operators, clients, or PNRs from bus.
 | DataTable mount | billing + demo | `ReportKit.table.*` | partial |
 | KPI apply | billing `updateSummary` | `ReportKit.kpi.apply` | partial |
 | Browse from store | — (new) | `ReportKit.table.fromPreparedStore` | partial |
-| Activity log | — (new) | `ReportKit.log.*` | partial |
+| Activity log | — (new) | `ReportKit.log.*` | partial — ring buffer + panel |
 | Alias shim | `ShohozCommonReport` | `window.ReportKit` | done |
 
 ---
@@ -52,7 +52,7 @@ All demo data is **fictional** — no real operators, clients, or PNRs from bus.
 | Page shell | inline | inline | `layouts.report` | partial |
 | Filter panel | partial | inline form | `ui.filter-panel` | partial |
 | Active filter chips | inline | `.active-filters-section` | `ui.filter-summary` | partial |
-| Prepare overlay | `loader` | `.table-loading-overlay` | `ui.prepare-loader` | missing |
+| Prepare overlay | `loader` | `.table-loading-overlay` | `ui.prepare-loader` | partial |
 | Table loading overlay | — | `.table-loading-overlay` | `ui.table-loader` | missing |
 | Action bar | `export-action-buttons` | search + export buttons | `ui.action-bar` | partial — Fetch & Prepare label |
 | KPI summary row | 8-metric grid | `.summary-box` wallet KPI | `ui.kpi-row` | partial — `#rkKpiRow`, export defaults |
