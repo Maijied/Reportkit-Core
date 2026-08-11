@@ -123,13 +123,18 @@
             }
             $(selector || '#rkAsyncLoading').removeClass('is-visible').hide();
         },
-        setProgress: function (pct, selector) {
+        setProgress: function (pct, selector, etaText) {
             var $ = jq();
             if (!$) {
                 return;
             }
             var n = Math.max(0, Math.min(100, Number(pct) || 0));
-            $(selector || '#rkAsyncLoading').find('.rk-progress-bar').css('width', n + '%');
+            var $el = $(selector || '#rkAsyncLoading');
+            $el.find('.rk-progress-bar').css('width', n + '%');
+            $el.find('.rk-async-loading-percent').text(n + '%');
+            if (typeof etaText === 'string' && etaText) {
+                $el.find('.rk-async-loading-eta').text(etaText);
+            }
         }
     };
 
@@ -1061,6 +1066,189 @@
             var $bar = $(selector || '#rkActionBar');
             $bar.toggleClass('is-disabled', !enabled);
             $bar.find('button, a.rk-btn').prop('disabled', !enabled);
+        },
+        renderKpiRow: function (selector, metrics) {
+            var $ = jq();
+            if (!$ || !metrics || !metrics.length) {
+                return;
+            }
+            var $row = $(selector || '.rk-kpi-row');
+            if (!$row.length) {
+                return;
+            }
+            var html = metrics.map(function (m) {
+                var tone = m.tone ? ' is-' + m.tone : '';
+                var key = m.key ? ' data-rk-kpi="' + String(m.key).replace(/"/g, '') + '"' : '';
+                return '<div class="rk-kpi-card' + tone + '"' + key + '>' +
+                    '<div class="rk-kpi-label">' + String(m.label || '').replace(/</g, '&lt;') + '</div>' +
+                    '<div class="rk-kpi-value">' + String(m.value != null ? m.value : '—').replace(/</g, '&lt;') + '</div>' +
+                    '</div>';
+            }).join('');
+            $row.html(html);
+        },
+        sendStep: function (step) {
+            var $ = jq();
+            if (!$) {
+                return;
+            }
+            step = Number(step) || 1;
+            $('.rk-send-step').each(function () {
+                var $el = $(this);
+                var n = Number($el.data('step')) || 0;
+                $el.removeClass('is-active is-done');
+                if (n < step) {
+                    $el.addClass('is-done');
+                }
+                if (n === step) {
+                    $el.addClass('is-active');
+                }
+            });
+        },
+        setSendUploadProgress: function (pct, label) {
+            var $ = jq();
+            if (!$) {
+                return;
+            }
+            var n = Math.max(0, Math.min(100, Number(pct) || 0));
+            var $wrap = $('#rkSendUploadProgress');
+            $wrap.removeClass('is-hidden');
+            $wrap.find('.rk-send-progress-fill').css('width', n + '%');
+            if (label) {
+                $wrap.find('.rk-send-progress-label').text(label);
+            }
+        },
+        hideSendUploadProgress: function () {
+            var $ = jq();
+            if ($) {
+                $('#rkSendUploadProgress').addClass('is-hidden');
+            }
+        },
+        setDownloadStatus: function (options) {
+            options = options || {};
+            var $ = jq();
+            if (!$) {
+                return;
+            }
+            var $el = $(options.selector || '#rkDownloadStatus');
+            if (options.hidden) {
+                $el.addClass('is-hidden');
+                return;
+            }
+            $el.removeClass('is-hidden');
+            if (options.label) {
+                $el.find('.rk-download-status-label').text(options.label);
+            }
+            if (typeof options.pct === 'number') {
+                $el.find('.rk-download-status-fill').css('width', options.pct + '%');
+            }
+            if (options.eta) {
+                $el.find('.rk-download-status-eta').text(options.eta);
+            }
+        },
+        bindSendPanel: function (options) {
+            options = options || {};
+            var $ = jq();
+            if (!$) {
+                return;
+            }
+            $('#rkSendForm').off('submit.reportkitSend').on('submit.reportkitSend', function (evt) {
+                evt.preventDefault();
+                var email = $('#rkSendEmail').val();
+                ReportKit.ui.sendStep(1);
+                ReportKit.mail.send($.extend({}, options, {
+                    email: email,
+                    onBuildStart: function () { ReportKit.ui.sendStep(2); },
+                    onUploadStart: function () { ReportKit.ui.sendStep(3); },
+                    onComplete: function () {
+                        ReportKit.ui.sendStep(4);
+                        ReportKit.ui.hideSendUploadProgress();
+                        ReportKit.notify.setBell('success');
+                        if (typeof options.onComplete === 'function') {
+                            options.onComplete();
+                        }
+                    },
+                    onError: function (msg) {
+                        ReportKit.ui.hideSendUploadProgress();
+                        ReportKit.notify.setBell('error');
+                        if (typeof options.onError === 'function') {
+                            options.onError(msg);
+                        }
+                    }
+                }));
+            });
+        }
+    };
+
+    /**
+     * Ping / mute / bell notifications (Phase C6).
+     */
+    ReportKit.notify = ReportKit.notify || {
+        _muted: false,
+        isMuted: function () {
+            var key = ReportKit.util.setting('notifications.sound_muted_key', 'reportkit_sound_muted');
+            if (typeof window.localStorage !== 'undefined' && localStorage.getItem(key) === '1') {
+                return true;
+            }
+            return !!this._muted;
+        },
+        setMuted: function (muted) {
+            this._muted = !!muted;
+            var key = ReportKit.util.setting('notifications.sound_muted_key', 'reportkit_sound_muted');
+            if (typeof window.localStorage !== 'undefined') {
+                localStorage.setItem(key, muted ? '1' : '0');
+            }
+            var $ = jq();
+            if ($) {
+                $('#rkNotifyMuteBtn').toggleClass('is-active', muted).text(muted ? 'Unmute' : 'Mute');
+            }
+        },
+        ping: function () {
+            if (!ReportKit.util.setting('notifications.ping_enabled', true)) {
+                return;
+            }
+            if (!this.isMuted() && typeof Audio !== 'undefined') {
+                try {
+                    var ctx = window.reportkitPingAudio || new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQQAAAAAAA==');
+                    window.reportkitPingAudio = ctx;
+                    ctx.play();
+                } catch (e) {}
+            }
+            this.setBell('ping');
+        },
+        setBell: function (state) {
+            var $ = jq();
+            if (!$) {
+                return;
+            }
+            var $bell = $('#rkNotifyBell');
+            $bell.removeClass('rk-notify-bell--idle rk-notify-bell--ping rk-notify-bell--success rk-notify-bell--error');
+            $bell.addClass('rk-notify-bell--' + (state || 'idle'));
+        },
+        bindControls: function () {
+            var $ = jq();
+            if (!$) {
+                return;
+            }
+            var self = this;
+            self.setMuted(self.isMuted());
+            $('#rkNotifyPingBtn').off('click.reportkitNotify').on('click.reportkitNotify', function () {
+                self.ping();
+            });
+            $('#rkNotifyMuteBtn').off('click.reportkitNotify').on('click.reportkitNotify', function () {
+                self.setMuted(!self.isMuted());
+            });
+            $('#rkDownloadCancelBtn').off('click.reportkitNotify').on('click.reportkitNotify', function () {
+                if (ReportKit.export && typeof ReportKit.export.cancel === 'function') {
+                    ReportKit.export.cancel();
+                }
+                ReportKit.ui.setDownloadStatus({ selector: '#rkDownloadStatus', hidden: true });
+            });
+            $('#rkPrepareCancelBtn').off('click.reportkitNotify').on('click.reportkitNotify', function () {
+                if (ReportKit.prepare && typeof ReportKit.prepare.cancel === 'function') {
+                    ReportKit.prepare.cancel();
+                }
+                ReportKit.asyncLoader.hide('#rkAsyncLoading');
+            });
         }
     };
 
@@ -1212,6 +1400,9 @@
                 ReportKit.ui.toast(assessment.error, 'warn');
                 return null;
             }
+            if (typeof options.onBuildStart === 'function') {
+                options.onBuildStart();
+            }
             var attach = this.buildAttachment(options.format || 'csv', options);
             if (!attach.ok) {
                 ReportKit.ui.toast(attach.error, attach.tooLarge ? 'warn' : 'info');
@@ -1233,12 +1424,30 @@
                 });
             }
             var csrf = ReportKit.util.getCsrfToken ? ReportKit.util.getCsrfToken() : null;
+            if (typeof options.onUploadStart === 'function') {
+                options.onUploadStart();
+            }
             var ajaxOptions = {
                 url: options.sendUrl,
                 method: 'POST',
                 data: formData,
                 processData: false,
-                contentType: false
+                contentType: false,
+                xhr: function () {
+                    var xhr = $.ajaxSettings.xhr();
+                    if (xhr.upload && typeof options.onUploadProgress === 'function') {
+                        xhr.upload.addEventListener('progress', options.onUploadProgress);
+                    } else if (xhr.upload) {
+                        xhr.upload.addEventListener('progress', function (evt) {
+                            if (!evt.lengthComputable) {
+                                return;
+                            }
+                            var pct = Math.round((evt.loaded / evt.total) * 100);
+                            ReportKit.ui.setSendUploadProgress(pct, 'Uploading ' + pct + '%…');
+                        });
+                    }
+                    return xhr;
+                }
             };
             if (csrf) {
                 ajaxOptions.headers = { 'X-CSRF-TOKEN': csrf };
@@ -1255,7 +1464,7 @@
                     : 'Could not send report.';
                 ReportKit.ui.toast(msg, 'warn');
                 if (typeof options.onError === 'function') {
-                    options.onError();
+                    options.onError(msg);
                 }
             });
         }
@@ -1508,6 +1717,9 @@
 
         if (ReportKit.util.setting('store.encryption_enabled', true)) {
             ReportKit.initSecureStore();
+        }
+        if (ReportKit.notify && typeof ReportKit.notify.bindControls === 'function') {
+            ReportKit.notify.bindControls();
         }
     }());
 
