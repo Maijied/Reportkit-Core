@@ -156,20 +156,7 @@
             start_date: p.start_date,
             end_date: p.end_date,
             columns: exportColumns(),
-            extra: filterParams(),
-            onBuildStart: function () { ReportKit.ui.sendStep(2); },
-            onUploadStart: function () { ReportKit.ui.sendStep(3); },
-            onComplete: function () { ReportKit.ui.sendStep(4); ReportKit.notify.setBell('success'); }
+            extra: filterParams()
         });
     });
-
-    if (ReportKit.ui.bindSendPanel) {
-        ReportKit.ui.bindSendPanel({
-            sendUrl: cfg.sendUrl || ('/reportkit/' + slug + '/send'),
-            format: 'csv',
-            prefix: cfg.filenamePrefix || slug,
-            columns: exportColumns(),
-            extra: filterParams
-        });
-    }
 }(window));
