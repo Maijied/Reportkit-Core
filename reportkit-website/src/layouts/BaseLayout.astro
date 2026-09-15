@@ -50,6 +50,58 @@ const pathname = Astro.url.pathname;
     <meta property="og:image" content={new URL('/og-logo.png', Astro.site).toString()} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={new URL('/og-logo.png', Astro.site).toString()} />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "ReportKit",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "PHP, Laravel",
+          "url": "https://reportkit.lorapok.tech/",
+          "description": description,
+          "author": { "@id": "https://maizied.lorapok.tech/#person" },
+          "publisher": { "@id": "https://lorapok.tech/#organization" },
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://lorapok.tech/#organization",
+          "name": "Lorapok Labs",
+          "url": "https://lorapok.tech/",
+          "sameAs": [
+            "https://github.com/Lorapok",
+            "https://github.com/Maijied"
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "email": "mdshvo40@gmail.com",
+            "url": "https://maizied.lorapok.tech/"
+          }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://maizied.lorapok.tech/#person",
+          "name": "Mohammad Maizied Hasan Majumder",
+          "url": "https://maizied.lorapok.tech/",
+          "sameAs": [
+            "https://github.com/Maijied",
+            "https://www.linkedin.com/in/maizied/",
+            "https://maizied.lorapok.tech/"
+          ],
+          "jobTitle": "Founder & Principal Engineer",
+          "worksFor": { "@id": "https://lorapok.tech/#organization" }
+        },
+        {
+          "@type": "WebSite",
+          "name": "ReportKit",
+          "url": "https://reportkit.lorapok.tech/",
+          "publisher": { "@id": "https://lorapok.tech/#organization" }
+        }
+      ]
+    })} />
   </head>
   <body class={bodyClass}>
     <nav class="navbar navbar-expand-lg rk-site-nav sticky-top">
@@ -91,7 +143,7 @@ const pathname = Astro.url.pathname;
             <div class="rk-brand-mark mb-2">
               <img class="rk-brand-logo" src="/reportkit-logo.svg" alt="" width="34" height="24" aria-hidden="true" /> ReportKit
             </div>
-            <p class="mb-2">Open-source multi-DB reporting for PHP &amp; Laravel — by <a href="https://lorapok.labs" rel="noopener">Lorapok Labs</a>.</p>
+            <p class="mb-2">Open-source multi-DB reporting for PHP &amp; Laravel — by <a href="https://lorapok.tech" rel="noopener">Lorapok Labs</a>.</p>
             <p class="small mb-0">Accent <span class="rk-mono">#0b7a4b</span> · MIT License</p>
           </div>
           <div class="col-6 col-md-2">
